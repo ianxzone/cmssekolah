@@ -3,6 +3,27 @@
 @section('title', 'Dashboard Overview')
 
 @section('content')
+    <div class="panel"
+        style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; border: none; margin-bottom: 2rem; border-radius: 1.5rem; overflow: hidden;">
+        <div class="panel-body" style="padding: 2.5rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+            <div
+                style="flex-shrink: 0; background: rgba(255,255,255,0.2); width: 100px; height: 100px; border-radius: 1.5rem; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;">
+                <i data-feather="smile" style="width: 48px; height: 48px;"></i>
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; color: white;">Selamat Datang di CMS
+                    Sekolah</h1>
+                <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 1.5rem;">Sistem Manajemen Konten ini dikembangkan
+                    secara eksklusif oleh <strong>MATEK</strong> untuk mendukung transformasi digital sekolah Anda. Kelola
+                    konten Anda dengan mudah dan efisien.</p>
+                <a href="https://www.murniabadi.co.id" target="_blank" class="btn"
+                    style="background: white; color: #4f46e5; border-radius: 50px; font-weight: 700; padding: 12px 28px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: transform 0.2s;">
+                    Kunjungi Situs MATEK <i data-feather="external-link" style="width: 16px;"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon primary">
