@@ -14,6 +14,41 @@ class FrontendController extends Controller
      */
     public function index()
     {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+
+        $posts = collect();
+        if (($settings['home_show_news'] ?? '1') == '1') {
+            $posts = Post::with('category')
+                ->whereNotNull('published_at')
+                ->where('published_at', '<=', now())
+                ->latest('published_at')
+                ->take(3)
+                ->get();
+        }
+
+        $events = collect();
+        if (($settings['home_show_events'] ?? '1') == '1') {
+            $events = \App\Models\Event::where('start_time', '>=', now())
+                ->orderBy('start_time', 'asc')
+                ->take(3)
+                ->get();
+        }
+
+        $testimonials = collect();
+        if (($settings['home_show_testimonials'] ?? '1') == '1') {
+            $testimonials = \App\Models\Testimonial::where('is_active', true)
+                ->latest()
+                ->get();
+        }
+
+        return view('welcome', compact('settings', 'posts', 'events', 'testimonials'));
+    }
+
+    /**
+     * Display All Posts (Berita)
+     */
+    public function posts()
+    {
         $posts = Post::with('category')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
@@ -21,6 +56,26 @@ class FrontendController extends Controller
             ->paginate(9);
 
         return view('frontend.index', compact('posts'));
+    }
+
+    /**
+     * Display All Events (Agenda)
+     */
+    public function events()
+    {
+        $events = \App\Models\Event::where('start_time', '>=', now())
+            ->orderBy('start_time', 'asc')
+            ->paginate(12);
+
+        return view('frontend.events', compact('events'));
+    }
+
+    /**
+     * Show a specific Event
+     */
+    public function showEvent(\App\Models\Event $event)
+    {
+        return view('frontend.event', compact('event'));
     }
 
     /**

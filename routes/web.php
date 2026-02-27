@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\MediaController as AdminMediaController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 
 Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -22,13 +24,21 @@ Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');
     Route::resource('events', AdminEventController::class)->names('admin.events');
+    Route::resource('testimonials', AdminTestimonialController::class)->names('admin.testimonials');
+
+    // Configs/Settings Route
+    Route::get('settings', [AdminSettingController::class, 'index'])->name('admin.settings.index');
+    Route::post('settings', [AdminSettingController::class, 'update'])->name('admin.settings.update');
 });
 
 use App\Http\Controllers\FrontendController;
 
 // --- Public Frontend Routes ---
 Route::get('/', [FrontendController::class, 'index'])->name('home');
-Route::get('/post/{slug}', [FrontendController::class, 'showPost'])->name('posts.show');
+Route::get('/berita', [FrontendController::class, 'posts'])->name('posts.index');
+Route::get('/berita/{slug}', [FrontendController::class, 'showPost'])->name('posts.show');
+Route::get('/agenda', [FrontendController::class, 'events'])->name('events.index');
+Route::get('/agenda/{event}', [FrontendController::class, 'showEvent'])->name('events.show');
 Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->name('categories.show');
 
 // Dynamic Forms

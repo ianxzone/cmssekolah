@@ -83,6 +83,20 @@
                     <i data-feather="inbox"></i>
                     <span>Forms</span>
                 </a>
+
+                <a href="{{ route('admin.testimonials.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+                    <i data-feather="message-square"></i>
+                    <span>Testimonials</span>
+                </a>
+
+                <div class="nav-section">SYSTEM</div>
+
+                <a href="{{ route('admin.settings.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <i data-feather="settings"></i>
+                    <span>Settings</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">

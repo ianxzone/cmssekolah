@@ -8,17 +8,23 @@ class Event extends Model
 {
     protected $fillable = [
         'title',
+        'type',
+        'meeting_link',
         'description',
         'start_time',
         'end_time',
         'location',
+        'map_link',
         'capacity',
-        'image'
+        'image',
+        'organizer_name',
+        'sponsors'
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
+        'sponsors' => 'array',
     ];
 
     public function bookings()

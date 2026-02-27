@@ -34,18 +34,41 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'type' => 'required|in:offline,online',
+            'meeting_link' => 'nullable|url|max:255',
             'description' => 'nullable|string',
             'start_time' => 'required|date',
             'end_time' => 'nullable|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
+            'map_link' => 'nullable|string',
             'capacity' => 'nullable|integer|min:1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'organizer_name' => 'nullable|string|max:255',
+            'sponsor_names' => 'nullable|array',
+            'sponsor_logos' => 'nullable|array',
         ]);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('events', 'public');
             $validated['image'] = $imagePath;
         }
+
+        $sponsors = [];
+        if ($request->has('sponsor_names')) {
+            foreach ($request->sponsor_names as $index => $name) {
+                if ($name) {
+                    $logoPath = null;
+                    if ($request->hasFile("sponsor_logos.$index")) {
+                        $logoPath = $request->file("sponsor_logos.$index")->store('sponsors', 'public');
+                    }
+                    $sponsors[] = [
+                        'name' => $name,
+                        'logo' => $logoPath
+                    ];
+                }
+            }
+        }
+        $validated['sponsors'] = $sponsors;
 
         Event::create($validated);
 
@@ -75,12 +98,19 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'type' => 'required|in:offline,online',
+            'meeting_link' => 'nullable|url|max:255',
             'description' => 'nullable|string',
             'start_time' => 'required|date',
             'end_time' => 'nullable|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
+            'map_link' => 'nullable|string',
             'capacity' => 'nullable|integer|min:1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'organizer_name' => 'nullable|string|max:255',
+            'sponsor_names' => 'nullable|array',
+            'sponsor_logos' => 'nullable|array',
+            'existing_sponsor_logos' => 'nullable|array',
         ]);
 
         if ($request->hasFile('image')) {
@@ -91,6 +121,35 @@ class EventController extends Controller
             $imagePath = $request->file('image')->store('events', 'public');
             $validated['image'] = $imagePath;
         }
+
+        $sponsors = [];
+        if ($request->has('sponsor_names')) {
+            foreach ($request->sponsor_names as $index => $name) {
+                if ($name) {
+                    $logoPath = $request->existing_sponsor_logos[$index] ?? null;
+                    if ($request->hasFile("sponsor_logos.$index")) {
+                        // Delete old logo if replacing
+                        if ($logoPath) {
+                            Storage::disk('public')->delete($logoPath);
+                        }
+                        $logoPath = $request->file("sponsor_logos.$index")->store('sponsors', 'public');
+                    }
+                    $sponsors[] = [
+                        'name' => $name,
+                        'logo' => $logoPath
+                    ];
+                }
+            }
+        }
+
+        // Cleanup old logos that are no longer present
+        $oldLogos = collect($event->sponsors ?? [])->pluck('logo')->filter()->all();
+        $newLogos = collect($sponsors)->pluck('logo')->filter()->all();
+        foreach (array_diff($oldLogos, $newLogos) as $deletedLogo) {
+            Storage::disk('public')->delete($deletedLogo);
+        }
+
+        $validated['sponsors'] = $sponsors;
 
         $event->update($validated);
 
@@ -105,6 +164,15 @@ class EventController extends Controller
         if ($event->image) {
             Storage::disk('public')->delete($event->image);
         }
+
+        if ($event->sponsors) {
+            foreach ($event->sponsors as $sponsor) {
+                if (!empty($sponsor['logo'])) {
+                    Storage::disk('public')->delete($sponsor['logo']);
+                }
+            }
+        }
+
         $event->delete();
 
         return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
