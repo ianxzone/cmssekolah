@@ -16,6 +16,7 @@ Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('pages', AdminPageController::class)->names('admin.pages');
     Route::resource('forms', AdminFormController::class)->names('admin.forms');
+    Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
     Route::resource('media', AdminMediaController::class)->only(['index', 'store', 'destroy'])->names('admin.media');
     Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');

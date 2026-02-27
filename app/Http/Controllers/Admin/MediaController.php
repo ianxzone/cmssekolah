@@ -50,6 +50,24 @@ class MediaController extends Controller
         return redirect()->route('admin.media.index')->with('success', 'File uploaded successfully.');
     }
 
+    public function apiList(Request $request)
+    {
+        $search = $request->query('search');
+        $query = Media::latest();
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $media = $query->paginate(20);
+
+        return response()->json([
+            'data' => $media->items(),
+            'current_page' => $media->currentPage(),
+            'last_page' => $media->lastPage(),
+        ]);
+    }
+
     public function destroy(Media $media)
     {
         if (Storage::disk($media->disk)->exists($media->path)) {
