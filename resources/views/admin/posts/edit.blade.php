@@ -313,10 +313,40 @@
             }
         }
 
-        // Disable Trix file upload
-        document.addEventListener("trix-file-accept", function (event) {
-            event.preventDefault();
+        // Trix Attachment Handling
+        document.addEventListener("trix-attachment-add", function(event) {
+            if (event.attachment.file) {
+                uploadFileAttachment(event.attachment);
+            }
         });
+
+        function uploadFileAttachment(attachment) {
+            const file = attachment.file;
+            const form = new FormData();
+            form.append("file", file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ route('admin.media.store') }}", true);
+            xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}");
+            xhr.setRequestHeader("Accept", "application/json");
+
+            xhr.upload.onprogress = function(event) {
+                const progress = event.loaded / event.total * 100;
+                attachment.setUploadProgress(progress);
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    attachment.setAttributes({
+                        url: response.url,
+                        href: response.url
+                    });
+                }
+            };
+
+            xhr.send(form);
+        }
 
         // Initialize counts
         window.onload = function () {

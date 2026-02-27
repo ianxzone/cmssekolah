@@ -10,11 +10,13 @@ use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\FormController as AdminFormController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\MediaController as AdminMediaController;
 
 Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('pages', AdminPageController::class)->names('admin.pages');
     Route::resource('forms', AdminFormController::class)->names('admin.forms');
+    Route::resource('media', AdminMediaController::class)->only(['index', 'store', 'destroy']);
     Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');
 });

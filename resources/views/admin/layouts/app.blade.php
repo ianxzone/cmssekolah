@@ -61,6 +61,12 @@
                     <span>Categories</span>
                 </a>
 
+                <a href="{{ route('admin.media.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.media.*') ? 'active' : '' }}">
+                    <i data-feather="image"></i>
+                    <span>Media Manager</span>
+                </a>
+
                 <a href="#" class="nav-item">
                     <i data-feather="calendar"></i>
                     <span>Events</span>
