@@ -146,14 +146,25 @@
                             SEO Settings</h3>
 
                         <div class="form-group">
-                            <label class="form-label" for="seo_title">SEO Title</label>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label class="form-label" for="seo_title" style="margin-bottom: 0;">SEO Title</label>
+                                <span id="seo_title-word-count" style="font-size: 0.75rem; color: var(--text-secondary);">0
+                                    words</span>
+                            </div>
                             <input type="text" id="seo_title" name="seo_title" class="form-control"
                                 value="{{ old('seo_title', $post->seo_title) }}">
                             @error('seo_title') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="seo_description">SEO Description</label>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label class="form-label" for="seo_description" style="margin-bottom: 0;">SEO
+                                    Description</label>
+                                <span id="seo_description-word-count"
+                                    style="font-size: 0.75rem; color: var(--text-secondary);">0 words</span>
+                            </div>
                             <textarea id="seo_description" name="seo_description" class="form-control"
                                 rows="3">{{ old('seo_description', $post->seo_description) }}</textarea>
                             @error('seo_description') <span class="text-danger">{{ $message }}</span> @enderror
@@ -281,6 +292,14 @@
             updateWordCount('description', 'description-word-count');
         });
 
+        document.getElementById('seo_title').addEventListener('input', () => {
+            updateWordCount('seo_title', 'seo_title-word-count');
+        });
+
+        document.getElementById('seo_description').addEventListener('input', () => {
+            updateWordCount('seo_description', 'seo_description-word-count');
+        });
+
         function previewImage(event) {
             const reader = new FileReader();
             reader.onload = function () {
@@ -300,8 +319,10 @@
         });
 
         // Initialize counts
-        window.onload = function() {
+        window.onload = function () {
             updateWordCount('description', 'description-word-count');
+            updateWordCount('seo_title', 'seo_title-word-count');
+            updateWordCount('seo_description', 'seo_description-word-count');
             // Trix takes a moment to initialize
             setTimeout(() => updateWordCount('content', 'content-word-count', true), 500);
         };
