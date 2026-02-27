@@ -38,4 +38,12 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact('stats', 'labels', 'chartData'));
     }
+
+    /**
+     * Show the developer/about page.
+     */
+    public function about()
+    {
+        return view('admin.about');
+    }
 }

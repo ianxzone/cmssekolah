@@ -44,6 +44,9 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     // Configs/Settings Route
     Route::get('settings', [AdminSettingController::class, 'index'])->name('admin.settings.index');
     Route::post('settings', [AdminSettingController::class, 'update'])->name('admin.settings.update');
+
+    // About/Developer Page
+    Route::get('about', [DashboardController::class, 'about'])->name('admin.about');
 });
 
 use App\Http\Controllers\FrontendController;

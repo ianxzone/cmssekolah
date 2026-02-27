@@ -97,6 +97,12 @@
                     <i data-feather="settings"></i>
                     <span>Settings</span>
                 </a>
+
+                <a href="{{ route('admin.about') }}"
+                    class="nav-item {{ request()->routeIs('admin.about') ? 'active' : '' }}">
+                    <i data-feather="info"></i>
+                    <span>Tentang CMS</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
