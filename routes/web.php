@@ -34,6 +34,19 @@ Route::prefix('admin')->middleware(['web'])->group(function () {
 use App\Http\Controllers\FrontendController;
 
 // --- Public Frontend Routes ---
+// Installation Routes
+Route::prefix('install')->name('install.')->group(function () {
+    Route::get('/', [App\Http\Controllers\InstallController::class, 'index'])->name('index');
+    Route::get('/requirements', [App\Http\Controllers\InstallController::class, 'requirements'])->name('requirements');
+    Route::get('/environment', [App\Http\Controllers\InstallController::class, 'environment'])->name('environment');
+    Route::post('/environment', [App\Http\Controllers\InstallController::class, 'saveEnvironment'])->name('environment.save');
+    Route::get('/database', [App\Http\Controllers\InstallController::class, 'database'])->name('database');
+    Route::post('/run', [App\Http\Controllers\InstallController::class, 'runMigration'])->name('run');
+    Route::get('/admin', [App\Http\Controllers\InstallController::class, 'admin'])->name('admin');
+    Route::post('/admin', [App\Http\Controllers\InstallController::class, 'saveAdmin'])->name('admin.save');
+    Route::get('/finish', [App\Http\Controllers\InstallController::class, 'finish'])->name('finish');
+});
+
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/berita', [FrontendController::class, 'posts'])->name('posts.index');
 Route::get('/berita/{slug}', [FrontendController::class, 'showPost'])->name('posts.show');
