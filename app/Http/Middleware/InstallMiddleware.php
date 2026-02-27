@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response;
 
+use Illuminate\Support\Facades\Config;
+
 class InstallMiddleware
 {
     /**
@@ -18,6 +20,10 @@ class InstallMiddleware
     {
         $isInstalled = File::exists(storage_path('installed'));
         $isInstallPath = $request->is('install*');
+
+        if (!$isInstalled && $isInstallPath) {
+            Config::set('session.driver', 'file');
+        }
 
         if (!$isInstalled && !$isInstallPath) {
             return redirect()->route('install.index');
