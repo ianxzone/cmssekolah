@@ -4,7 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Admin Dashboard') - {{ config('app.name', 'Laravel') }}</title>
+    @php
+        $adminBrandName = \App\Models\Setting::where('key', 'school_name')->value('value') ?? config('app.name', 'CMS');
+        $adminLogo = \App\Models\Setting::where('key', 'school_logo')->value('value');
+        $adminFavicon = \App\Models\Setting::where('key', 'school_favicon')->value('value');
+    @endphp
+    <title>@yield('title', 'Admin Dashboard') - {{ $adminBrandName }}</title>
+    <link rel="icon"
+        href="{{ $adminFavicon ? \Illuminate\Support\Facades\Storage::url($adminFavicon) : asset('favicon.ico') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +34,13 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="brand">
-                    <i data-feather="hexagon" class="brand-icon"></i>
-                    <span class="brand-text">Admin Panel</span>
+                    @if($adminLogo)
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($adminLogo) }}" alt="Logo"
+                            style="height: 32px; width: auto; max-width: 140px; display: block; filter: brightness(0) invert(1);">
+                    @else
+                        <i data-feather="hexagon" class="brand-icon"></i>
+                        <span class="brand-text">{{ explode(' ', $adminBrandName)[0] }}</span>
+                    @endif
                 </div>
                 <button class="menu-toggle" id="menu-toggle-btn">
                     <i data-feather="menu"></i>

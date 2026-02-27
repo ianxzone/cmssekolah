@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - CMS Sekolah by MATEK</title>
+    @php
+        $adminBrandName = \App\Models\Setting::where('key', 'school_name')->value('value') ?? config('app.name', 'CMS');
+        $adminLogo = \App\Models\Setting::where('key', 'school_logo')->value('value');
+        $adminFavicon = \App\Models\Setting::where('key', 'school_favicon')->value('value');
+    @endphp
+    <title>Login Admin - {{ $adminBrandName }}</title>
+    <link rel="icon"
+        href="{{ $adminFavicon ? \Illuminate\Support\Facades\Storage::url($adminFavicon) : asset('favicon.ico') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/setup.css') }}">
@@ -148,9 +155,16 @@
 <body>
     <div class="login-card">
         <div class="login-logo">
-            <img src="{{ asset('images/matek-logo.png') }}"
-                onerror="this.src='https://via.placeholder.com/100?text=MATEK'" alt="MATEK Logo">
+            @if($adminLogo)
+                <img src="{{ \Illuminate\Support\Facades\Storage::url($adminLogo) }}" alt="{{ $adminBrandName }} Logo"
+                    style="height: 60px; object-fit: contain;">
+            @else
+                <img src="{{ asset('images/matek-logo.png') }}"
+                    onerror="this.src='https://placehold.co/100?text={{ urlencode(explode(' ', $adminBrandName)[0]) }}'"
+                    alt="Logo">
+            @endif
             <h2>Portal Admin</h2>
+            <p style="color: #64748b; font-size: 0.9rem;">{{ $adminBrandName }}</p>
         </div>
 
         @if ($errors->any())

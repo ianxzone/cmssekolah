@@ -184,4 +184,16 @@ class FrontendController extends Controller
 
         return redirect()->back()->with('success', 'Terima kasih! Formulir Anda telah berhasil dikirim.');
     }
+
+    /**
+     * Show a detailed Page
+     */
+    public function showPage($slug)
+    {
+        $page = \App\Models\Page::where('slug', $slug)
+            ->where('type', 'default')
+            ->firstOrFail();
+
+        return view('frontend.page', compact('page'));
+    }
 }

@@ -118,8 +118,7 @@ class EventController extends Controller
             if ($event->image) {
                 Storage::disk('public')->delete($event->image);
             }
-            $imagePath = $request->file('image')->store('events', 'public');
-            $validated['image'] = $imagePath;
+            $validated['image'] = $request->file('image')->store('events', 'public');
         }
 
         $sponsors = [];

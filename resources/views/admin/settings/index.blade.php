@@ -223,6 +223,49 @@
                     <div class="setting-section">
                         <h3
                             style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            Identitas Sekolah (Branding)</h3>
+
+                        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label class="form-label">Nama Sekolah / Institusi</label>
+                                <input type="text" name="school_name" class="form-control"
+                                    value="{{ $settings['school_name'] ?? 'SDIT Al Irsyad' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Slogan / Tagline</label>
+                                <input type="text" name="school_tagline" class="form-control"
+                                    value="{{ $settings['school_tagline'] ?? 'Sekolah Islam Teladan' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Logo Utama Sekolah <small>(Horizontal, disarankan PNG
+                                        transparan)</small></label>
+                                @if(isset($settings['school_logo']) && $settings['school_logo'])
+                                    <div
+                                        style="margin-bottom: 1rem; background: var(--bg-body); padding: 10px; border-radius: 8px; display: inline-block;">
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($settings['school_logo']) }}"
+                                            alt="School Logo" style="height: 40px; object-fit: contain;">
+                                    </div>
+                                @endif
+                                <input type="file" name="school_logo" class="form-control" accept="image/*">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Favicon <small>(Ikon Tab Browser, kotak 1:1, disarankan
+                                        PNG/ICO)</small></label>
+                                @if(isset($settings['school_favicon']) && $settings['school_favicon'])
+                                    <div
+                                        style="margin-bottom: 1rem; background: var(--bg-body); padding: 10px; border-radius: 8px; display: inline-block;">
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($settings['school_favicon']) }}"
+                                            alt="School Favicon" style="height: 32px; width: 32px; object-fit: contain;">
+                                    </div>
+                                @endif
+                                <input type="file" name="school_favicon" class="form-control" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3
+                            style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
                             Informasi Kontak (Top Bar & Footer)</h3>
 
                         <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">

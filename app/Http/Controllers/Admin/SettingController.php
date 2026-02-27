@@ -17,11 +17,14 @@ class SettingController extends Controller
     {
         $data = $request->except('_token');
 
-        // Handle file uploads (e.g., headmaster_image)
-        if ($request->hasFile('home_headmaster_image')) {
-            $imagePath = $request->file('home_headmaster_image')->store('settings', 'public');
-            \App\Models\Setting::set('home_headmaster_image', $imagePath, 'image');
-            unset($data['home_headmaster_image']); // unset so we don't process it below
+        // Handle file uploads (e.g., headmaster_image, logos)
+        $imageFields = ['home_headmaster_image', 'school_logo', 'school_favicon'];
+        foreach ($imageFields as $field) {
+            if ($request->hasFile($field)) {
+                $imagePath = $request->file($field)->store('settings', 'public');
+                \App\Models\Setting::set($field, $imagePath, 'image');
+                unset($data[$field]); // unset so we don't process it below
+            }
         }
 
         // Handle booleans (checkboxes are not sent if unchecked)

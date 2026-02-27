@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', $post->title . ' - ' . config('app.name'))
-@section('meta_description', $post->description ?? Str::limit(strip_tags($post->content), 150))
+@section('title', $page->title . ' - ' . config('app.name'))
+@section('meta_description', $page->seo_description ?? Str::limit(strip_tags($page->content), 150))
 
 @push('styles')
     <style>
@@ -45,105 +45,74 @@
         }
 
         /* MAIN CONTENT */
-        .article-container {
-            background: var(--bg-surface);
+        .page-container {
+            background: var(--white);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
             overflow: hidden;
         }
 
-        .article-header {
+        .page-header {
             padding: 2.5rem 2.5rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
+            background: #f8fafc;
         }
 
-        .article-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .article-category {
-            color: var(--primary-color);
-            font-weight: 600;
-            background: #e0e7ff;
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
-        }
-
-        .article-title {
+        .page-title {
             font-size: 2.2rem;
-            font-weight: 700;
+            font-weight: 800;
             line-height: 1.3;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
+            color: var(--primary-dark);
+            margin-bottom: 0;
         }
 
-        .article-subtitle {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-
-        .article-thumbnail {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            background-color: var(--bg-body);
-        }
-
-        .article-content {
+        .page-content {
             padding: 2.5rem;
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #374151;
+            color: #334155;
         }
 
-        .article-content p {
+        .page-content p {
             margin-bottom: 1.5rem;
         }
 
-        .article-content h2,
-        .article-content h3 {
-            color: var(--text-primary);
+        .page-content h2,
+        .page-content h3 {
+            color: var(--primary-dark);
             font-weight: 700;
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
 
-        .article-content h2 {
+        .page-content h2 {
             font-size: 1.8rem;
             border-bottom: 2px solid var(--primary-light);
             display: inline-block;
             padding-bottom: 5px;
         }
 
-        .article-content h3 {
+        .page-content h3 {
             font-size: 1.4rem;
         }
 
-        .article-content img {
+        .page-content ul,
+        .page-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .page-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .page-content img {
             max-width: 100%;
             height: auto;
             border-radius: var(--radius-md);
             margin: 2rem 0;
             box-shadow: var(--shadow-sm);
-        }
-
-        .article-content blockquote {
-            border-left: 4px solid var(--primary-color);
-            margin: 2rem 0;
-            font-style: italic;
-            color: var(--text-secondary);
-            background: #f8fafc;
-            padding: 1.5rem;
-            border-radius: 0 var(--radius-md) var(--radius-md) 0;
         }
 
         /* SIDEBAR */
@@ -212,32 +181,14 @@
             gap: 5px;
         }
 
-        .category-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            background: #f1f5f9;
-            color: var(--text-main);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-right: 5px;
-            margin-bottom: 10px;
-            transition: all 0.2s;
-        }
-
-        .category-badge:hover {
-            background: var(--primary);
-            color: var(--white);
-        }
-
         @media (max-width: 768px) {
 
-            .article-content,
-            .article-header {
+            .page-content,
+            .page-header {
                 padding: 1.5rem;
             }
 
-            .article-title {
+            .page-title {
                 font-size: 1.8rem;
             }
         }
@@ -247,10 +198,9 @@
 @section('content')
     <div class="page-header-bg">
         <div class="container">
-            <h1>Berita & Artikel</h1>
+            <h1>Halaman Informasi</h1>
             <div class="breadcrumb">
-                <a href="{{ route('home') }}">Beranda</a> / <a href="{{ route('posts.index') }}">Berita</a> /
-                {{ Str::limit($post->title, 40) }}
+                <a href="{{ route('home') }}">Beranda</a> / {{ Str::limit($page->title, 40) }}
             </div>
         </div>
     </div>
@@ -258,48 +208,45 @@
     <div class="layout-container">
         <!-- Main Content -->
         <main>
-            <article class="article-container">
-                @if($post->image)
-                    <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="article-thumbnail">
-                @endif
-
-                <header class="article-header">
-                    <h1 class="article-title">{{ $post->title }}</h1>
-                    @if($post->subtitle)
-                        <p class="article-subtitle">{{ $post->subtitle }}</p>
-                    @endif
-                    <div class="article-meta">
-                        @if($post->category)
-                            <a href="{{ route('categories.show', $post->category->slug) }}" class="article-category">
-                                {{ $post->category->name }}
-                            </a>
-                        @endif
-                        <span style="display:flex; align-items:center; gap:5px;">
-                            <i data-feather="calendar" style="width:14px;"></i>
-                            {{ $post->published_at ? $post->published_at->format('d M Y') : '' }}
-                        </span>
-                        <span style="display:flex; align-items:center; gap:5px;">
-                            <i data-feather="user" style="width:14px;"></i> Admin
-                        </span>
-                    </div>
+            <article class="page-container">
+                <header class="page-header">
+                    <h1 class="page-title">{{ $page->title }}</h1>
                 </header>
 
-                <div class="article-content trix-content">
-                    {!! $post->content !!}
+                <div class="page-content trix-content">
+                    {!! $page->content !!}
                 </div>
             </article>
         </main>
 
         <!-- Sidebar -->
         <aside class="sidebar">
+            <!-- Navigate Pages Widget -->
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title"><i data-feather="file-text" style="width:18px;"></i> Informasi Lainnya</h3>
+                <ul class="sidebar-list">
+                    @php
+                        $otherPages = \App\Models\Page::where('id', '!=', $page->id)
+                            ->where('type', 'default')
+                            ->orderBy('title')->get();
+                    @endphp
+                    @forelse($otherPages as $p)
+                        <li>
+                            <a href="{{ route('pages.show', $p->slug) }}">{{ $p->title }}</a>
+                        </li>
+                    @empty
+                        <li>Belum ada halaman lain.</li>
+                    @endforelse
+                </ul>
+            </div>
+
             <!-- Recent Posts Widget -->
             <div class="sidebar-widget">
                 <h3 class="sidebar-title"><i data-feather="clock" style="width:18px;"></i> Berita Terbaru</h3>
                 <ul class="sidebar-list">
                     @php
-                        $recentPosts = \App\Models\Post::where('id', '!=', $post->id)
-                            ->whereNotNull('published_at')->where('published_at', '<=', now())
-                            ->latest('published_at')->take(5)->get();
+                        $recentPosts = \App\Models\Post::whereNotNull('published_at')->where('published_at', '<=', now())
+                            ->latest('published_at')->take(4)->get();
                     @endphp
                     @forelse($recentPosts as $recent)
                         <li>
@@ -309,24 +256,9 @@
                             </div>
                         </li>
                     @empty
-                        <li>Belum ada berita lain.</li>
+                        <li>Belum ada berita.</li>
                     @endforelse
                 </ul>
-            </div>
-
-            <!-- Categories Widget -->
-            <div class="sidebar-widget">
-                <h3 class="sidebar-title"><i data-feather="folder" style="width:18px;"></i> Kategori</h3>
-                <div class="sidebar-categories">
-                    @php
-                        $categories = \App\Models\Category::withCount('posts')->orderBy('name')->get();
-                    @endphp
-                    @foreach($categories as $category)
-                        <a href="{{ route('categories.show', $category->slug) }}" class="category-badge">
-                            {{ $category->name }} ({{ $category->posts_count }})
-                        </a>
-                    @endforeach
-                </div>
             </div>
 
             <!-- SPMB Banner Widget -->

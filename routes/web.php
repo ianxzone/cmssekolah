@@ -75,3 +75,6 @@ Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->nam
 // Dynamic Forms
 Route::get('/form/{slug}', [FrontendController::class, 'showForm'])->name('forms.show.frontend');
 Route::post('/form/{slug}/submit', [FrontendController::class, 'submitForm'])->name('forms.submit');
+
+// Dynamic Pages
+Route::get('/page/{slug}', [FrontendController::class, 'showPage'])->name('pages.show');

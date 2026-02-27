@@ -16,9 +16,9 @@
                 <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 1.5rem;">Sistem Manajemen Konten ini dikembangkan
                     secara eksklusif oleh <strong>MATEK</strong> untuk mendukung transformasi digital sekolah Anda. Kelola
                     konten Anda dengan mudah dan efisien.</p>
-                <a href="https://www.murniabadi.co.id" target="_blank" class="btn"
+                <a href="{{ route('admin.about') }}" class="btn"
                     style="background: white; color: #4f46e5; border-radius: 50px; font-weight: 700; padding: 12px 28px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: transform 0.2s;">
-                    Kunjungi Situs MATEK <i data-feather="external-link" style="width: 16px;"></i>
+                    Tentang CMS Sekolah <i data-feather="arrow-right" style="width: 16px;"></i>
                 </a>
             </div>
         </div>
