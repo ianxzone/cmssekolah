@@ -25,7 +25,7 @@
         </div>
 
         <a href="{{ url('/admin/login') }}" class="btn-setup">
-            Masuk ke Dashboard Admin <i data-feather="log-in"></i>
+            Lanjut ke Setup Data Sekolah <i data-feather="arrow-right"></i>
         </a>
     </div>
 @endsection

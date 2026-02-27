@@ -14,9 +14,15 @@ use App\Http\Controllers\Admin\MediaController as AdminMediaController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\OnboardingController;
 
 Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // Onboarding Routes
+    Route::get('onboarding', [OnboardingController::class, 'index'])->name('admin.onboarding.index');
+    Route::post('onboarding/save', [OnboardingController::class, 'save'])->name('admin.onboarding.save');
+    Route::get('onboarding/skip', [OnboardingController::class, 'skip'])->name('admin.onboarding.skip');
     Route::resource('pages', AdminPageController::class)->names('admin.pages');
     Route::resource('forms', AdminFormController::class)->names('admin.forms');
     Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
