@@ -15,8 +15,17 @@ use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\OnboardingController;
+use App\Http\Controllers\Admin\AuthController;
 
+// Admin Auth Routes
 Route::prefix('admin')->middleware(['web'])->group(function () {
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('login', [AuthController::class, 'login'])->name('admin.login.post');
+    Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
+});
+
+// Protected Admin Routes
+Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // Onboarding Routes

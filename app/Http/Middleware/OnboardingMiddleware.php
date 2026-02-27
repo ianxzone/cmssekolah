@@ -17,8 +17,8 @@ class OnboardingMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Only trigger if logged in as admin and not on the onboarding route itself
-        if (Auth::check() && !$request->is('admin/onboarding*')) {
+        // Only trigger if logged in as admin and not on the onboarding or auth routes
+        if (Auth::check() && !$request->is('admin/onboarding*', 'admin/login*', 'admin/logout*')) {
             $onboardingCompleted = Setting::get('onboarding_completed', '0');
 
             if ($onboardingCompleted === '0') {
