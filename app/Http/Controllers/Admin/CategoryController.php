@@ -11,20 +11,25 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('posts')->latest()->paginate(10);
+        $categories = Category::with(['parent'])->withCount('posts')->latest()->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('admin.categories.create');
+        $parentCategories = Category::whereNull('parent_id')->get();
+        return view('admin.categories.create', compact('parentCategories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
         ]);
 
         if (empty($validated['slug'])) {
@@ -38,14 +43,21 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
+        $parentCategories = Category::whereNull('parent_id')
+            ->where('id', '!=', $category->id)
+            ->get();
+        return view('admin.categories.edit', compact('category', 'parentCategories'));
     }
 
     public function update(Request $request, Category $category)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string',
             'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
         ]);
 
         $category->update($validated);

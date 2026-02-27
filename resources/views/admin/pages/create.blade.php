@@ -151,6 +151,67 @@
             text-overflow: ellipsis;
             text-align: center;
         }
+
+        /* Trix Enhancements */
+        .trix-editor-container {
+            position: relative;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .trix-editor-container.full-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 9999;
+            padding: 2rem;
+            background: white;
+        }
+
+        .trix-editor-container.full-screen trix-editor {
+            height: calc(100vh - 150px) !important;
+        }
+
+        .trix-button--icon-color::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20h16'/%3E%3Cmpath d='m6 16 6-12 6 12'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E") !important;
+        }
+
+        .trix-button--icon-align-center::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='10' x2='6' y2='10'/%3E%3Cline x1='21' y1='6' x2='3' y2='6'/%3E%3Cline x1='21' y1='14' x2='3' y2='14'/%3E%3Cline x1='18' y1='18' x2='6' y2='18'/%3E%3C/svg%3E") !important;
+        }
+
+        .trix-button--icon-align-right::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' y1='10' x2='10' y2='10'/%3E%3Cline x1='21' y1='6' x2='3' y2='6'/%3E%3Cline x1='21' y1='14' x2='3' y2='14'/%3E%3Cline x1='21' y1='18' x2='10' y2='18'/%3E%3C/svg%3E") !important;
+        }
+
+        .trix-button--icon-table::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18'/%3E%3C/svg%3E") !important;
+        }
+
+        .trix-button--icon-fullscreen::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3'/%3E%3C/svg%3E") !important;
+        }
+
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            padding: 10px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .color-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
     </style>
 @endpush
 
@@ -180,8 +241,10 @@
 
                 <div class="form-group">
                     <label class="form-label" for="content">Page Content <span class="text-danger">*</span></label>
-                    <input id="content" type="hidden" name="content" value="{{ old('content') }}">
-                    <trix-editor input="content"></trix-editor>
+                    <div class="trix-editor-container" id="editor-container">
+                        <input id="content" type="hidden" name="content" value="{{ old('content') }}">
+                        <trix-editor input="content"></trix-editor>
+                    </div>
                     @error('content') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -251,6 +314,31 @@
 
 @push('scripts')
     <script>
+        // Trix Global Configuration Enhancements
+        Trix.config.textAttributes.color = {
+            style: { color: "value" },
+            parser: function (element) {
+                return element.style.color;
+            },
+            inheritable: true
+        };
+
+        Trix.config.blockAttributes.alignCenter = {
+            tagName: "div",
+            terminal: true,
+            breakOnReturn: true,
+            group: false,
+            style: { textAlign: "center" }
+        };
+
+        Trix.config.blockAttributes.alignRight = {
+            tagName: "div",
+            terminal: true,
+            breakOnReturn: true,
+            group: false,
+            style: { textAlign: "right" }
+        };
+
         // Trix Attachment Handling
         document.addEventListener("trix-attachment-add", function (event) {
             if (event.attachment.file) {
@@ -286,16 +374,88 @@
             xhr.send(form);
         }
 
-        // Trix Toolbar Customization: Add Media Button
-        document.addEventListener("trix-initialize", function(event) {
-            const buttonGroup = event.target.toolbarElement.querySelector(".trix-button-group--block-tools");
-            const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media" style="background-image: none !important; display: flex; align-items: center; justify-content: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </button>`;
-            buttonGroup.insertAdjacentHTML("beforeend", btnHtml);
+        // Trix Toolbar Customization
+        document.addEventListener("trix-initialize", function (event) {
+            const toolbar = event.target.toolbarElement;
+            const blockGroup = toolbar.querySelector(".trix-button-group--block-tools");
+            const textGroup = toolbar.querySelector(".trix-button-group--text-tools");
+            const historyGroup = toolbar.querySelector(".trix-button-group--history-tools");
 
-            event.target.toolbarElement.querySelector('[data-trix-action="add-media"]').addEventListener("click", () => {
-                openMediaModal();
+            // 1. Add Center Align Button
+            const alignCenterHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-center" data-trix-attribute="alignCenter" title="Align Center"></button>`;
+            blockGroup.insertAdjacentHTML("beforeend", alignCenterHtml);
+
+            // 2. Add Right Align Button
+            const alignRightHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-right" data-trix-attribute="alignRight" title="Align Right"></button>`;
+            blockGroup.insertAdjacentHTML("beforeend", alignRightHtml);
+
+            // 3. Add Table Button
+            const tableHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-table" data-trix-action="insert-table" title="Insert Table"></button>`;
+            blockGroup.insertAdjacentHTML("beforeend", tableHtml);
+
+            // 4. Add Color Button & Dialog
+            const colorHtml = `
+                    <button type="button" class="trix-button trix-button--icon trix-button--icon-color" data-trix-action="show-color-picker" title="Text Color"></button>
+                    <div class="trix-dialog trix-dialog--color" data-trix-dialog="color-picker" data-trix-dialog-attribute="color">
+                        <div class="color-picker-grid">
+                            <div class="color-circle" style="background: %23000000" data-color="%23000000"></div>
+                            <div class="color-circle" style="background: %23ef4444" data-color="%23ef4444"></div>
+                            <div class="color-circle" style="background: %233b82f6" data-color="%233b82f6"></div>
+                            <div class="color-circle" style="background: %2310b981" data-color="%2310b981"></div>
+                            <div class="color-circle" style="background: %23f59e0b" data-color="%23f59e0b"></div>
+                            <div class="color-circle" style="background: %236366f1" data-color="%236366f1"></div>
+                            <div class="color-circle" style="background: %23ec4899" data-color="%23ec4899"></div>
+                            <div class="color-circle" style="background: %238b5cf6" data-color="%238b5cf6"></div>
+                            <div class="color-circle" style="background: %236b7280" data-color="%236b7280"></div>
+                            <div class="color-circle" style="background: transparent; border: 1px dashed %23ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;" data-color="">X</div>
+                        </div>
+                    </div>`;
+            textGroup.insertAdjacentHTML("beforeend", colorHtml);
+
+            // 5. Add Full Screen Button
+            const fsHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-fullscreen" data-trix-action="toggle-fullscreen" title="Full Screen" style="margin-left: auto; border-left: 1px solid %23eee;"></button>`;
+            historyGroup.insertAdjacentHTML("beforeend", fsHtml);
+
+            // Add Media Button (Existing)
+            const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media" style="background-image: none !important; display: flex; align-items: center; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </button>`;
+            blockGroup.insertAdjacentHTML("beforeend", btnHtml);
+
+            // Event Listeners for new actions
+            toolbar.querySelector('[data-trix-action="add-media"]').addEventListener("click", () => openMediaModal());
+
+            toolbar.querySelector('[data-trix-action="toggle-fullscreen"]').addEventListener("click", () => {
+                document.getElementById('editor-container').classList.toggle('full-screen');
+            });
+
+            toolbar.querySelector('[data-trix-action="insert-table"]').addEventListener("click", () => {
+                const table = `<table border="1" style="width:100%; border-collapse: collapse; margin: 10px 0;">
+                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    </table><p>&nbsp;</p>`;
+                event.target.editor.insertHTML(table);
+            });
+
+            toolbar.querySelector('[data-trix-action="show-color-picker"]').addEventListener("click", () => {
+                const dialog = toolbar.querySelector('[data-trix-dialog="color-picker"]');
+                if (dialog.hasAttribute("data-trix-active")) {
+                    dialog.removeAttribute("data-trix-active");
+                } else {
+                    dialog.setAttribute("data-trix-active", "");
+                }
+            });
+
+            toolbar.querySelectorAll(".color-circle").forEach(circle => {
+                circle.addEventListener("click", (e) => {
+                    const color = e.target.getAttribute("data-color");
+                    if (color) {
+                        event.target.editor.activateAttribute("color", color);
+                    } else {
+                        event.target.editor.removeAttribute("color");
+                    }
+                    toolbar.querySelector('[data-trix-dialog="color-picker"]').removeAttribute("data-trix-active");
+                });
             });
         });
 
@@ -339,9 +499,9 @@
                         : `<svg style="width: 48px; height: 48px; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
 
                     div.innerHTML = `
-                            <div class="media-item-preview">${preview}</div>
-                            <div class="media-item-name">${item.name}</div>
-                        `;
+                                <div class="media-item-preview">${preview}</div>
+                                <div class="media-item-name">${item.name}</div>
+                            `;
                     grid.appendChild(div);
                 });
                 feather.replace();

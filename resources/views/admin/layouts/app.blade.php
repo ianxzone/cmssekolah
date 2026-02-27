@@ -15,7 +15,7 @@
     <script src="https://unpkg.com/feather-icons"></script>
 
     <!-- Admin CSS Styles -->
-    <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin.css') }}?v={{ filemtime(public_path('css/admin.css')) }}" rel="stylesheet">
     @stack('styles')
 </head>
 
@@ -32,6 +32,9 @@
                 </div>
                 <button class="menu-toggle" id="menu-toggle-btn">
                     <i data-feather="menu"></i>
+                </button>
+                <button class="collapse-toggle" id="sidebar-collapse-btn" title="Collapse Sidebar">
+                    <i data-feather="chevron-left"></i>
                 </button>
             </div>
 
@@ -67,7 +70,8 @@
                     <span>Media Manager</span>
                 </a>
 
-                <a href="#" class="nav-item">
+                <a href="{{ route('admin.events.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
                     <i data-feather="calendar"></i>
                     <span>Events</span>
                 </a>
@@ -150,6 +154,40 @@
                 body.style.overflow = '';
             }
         }
+
+        // Desktop Sidebar Collapse Logic
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const sidebarBrand = document.querySelector('.sidebar .brand');
+
+        // Load sidebar state from localStorage
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            body.classList.add('sidebar-collapsed');
+            updateCollapseIcon();
+        }
+
+        function toggleSidebarCollapse() {
+            body.classList.toggle('sidebar-collapsed');
+            const isCollapsed = body.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebar-collapsed', isCollapsed);
+            updateCollapseIcon();
+        }
+
+        function updateCollapseIcon() {
+            const isCollapsed = body.classList.contains('sidebar-collapsed');
+            collapseBtn.innerHTML = isCollapsed ?
+                '<i data-feather="chevron-right"></i>' :
+                '<i data-feather="chevron-left"></i>';
+            feather.replace();
+        }
+
+        collapseBtn.addEventListener('click', toggleSidebarCollapse);
+
+        // Also allow clicking the brand icon to expand when collapsed
+        sidebarBrand.addEventListener('click', () => {
+            if (body.classList.contains('sidebar-collapsed')) {
+                toggleSidebarCollapse();
+            }
+        });
 
         toggleBtn.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);

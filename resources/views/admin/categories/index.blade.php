@@ -17,6 +17,7 @@
                         <thead>
                             <tr style="border-bottom: 2px solid var(--border-color);">
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Category Name</th>
+                                <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Parent</th>
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Slug</th>
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Total Posts</th>
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500; text-align: right;">
@@ -28,7 +29,15 @@
                                 <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.15s ease;"
                                     onmouseover="this.style.backgroundColor='#f9fafb'"
                                     onmouseout="this.style.backgroundColor='transparent'">
-                                    <td style="padding: 1rem; font-weight: 500;">{{ $category->name }}</td>
+                                    <td style="padding: 1rem; font-weight: 500;">
+                                        @if($category->parent)
+                                            <span style="color: var(--text-secondary); font-weight: normal;">— </span>
+                                        @endif
+                                        {{ $category->name }}
+                                    </td>
+                                    <td style="padding: 1rem; color: var(--text-secondary);">
+                                        {{ $category->parent ? $category->parent->name : '-' }}
+                                    </td>
                                     <td style="padding: 1rem; color: var(--text-secondary);">{{ $category->slug }}</td>
                                     <td style="padding: 1rem;">
                                         <span

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\FormController as AdminFormController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\MediaController as AdminMediaController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 
 Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -20,6 +21,7 @@ Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::resource('media', AdminMediaController::class)->only(['index', 'store', 'destroy'])->names('admin.media');
     Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');
+    Route::resource('events', AdminEventController::class)->names('admin.events');
 });
 
 use App\Http\Controllers\FrontendController;

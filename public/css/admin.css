@@ -63,10 +63,51 @@ a {
     color: var(--text-sidebar);
     display: flex;
     flex-direction: column;
-    transition: width var(--transition-normal);
+    transition: width var(--transition-normal), transform var(--transition-normal);
     position: fixed;
     height: 100vh;
     z-index: 100;
+}
+
+/* Collapsed Sidebar State */
+.sidebar-collapsed .sidebar {
+    width: var(--sidebar-width-collapsed);
+}
+
+.sidebar-collapsed .main-content {
+    margin-left: var(--sidebar-width-collapsed);
+}
+
+.sidebar-collapsed .brand-text,
+.sidebar-collapsed .nav-item span,
+.sidebar-collapsed .nav-section,
+.sidebar-collapsed .logout-btn span {
+    display: none;
+}
+
+.sidebar-collapsed .nav-item {
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.sidebar-collapsed .nav-item i,
+.sidebar-collapsed .nav-item svg {
+    margin: 0;
+}
+
+.sidebar-collapsed .sidebar-header {
+    padding: 0;
+    justify-content: center;
+    position: relative;
+}
+
+.sidebar-collapsed .brand {
+    display: none;
+    /* Hide brand completely when collapsed */
+}
+
+.sidebar-collapsed .logout-btn {
+    padding: 0.75rem 0;
 }
 
 .sidebar-header {
@@ -76,6 +117,8 @@ a {
     justify-content: space-between;
     padding: 0 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    /* Add relative positioning for the absolute button */
 }
 
 .brand {
@@ -97,6 +140,45 @@ a {
     color: var(--text-sidebar);
     cursor: pointer;
     display: none;
+}
+
+.collapse-toggle {
+    background: var(--bg-sidebar);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-sidebar);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+    outline: none;
+    position: absolute;
+    /* absolute positioning */
+    right: -14px;
+    /* overlap the edge */
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: var(--shadow-soft);
+    z-index: 10;
+}
+
+.collapse-toggle:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.collapse-toggle svg {
+    width: 14px;
+    height: 14px;
+}
+
+.sidebar-collapsed .collapse-toggle {
+    right: -14px;
 }
 
 .sidebar-nav {
@@ -442,6 +524,10 @@ select,
 @media (max-width: 900px) {
     .menu-toggle {
         display: block;
+    }
+
+    .collapse-toggle {
+        display: none !important;
     }
 
     .sidebar {
