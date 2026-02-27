@@ -9,7 +9,7 @@
         <div class="step-dot">5</div>
     </div>
 
-    <div class="setup-title">Selamat datan di CMS Sekolah</div>
+    <div class="setup-title">Selamat datang di CMS Sekolah</div>
     <p class="setup-description">
         Terima kasih telah memilih CMS Sekolah by MATEK. Panduan ini akan membantu Anda mengonfigurasi website sekolah Anda
         hanya dalam beberapa menit.

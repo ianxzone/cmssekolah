@@ -18,7 +18,7 @@
             <img src="{{ asset('images/matek-logo.png') }}"
                 onerror="this.src='https://via.placeholder.com/100?text=MATEK'" alt="MATEK Logo" class="setup-logo">
             <h1>CMS SEKOLAH</h1>
-            <p>Installation Wizard by MATEK</p>
+            <p>Panduan Instalasi by MATEK</p>
         </div>
 
         <div class="setup-body">
