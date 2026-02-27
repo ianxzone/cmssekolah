@@ -287,11 +287,11 @@
         }
 
         // Trix Toolbar Customization: Add Media Button
-        document.addEventListener("trix-initialize", function (event) {
+        document.addEventListener("trix-initialize", function(event) {
             const buttonGroup = event.target.toolbarElement.querySelector(".trix-button-group--block-tools");
-            const btnHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-attach" data-trix-action="add-media" title="Add Media" style="background-image: none; display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                </button>`;
+            const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media" style="background-image: none !important; display: flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>`;
             buttonGroup.insertAdjacentHTML("beforeend", btnHtml);
 
             event.target.toolbarElement.querySelector('[data-trix-action="add-media"]').addEventListener("click", () => {
