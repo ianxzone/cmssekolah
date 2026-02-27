@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="footer-credit" style="position: absolute; bottom: 20px; width: 100%; left: 0;">
+    <div class="footer-credit" style="padding: 20px 0; width: 100%;">
         Powered by <a href="https://www.murniabadi.co.id" target="_blank">MATEK</a>
     </div>
 
