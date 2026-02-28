@@ -68,6 +68,35 @@ class MediaController extends Controller
         ]);
     }
 
+    public function show(Media $media)
+    {
+        return response()->json([
+            'id' => $media->id,
+            'name' => $media->name,
+            'alt_text' => $media->alt_text,
+            'caption' => $media->caption,
+            'url' => Storage::disk($media->disk)->url($media->path),
+            'mime_type' => $media->mime_type,
+            'size' => number_format($media->size / 1024, 2) . ' KB',
+            'created_at' => $media->created_at->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function update(Request $request, Media $media)
+    {
+        $request->validate([
+            'alt_text' => 'nullable|string|max:255',
+            'caption' => 'nullable|string',
+        ]);
+
+        $media->update([
+            'alt_text' => $request->alt_text,
+            'caption' => $request->caption,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Media updated successfully.']);
+    }
+
     public function destroy(Media $media)
     {
         if (Storage::disk($media->disk)->exists($media->path)) {

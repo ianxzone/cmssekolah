@@ -17,6 +17,8 @@ class Media extends Model
         'path',
         'disk',
         'size',
+        'alt_text',
+        'caption',
     ];
 
     public function getUrlAttribute()

@@ -623,6 +623,7 @@
         }
     </style>
     @stack('styles')
+    {!! $settings['custom_header_scripts'] ?? '' !!}
 </head>
 
 <body>
@@ -813,6 +814,7 @@
         })();
     </script>
     @stack('scripts')
+    {!! $settings['custom_footer_scripts'] ?? '' !!}
 </body>
 
 </html>

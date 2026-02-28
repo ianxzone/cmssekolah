@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo('/admin/login');
+        $middleware->preventRequestsDuringMaintenance(except: [
+            'admin/*',
+            'admin',
+        ]);
         $middleware->append(\App\Http\Middleware\InstallMiddleware::class);
         $middleware->append(\App\Http\Middleware\OnboardingMiddleware::class);
     })

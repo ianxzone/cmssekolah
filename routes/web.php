@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\MediaController as AdminMediaController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\MaintenanceController as AdminMaintenanceController;
 use App\Http\Controllers\Admin\OnboardingController;
 use App\Http\Controllers\Admin\AuthController;
 
@@ -36,15 +37,27 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     Route::resource('pages', AdminPageController::class)->names('admin.pages');
     Route::resource('forms', AdminFormController::class)->names('admin.forms');
     Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
+    Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
+    Route::get('media/{media}', [AdminMediaController::class, 'show'])->name('admin.media.show');
+    Route::put('media/{media}', [AdminMediaController::class, 'update'])->name('admin.media.update');
     Route::resource('media', AdminMediaController::class)->only(['index', 'store', 'destroy'])->names('admin.media');
     Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');
     Route::resource('events', AdminEventController::class)->names('admin.events');
     Route::resource('testimonials', AdminTestimonialController::class)->names('admin.testimonials');
+    Route::get('forms/{form}/export', [AdminFormController::class, 'export'])->name('admin.forms.export');
+
 
     // Configs/Settings Route
     Route::get('settings', [AdminSettingController::class, 'index'])->name('admin.settings.index');
     Route::post('settings', [AdminSettingController::class, 'update'])->name('admin.settings.update');
+
+    // Maintenance Mode
+    Route::get('maintenance', [AdminMaintenanceController::class, 'index'])->name('admin.maintenance.index');
+    Route::post('maintenance/toggle', [AdminMaintenanceController::class, 'toggle'])->name('admin.maintenance.toggle');
+    Route::post('maintenance/clear-cache', [AdminMaintenanceController::class, 'clearCache'])->name('admin.maintenance.clearCache');
+    Route::post('maintenance/optimize', [AdminMaintenanceController::class, 'optimize'])->name('admin.maintenance.optimize');
+    Route::post('maintenance/upload-update', [AdminMaintenanceController::class, 'uploadUpdate'])->name('admin.maintenance.uploadUpdate');
 
     // About/Developer Page
     Route::get('about', [DashboardController::class, 'about'])->name('admin.about');

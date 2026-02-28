@@ -2,45 +2,8 @@
 
 @section('title', 'Create Category')
 
-@push('styles')
-    <style>
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .text-danger {
-            color: var(--danger-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: block;
-        }
-    </style>
-@endpush
-
 @section('content')
+
     <div class="panel" style="max-width: 600px; margin: 0 auto;">
         <div class="panel-header">
             <h2 class="panel-title">New Category</h2>

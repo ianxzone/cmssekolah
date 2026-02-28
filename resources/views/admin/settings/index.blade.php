@@ -203,6 +203,8 @@
             <div class="tabs-nav">
                 <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'identity' }"
                     @click="activeTab = 'identity'">Identitas & Kontak</button>
+                <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'scripts' }"
+                    @click="activeTab = 'scripts'">Scripts Kustom</button>
                 <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'nav' }"
                     @click="activeTab = 'nav'">Navigasi & Hero</button>
                 <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'layout' }"
@@ -655,6 +657,29 @@
                                 data-feather="plus"></i> Tambah Ekskul</button>
                     </div>
 
+                </div>
+
+                <!-- TAB 7: CUSTOM SCRIPTS -->
+                <div x-show="activeTab === 'scripts'" style="display: none;" x-transition>
+                    <div class="setting-section">
+                        <h3
+                            style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-color);">
+                            Custom Header & Footer Scripts</h3>
+                        <span class="form-text mb-4">Gunakan bagian ini untuk memasukkan kode kustom seperti Google
+                            Analytics, Meta Pixel, atau custom CSS/JS.</span>
+
+                        <div class="form-group">
+                            <label class="form-label">Header Scripts (Diletakkan sebelum &lt;/head&gt;)</label>
+                            <textarea name="custom_header_scripts" class="form-control" rows="8"
+                                placeholder="<!-- Masukkan script header di sini -->">{{ $settings['custom_header_scripts'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label class="form-label">Footer Scripts (Diletakkan sebelum &lt;/body&gt;)</label>
+                            <textarea name="custom_footer_scripts" class="form-control" rows="8"
+                                placeholder="<!-- Masukkan script footer di sini -->">{{ $settings['custom_footer_scripts'] ?? '' }}</textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div

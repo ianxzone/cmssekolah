@@ -162,6 +162,12 @@
                     <span>Settings</span>
                 </a>
 
+                <a href="{{ route('admin.maintenance.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.maintenance.*') ? 'active' : '' }}">
+                    <i data-feather="shield"></i>
+                    <span>Maintenance Mode</span>
+                </a>
+
                 <a href="{{ route('admin.about') }}"
                     class="nav-item {{ request()->routeIs('admin.about') ? 'active' : '' }}">
                     <i data-feather="info"></i>

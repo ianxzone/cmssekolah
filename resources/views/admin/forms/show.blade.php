@@ -139,6 +139,10 @@
                 <a href="{{ route('forms.show.frontend', $form->slug) }}" target="_blank" class="btn btn-primary">
                     <i data-feather="external-link"></i> Live Form
                 </a>
+                <a href="{{ route('admin.forms.export', $form) }}" class="btn" style="background-color: #10b981; border-color: #10b981; color: white;">
+                    <i data-feather="download"></i> Export Excel
+                </a>
+
             </div>
         </div>
         <div class="panel-body">

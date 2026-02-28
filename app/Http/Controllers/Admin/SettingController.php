@@ -15,6 +15,7 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
+        \Illuminate\Support\Facades\Cache::forget('site_settings');
         $data = $request->except('_token');
 
         // Handle file uploads (e.g., headmaster_image, logos)

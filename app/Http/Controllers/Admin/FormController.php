@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FormController extends Controller
 {
@@ -101,5 +102,68 @@ class FormController extends Controller
 
         return redirect()->route('admin.forms.index')
             ->with('success', 'Form deleted successfully.');
+    }
+
+    /**
+     * Export submissions to CSV.
+     */
+    public function export(Form $form)
+    {
+        $submissions = $form->submissions()->latest()->get();
+
+        if ($submissions->isEmpty()) {
+            return back()->with('error', 'No submissions to export.');
+        }
+
+        // Dynamically get all keys from the data JSON
+        $headers = ['No', 'Tanggal', 'Alamat IP'];
+        $dataKeys = [];
+        foreach ($submissions as $submission) {
+            foreach (array_keys($submission->data) as $key) {
+                if (!in_array($key, $dataKeys)) {
+                    $dataKeys[] = $key;
+                    $headers[] = ucwords(str_replace(['_', '-'], ' ', $key));
+                }
+            }
+        }
+
+        $fileName = 'Submissions_' . Str::slug($form->title) . '_' . date('Y-m-d_H-i') . '.csv';
+
+        $response = new StreamedResponse(function () use ($submissions, $dataKeys, $headers) {
+            $handle = fopen('php://output', 'w');
+
+            // Add BOM for Excel UTF-8 compatibility
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Write Headers
+            fputcsv($handle, $headers);
+
+            // Write Data
+            foreach ($submissions as $index => $submission) {
+                $row = [
+                    $index + 1,
+                    $submission->created_at->format('Y-m-d H:i:s'),
+                    $submission->ip_address,
+                ];
+
+                foreach ($dataKeys as $key) {
+                    $value = $submission->data[$key] ?? '';
+                    if (is_array($value)) {
+                        $row[] = implode(', ', $value);
+                    } else {
+                        $row[] = $value;
+                    }
+                }
+
+                fputcsv($handle, $row);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+
+        return $response;
     }
 }
