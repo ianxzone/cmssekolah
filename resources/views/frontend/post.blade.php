@@ -294,12 +294,13 @@
             <!-- SPMB Banner Widget -->
             <div class="sidebar-widget"
                 style="background: var(--primary); color: white; text-align: center; padding: 30px 20px;">
-                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">PPDB Dibuka!</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">Daftarkan putra-putri Anda sekarang juga.
+                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">
+                    {{ $settings['sidebar_ppdb_title'] ?? 'PPDB Dibuka!' }}</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">
+                    {{ $settings['sidebar_ppdb_desc'] ?? 'Daftarkan putra-putri Anda sekarang juga.' }}
                 </p>
                 <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="btn"
-                    style="background: white; color: var(--primary); padding: 10px 20px; font-weight: 700; width: 100%;">Info
-                    Selengkapnya</a>
+                    style="background: white; color: var(--primary); padding: 10px 20px; font-weight: 700; width: 100%;">{{ $settings['sidebar_ppdb_btn_text'] ?? 'Info Selengkapnya' }}</a>
             </div>
 
             <!-- Recent Posts Widget -->

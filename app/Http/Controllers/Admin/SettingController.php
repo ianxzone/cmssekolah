@@ -52,7 +52,8 @@ class SettingController extends Controller
             'superior_programs',
             'teachers_data',
             'facilities_list',
-            'extracurriculars_list'
+            'extracurriculars_list',
+            'school_missions'
         ];
 
         foreach ($arrayKeys as $key) {

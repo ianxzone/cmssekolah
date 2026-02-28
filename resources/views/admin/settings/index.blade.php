@@ -399,6 +399,33 @@
                             <span class="form-text">Masukkan URL eksternal gambar. Untuk upload lokal, gunakan Trix
                                 attachment di form lain lalu copy URLnya.</span>
                         </div>
+
+                        <h3
+                            style="font-size: 1.125rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            Banner PPDB Sidebar (Semua Halaman)</h3>
+                        <div class="form-group">
+                            <label class="form-label">Judul Banner PPDB</label>
+                            <input type="text" name="sidebar_ppdb_title" class="form-control"
+                                value="{{ $settings['sidebar_ppdb_title'] ?? 'PPDB Dibuka!' }}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Deskripsi Singkat PPDB</label>
+                            <textarea name="sidebar_ppdb_desc" class="form-control"
+                                rows="2">{{ $settings['sidebar_ppdb_desc'] ?? 'Daftarkan putra-putri Anda sekarang juga.' }}</textarea>
+                        </div>
+                        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label class="form-label">Teks Tombol Banner</label>
+                                <input type="text" name="sidebar_ppdb_btn_text" class="form-control"
+                                    value="{{ $settings['sidebar_ppdb_btn_text'] ?? 'Info Selengkapnya' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Link Tombol (Menggunakan Link PPDB di Tab Identitas)</label>
+                                <input type="text" class="form-control" value="{{ $settings['contact_ppdb_link'] ?? '#' }}"
+                                    disabled>
+                                <small class="form-text">Edit di Tab Identitas & Kontak</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

@@ -196,6 +196,65 @@
                 font-size: 1.8rem;
             }
         }
+
+        /* Add to Calendar Styling */
+        .calendar-sync-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .calendar-sync-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sync-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sync {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none !important;
+        }
+
+        .btn-google-cal {
+            background: #fff;
+            color: #4285F4;
+            border: 1px solid #4285F4;
+        }
+
+        .btn-google-cal:hover {
+            background: #4285F4;
+            color: #fff;
+        }
+
+        .btn-ics {
+            background: #fff;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-ics:hover {
+            background: var(--primary);
+            color: #fff;
+        }
     </style>
 @endpush
 
@@ -282,6 +341,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="calendar-sync-section">
+                        <span class="calendar-sync-label">
+                            <i data-feather="plus-circle" style="width:16px;"></i> Simpan ke Kalender:
+                        </span>
+                        <div class="sync-buttons">
+                            <a href="{{ $googleCalendarUrl }}" target="_blank" class="btn-sync btn-google-cal">
+                                <i data-feather="external-link" style="width:14px;"></i> Google Calendar
+                            </a>
+                            <a href="{{ route('events.ics', $event->id) }}" class="btn-sync btn-ics">
+                                <i data-feather="download" style="width:14px;"></i> Download .ics
+                            </a>
+                        </div>
+                    </div>
                 </header>
 
                 <div class="event-description trix-content">
@@ -309,11 +382,14 @@
         <aside class="sidebar">
             <!-- SPMB Banner -->
             <div class="sidebar-widget" style="background: var(--primary); color: white; text-align: center;">
-                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">PPDB Dibuka!</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">Daftarkan putra-putri Anda sekarang juga.
+                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">
+                    {{ $settings['sidebar_ppdb_title'] ?? 'PPDB Dibuka!' }}
+                </h3>
+                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">
+                    {{ $settings['sidebar_ppdb_desc'] ?? 'Daftarkan putra-putri Anda sekarang juga.' }}
                 </p>
                 <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="btn btn-white"
-                    style="width: 100%; font-weight: 700;">Info Selengkapnya</a>
+                    style="width: 100%; font-weight: 700;">{{ $settings['sidebar_ppdb_btn_text'] ?? 'Info Selengkapnya' }}</a>
             </div>
 
             <!-- Other Events -->

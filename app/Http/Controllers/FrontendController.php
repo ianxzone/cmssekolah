@@ -81,7 +81,47 @@ class FrontendController extends Controller
             ->take(5)
             ->get();
 
-        return view('frontend.event', compact('event', 'otherEvents'));
+        // Format Google Calendar Link
+        // https://www.google.com/calendar/render?action=TEMPLATE&text=Your+Event+Name&dates=20140127T224000Z/20140320T221500Z&details=With+pre-filled+details&location=With+a+location&sf=true&output=xml
+        $start = $event->start_time->format('Ymd\THis');
+        $end = ($event->end_time ?? $event->start_time->addHours(1))->format('Ymd\THis');
+        $googleCalendarUrl = "https://www.google.com/calendar/render?action=TEMPLATE" .
+            "&text=" . urlencode($event->title) .
+            "&dates=" . $start . "/" . $end .
+            "&details=" . urlencode(strip_tags($event->description)) .
+            "&location=" . urlencode($event->location ?? ($event->type == 'online' ? $event->meeting_link : ''));
+
+        return view('frontend.event', compact('event', 'otherEvents', 'googleCalendarUrl'));
+    }
+
+    /**
+     * Download Event as ICS file
+     */
+    public function downloadIcs(\App\Models\Event $event)
+    {
+        $start = $event->start_time->format('Ymd\THis');
+        $end = ($event->end_time ?? $event->start_time->addHours(1))->format('Ymd\THis');
+        $summary = str_replace([',', ';'], ['\,', '\;'], $event->title);
+        $description = str_replace([',', ';', "\n", "\r"], ['\,', '\;', '\n', ''], strip_tags($event->description));
+        $location = str_replace([',', ';'], ['\,', '\;'], $event->location ?? ($event->type == 'online' ? $event->meeting_link : ''));
+
+        $icsContent = "BEGIN:VCALENDAR\n" .
+            "VERSION:2.0\n" .
+            "PROID:-//SDIT Murni Abadi//NONSGML v1.0//EN\n" .
+            "BEGIN:VEVENT\n" .
+            "UID:" . uniqid() . "@" . request()->getHost() . "\n" .
+            "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\n" .
+            "DTSTART:" . $start . "\n" .
+            "DTEND:" . $end . "\n" .
+            "SUMMARY:" . $summary . "\n" .
+            "DESCRIPTION:" . $description . "\n" .
+            "LOCATION:" . $location . "\n" .
+            "END:VEVENT\n" .
+            "END:VCALENDAR";
+
+        return response($icsContent)
+            ->header('Content-Type', 'text/calendar; charset=utf-8')
+            ->header('Content-Disposition', 'attachment; filename="' . \Illuminate\Support\Str::slug($event->title) . '.ics"');
     }
 
     /**

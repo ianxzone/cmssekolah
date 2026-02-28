@@ -87,6 +87,7 @@ Route::get('/berita', [FrontendController::class, 'posts'])->name('posts.index')
 Route::get('/berita/{slug}', [FrontendController::class, 'showPost'])->name('posts.show');
 Route::get('/agenda', [FrontendController::class, 'events'])->name('events.index');
 Route::get('/agenda/{event}', [FrontendController::class, 'showEvent'])->name('events.show');
+Route::get('/agenda/{event}/ics', [FrontendController::class, 'downloadIcs'])->name('events.ics');
 Route::get('/guru', [FrontendController::class, 'teachers'])->name('teachers.index');
 Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->name('categories.show');
 
