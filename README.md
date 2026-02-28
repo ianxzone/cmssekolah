@@ -62,6 +62,11 @@ Pastikan Anda memiliki [Composer](https://getcomposer.org/), [Node.js](https://n
 
 Aplikasi ini dikembangkan untuk mempermudah digitalisasi sekolah. Jika Anda ingin berkontribusi dalam pengembangan, silakan lakukan *Fork* repository ini dan buat *Pull Request*.
 
+## 📱 Komunitas & Dukungan
+
+Ikuti channel WhatsApp resmi kami untuk mendapatkan update terbaru seputar pengembangan CMS Sekolah:
+[Channel WhatsApp CMS Sekolah](https://whatsapp.com/channel/0029VbBvDRu0G0XeKAMQxI1i)
+
 ## 📄 Lisensi
 
 Proyek ini berlisensi [MIT](LICENSE).
