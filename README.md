@@ -1,59 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CMS Sekolah - SDIT Murni Abadi
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CMS Sekolah adalah platform pengelolaan konten (Content Management System) modern yang dirancang khusus untuk kebutuhan sekolah. Dibangun dengan **Laravel 12** dan **PHP 8.2+**, sistem ini menawarkan antarmuka yang elegan (Joyful UI) dengan fitur lengkap untuk pengelolaan berita, halaman statis, agenda, dan data sekolah lainnya.
 
-## About Laravel
+## ✨ Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   **Joyful UI & Dark Mode**: Desain premium yang responsif dengan dukungan Dark/Light mode otomatis.
+-   **Media Manager Modern**: Kelola foto dan dokumen dengan mudah. Mendukung pengaturan *Alt Text* dan *Caption* untuk optimasi SEO.
+-   **Maintenance Mode Terintegrasi**: Halaman pemeliharaan kustom dengan fitur upload update, pembersihan cache, dan optimasi sistem langsung dari panel admin.
+-   **Custom Scripts**: Masukkan script pihak ketiga (Google Analytics, Meta Pixel, Custom CSS/JS) secara aman melalui menu pengaturan.
+-   **Dynamic Forms & Excel Export**: Buat formulir kustom dan ekspor datanya langsung ke Excel untuk keperluan administrasi.
+-   **Pengaturan Navigasi & Branding**: Ubah logo, favicon, menu navigasi, dan informasi kontak sekolah tanpa menyentuh kode.
+-   **Visi, Misi & Program Unggulan**: Kelola profil sekolah secara dinamis untuk ditampilkan di beranda.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Stack Teknologi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   **Framework**: Laravel 12
+-   **Bahasa**: PHP 8.2+
+-   **Frontend**: Tailwind CSS / Vanilla CSS (Modern), Alpine.js, Feather Icons
+-   **Editor**: Trix Editor
+-   **Database**: MySQL / SQLite
 
-## Learning Laravel
+## 🚀 Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Pastikan Anda memiliki [Composer](https://getcomposer.org/), [Node.js](https://nodejs.org/), dan PHP 8.2+ terinstal di sistem Anda.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1.  **Clone Repository**
+    ```bash
+    git clone https://github.com/ianxzone/cmssekolah.git
+    cd cmssekolah
+    ```
 
-## Laravel Sponsors
+2.  **Install Dependensi PHP**
+    ```bash
+    composer install
+    ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3.  **Persiapkan Environment**
+    Salin file `.env.example` menjadi `.env` dan sesuaikan pengaturan database Anda.
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
-### Premium Partners
+4.  **Migrasi Database**
+    ```bash
+    php artisan migrate
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+5.  **Install Dependensi Frontend**
+    ```bash
+    npm install
+    npm run build
+    ```
 
-## Contributing
+6.  **Jalankan Server**
+    ```bash
+    php artisan serve
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🤝 Kontribusi
 
-## Code of Conduct
+Aplikasi ini dikembangkan untuk mempermudah digitalisasi sekolah. Jika Anda ingin berkontribusi dalam pengembangan, silakan lakukan *Fork* repository ini dan buat *Pull Request*.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📄 Lisensi
 
-## Security Vulnerabilities
+Proyek ini berlisensi [MIT](LICENSE).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Developed with ❤️ by [MATEK](https://www.murniabadi.co.id)*
