@@ -1,4 +1,4 @@
-# CMS Sekolah - SDIT Murni Abadi
+# CMS Sekolah - Murni Abadi
 
 CMS Sekolah adalah platform pengelolaan konten (Content Management System) modern yang dirancang khusus untuk kebutuhan sekolah. Dibangun dengan **Laravel 12** dan **PHP 8.2+**, sistem ini menawarkan antarmuka yang elegan (Joyful UI) dengan fitur lengkap untuk pengelolaan berita, halaman statis, agenda, dan data sekolah lainnya.
 
