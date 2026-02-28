@@ -23,6 +23,7 @@ class TestimonialController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role' => 'required|in:parent,student,alumni',
+            'profession' => 'nullable|string|max:255',
             'content' => 'required|string',
             'is_active' => 'boolean',
             'image' => 'nullable|image|max:2048',
@@ -49,6 +50,7 @@ class TestimonialController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role' => 'required|in:parent,student,alumni',
+            'profession' => 'nullable|string|max:255',
             'content' => 'required|string',
             'is_active' => 'boolean',
             'image' => 'nullable|image|max:2048',

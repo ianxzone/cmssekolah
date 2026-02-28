@@ -75,7 +75,13 @@ class FrontendController extends Controller
      */
     public function showEvent(\App\Models\Event $event)
     {
-        return view('frontend.event', compact('event'));
+        $otherEvents = \App\Models\Event::where('id', '!=', $event->id)
+            ->where('start_time', '>=', now())
+            ->orderBy('start_time', 'asc')
+            ->take(5)
+            ->get();
+
+        return view('frontend.event', compact('event', 'otherEvents'));
     }
 
     /**
@@ -195,5 +201,14 @@ class FrontendController extends Controller
             ->firstOrFail();
 
         return view('frontend.page', compact('page'));
+    }
+
+    /**
+     * Display All Teachers/Staff
+     */
+    public function teachers()
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        return view('frontend.teachers', compact('settings'));
     }
 }

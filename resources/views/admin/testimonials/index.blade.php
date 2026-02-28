@@ -18,6 +18,7 @@
                             <tr style="border-bottom: 2px solid var(--border-color);">
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Name</th>
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Role</th>
+                                <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Profession</th>
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Status</th>
                                 <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500; text-align: right;">Actions</th>
                             </tr>
@@ -41,6 +42,7 @@
                                         </div>
                                     </td>
                                     <td style="padding: 1rem; text-transform: capitalize;">{{ $testimonial->role }}</td>
+                                    <td style="padding: 1rem;">{{ $testimonial->profession ?? '-' }}</td>
                                     <td style="padding: 1rem;">
                                         @if($testimonial->is_active)
                                             <span style="display: inline-flex; align-items: center; px-2.5; py-0.5; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background-color: rgba(16, 185, 129, 0.1); color: #065f46; padding: 0.25rem 0.75rem;">Active</span>

@@ -86,6 +86,14 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label" for="profession">Profession / Occupation</label>
+                    <input type="text" id="profession" name="profession" class="form-control"
+                        value="{{ old('profession', $testimonial->profession) }}"
+                        placeholder="e.g. Pegawai Swasta, Dokter, etc.">
+                    @error('profession') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group">
                     <label class="form-label" for="content">Testimonial Content <span class="text-danger">*</span></label>
                     <textarea id="content" name="content" class="form-control" rows="5"
                         required>{{ old('content', $testimonial->content) }}</textarea>

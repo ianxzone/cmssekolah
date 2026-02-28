@@ -5,186 +5,351 @@
 
 @push('styles')
     <style>
-        .event-header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .layout-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: -60px auto 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+            align-items: start;
         }
 
-        .event-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+        @media (max-width: 900px) {
+            .layout-container {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .event-meta-banner {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            background: #eef2ff;
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            color: var(--primary-color);
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-        }
-
-        .event-content {
-            max-width: 800px;
-            margin: 0 auto;
+        /* MAIN CONTENT */
+        .event-container {
             background: var(--bg-surface);
-            padding: 3rem;
             border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
+            overflow: hidden;
         }
 
-        .prose {
-            line-height: 1.8;
+        .event-header {
+            padding: 2.5rem 2.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .event-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
             color: var(--text-primary);
         }
 
-        .prose p {
-            /* No custom styles needed here, TailwindCSS handles styling */
+        .event-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .meta-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .meta-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-light);
+            color: var(--white);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .meta-info label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .meta-info span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .event-thumbnail {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            background-color: var(--bg-body);
+        }
+
+        .event-description {
+            padding: 2.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-main);
+        }
+
+        .event-description p,
+        .event-description ul,
+        .event-description ol,
+        .event-description li {
+            margin-bottom: 1.5rem;
+            color: inherit;
+        }
+
+        .event-section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .sidebar-widget {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-list li {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .sidebar-list a {
+            color: var(--text-main);
+            font-weight: 500;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .sidebar-list a:hover {
+            color: var(--primary);
+        }
+
+        .sidebar-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+
+            .event-description,
+            .event-header {
+                padding: 1.5rem;
+            }
+
+            .event-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-title {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 @endpush
 
+@section('hero')
+    @php
+        $heroBg = $settings['hero_bg_image'] ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1920';
+        if (!Str::startsWith($heroBg, ['http://', 'https://', 'data:'])) {
+            $heroBg = Storage::url($heroBg);
+        }
+    @endphp
+    <section class="subpage-hero" style="background-image: url('{{ $heroBg }}');">
+        <div class="subpage-hero-overlay"></div>
+        <div class="container">
+            <h1>Agenda Kegiatan</h1>
+            <div class="subpage-breadcrumb">
+                <a href="{{ route('home') }}">Beranda</a>
+                <i data-feather="chevron-right" style="width: 14px;"></i>
+                <a href="{{ route('events.index') }}">Agenda</a>
+                <i data-feather="chevron-right" style="width: 14px;"></i>
+                <span>Detail</span>
+            </div>
+        </div>
+    </section>
+@endsection
+
 @section('content')
-    <div class="max-w-4xl mx-auto px-4 py-12">
-        <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
-            <!-- Featured Image -->
-            @if($event->image)
-                <div class="aspect-video w-full relative">
-                    <img src="{{ Storage::url($event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
-                    <div class="absolute top-6 left-6">
-                        <span
-                            class="px-4 py-2 rounded-full text-sm font-semibold {{ $event->type == 'online' ? 'bg-blue-600 text-white' : 'bg-emerald-600 text-white' }} shadow-lg">
-                            <i data-feather="{{ $event->type == 'online' ? 'video' : 'map-pin' }}"
-                                class="inline-block w-4 h-4 mr-1"></i>
-                            {{ ucfirst($event->type) }}
-                        </span>
-                    </div>
-                </div>
-            @endif
+    <div class="layout-container">
+        <!-- Main Content -->
+        <div class="event-column">
+            <article class="event-container">
+                @if($event->image)
+                    <img src="{{ Storage::url($event->image) }}" alt="{{ $event->title }}" class="event-thumbnail">
+                @endif
 
-            <div class="p-8 md:p-12">
-                <div class="mb-8">
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">{{ $event->title }}</h1>
+                <header class="event-header">
+                    <h1 class="event-title">{{ $event->title }}</h1>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-emerald-50 rounded-2xl p-6">
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 flex-shrink-0">
-                                <i data-feather="calendar" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">Tanggal</p>
-                                <p class="text-gray-800 font-medium">{{ $event->start_time->format('l, d F Y') }}</p>
+                    <div class="event-meta-grid">
+                        <div class="meta-box">
+                            <div class="meta-icon"><i data-feather="calendar" style="width:16px;"></i></div>
+                            <div class="meta-info">
+                                <label>Hari & Tanggal</label>
+                                <span>{{ $event->start_time->format('l, d F Y') }}</span>
                             </div>
                         </div>
 
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 flex-shrink-0">
-                                <i data-feather="clock" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">Waktu</p>
-                                <p class="text-gray-800 font-medium">
+                        <div class="meta-box">
+                            <div class="meta-icon"><i data-feather="clock" style="width:16px;"></i></div>
+                            <div class="meta-info">
+                                <label>Waktu</label>
+                                <span>
                                     {{ $event->start_time->format('H:i') }}
                                     @if($event->end_time)
                                         - {{ $event->end_time->format('H:i') }}
                                     @endif
                                     WIB
-                                </p>
+                                </span>
                             </div>
                         </div>
 
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 flex-shrink-0">
-                                <i data-feather="{{ $event->type == 'online' ? 'link' : 'map-pin' }}" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">
-                                    {{ $event->type == 'online' ? 'Link Meeting' : 'Lokasi' }}</p>
+                        <div class="meta-box">
+                            <div class="meta-icon"><i data-feather="{{ $event->type == 'online' ? 'link' : 'map-pin' }}"
+                                    style="width:16px;"></i></div>
+                            <div class="meta-info">
+                                <label>{{ $event->type == 'online' ? 'Link Meeting' : 'Lokasi' }}</label>
                                 @if($event->type == 'online')
                                     @if($event->meeting_link)
                                         <a href="{{ $event->meeting_link }}" target="_blank"
-                                            class="text-blue-600 font-medium flex items-center gap-1 hover:underline">
-                                            Gabung Meeting <i data-feather="external-link" class="w-3 h-3"></i>
-                                        </a>
+                                            style="color: var(--primary); font-weight: 600;">Gabung Meeting</a>
                                     @else
-                                        <p class="text-gray-500 italic">Link belum tersedia</p>
+                                        <span>Link belum tersedia</span>
                                     @endif
                                 @else
-                                    <p class="text-gray-800 font-medium">{{ $event->location ?? 'Lokasi akan diumumkan' }}</p>
+                                    <span>{{ $event->location ?? 'Lokasi akan diumumkan' }}</span>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 flex-shrink-0">
-                                <i data-feather="user" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">Penyelenggara
-                                </p>
-                                <p class="text-gray-800 font-medium">{{ $event->organizer_name ?? 'SDIT Al Irsyad' }}</p>
+                        <div class="meta-box">
+                            <div class="meta-icon"><i data-feather="user" style="width:16px;"></i></div>
+                            <div class="meta-info">
+                                <label>Penyelenggara</label>
+                                <span>{{ $event->organizer_name ?? 'SDIT Al Irsyad' }}</span>
                             </div>
                         </div>
                     </div>
-                </div>
+                </header>
 
-                <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed mb-12">
+                <div class="event-description trix-content">
+                    <h3 class="event-section-title"><i data-feather="info" style="width:18px;"></i> Detail Kegiatan</h3>
                     {!! $event->description !!}
+
+                    @if($event->type == 'offline' && $event->map_link)
+                        <div style="margin-top: 2.5rem;">
+                            <h3 class="event-section-title"><i data-feather="map" style="width:18px;"></i> Lokasi Acara</h3>
+                            <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color);">
+                                @if(Str::startsWith($event->map_link, '<iframe'))
+                                    {!! $event->map_link !!}
+                                @else
+                                    <iframe width="100%" height="350" frameborder="0" style="border:0" src="{{ $event->map_link }}"
+                                        allowfullscreen></iframe>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
                 </div>
-
-                @if($event->type == 'offline' && $event->map_link)
-                    <div class="mb-12">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <i data-feather="map" class="text-emerald-600"></i> Lokasi Acara
-                        </h3>
-                        <div class="rounded-2xl overflow-hidden border border-gray-200">
-                            @if(Str::startsWith($event->map_link, '<iframe'))
-                                {!! $event->map_link !!}
-                            @else
-                                <iframe width="100%" height="400" frameborder="0" style="border:0" src="{{ $event->map_link }}"
-                                    allowfullscreen></iframe>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-
-                @if($event->sponsors && count($event->sponsors) > 0)
-                    <div class="border-t border-gray-100 pt-12">
-                        <h3 class="text-xl font-bold text-center text-gray-900 mb-8">Disponsori Oleh</h3>
-                        <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-                            @foreach($event->sponsors as $sponsor)
-                                <div class="flex flex-col items-center gap-2 grayscale hover:grayscale-0 transition duration-300">
-                                    @if(!empty($sponsor['logo']))
-                                        <img src="{{ Storage::url($sponsor['logo']) }}" alt="{{ $sponsor['name'] }}"
-                                            class="h-12 md:h-16 w-auto object-contain">
-                                    @endif
-                                    <span class="text-sm font-medium text-gray-500">{{ $sponsor['name'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            </div>
-
-            <div class="bg-gray-50 p-8 text-center border-t border-gray-100">
-                <a href="{{ route('events.index') }}"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full text-gray-600 font-semibold hover:bg-gray-100 transition duration-200">
-                    <i data-feather="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Agenda
-                </a>
-            </div>
+            </article>
         </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- SPMB Banner -->
+            <div class="sidebar-widget" style="background: var(--primary); color: white; text-align: center;">
+                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">PPDB Dibuka!</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">Daftarkan putra-putri Anda sekarang juga.
+                </p>
+                <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="btn btn-white"
+                    style="width: 100%; font-weight: 700;">Info Selengkapnya</a>
+            </div>
+
+            <!-- Other Events -->
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title"><i data-feather="calendar" style="width:18px;"></i> Agenda Lainnya</h3>
+                <ul class="sidebar-list">
+                    @forelse($otherEvents as $other)
+                        <li>
+                            <a href="{{ route('events.show', $other->id) }}">{{ $other->title }}</a>
+                            <div class="sidebar-meta">
+                                <i data-feather="calendar" style="width:12px;"></i> {{ $other->start_time->format('d M Y') }}
+                            </div>
+                        </li>
+                    @empty
+                        <li>Belum ada agenda lain.</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <!-- News Widget -->
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title"><i data-feather="book-open" style="width:18px;"></i> Berita Terbaru</h3>
+                <ul class="sidebar-list">
+                    @php
+                        $latestNews = \App\Models\Post::whereNotNull('published_at')->latest('published_at')->take(3)->get();
+                    @endphp
+                    @foreach($latestNews as $news)
+                        <li>
+                            <a href="{{ route('posts.show', $news->slug) }}">{{ $news->title }}</a>
+                            <div class="sidebar-meta">
+                                <i data-feather="calendar" style="width:12px;"></i> {{ $news->published_at->format('d M Y') }}
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </aside>
     </div>
 @endsection

@@ -140,26 +140,45 @@
                                     class="form-control" 
                                     {{ $isRequired }}>{{ old($inputName) }}</textarea>
 
-                            @elseif($field['type'] === 'select' && isset($field['options']))
-                                <select 
-                                    name="{{ $inputName }}" 
-                                    id="{{ $inputName }}" 
-                                    class="form-control" 
-                                    {{ $isRequired }}>
-                                    <option value="" disabled selected>Select an option...</option>
-                                    @php
-                                        $options = array_map('trim', explode(',', $field['options']));
-                                    @endphp
-                                    @foreach($options as $option)
-                                        <option value="{{ $option }}" {{ old($inputName) == $option ? 'selected' : '' }}>
-                                            {{ $option }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                            @elseif(in_array($field['type'], ['select', 'radio', 'checkbox']) && isset($field['options']))
+                                @php
+                                    $rawOptions = $field['options'];
+                                    if (is_string($rawOptions)) {
+                                        $options = array_map('trim', explode(',', $rawOptions));
+                                    } else {
+                                        // Handle potential array of strings OR array of objects from seeders
+                                        $options = array_map(function($opt) {
+                                            return is_array($opt) ? ($opt['option'] ?? $opt['label'] ?? $opt['value'] ?? '') : $opt;
+                                        }, $rawOptions);
+                                    }
+                                @endphp
+
+                                @if($field['type'] === 'select')
+                                    <select name="{{ $inputName }}" id="{{ $inputName }}" class="form-control" {{ $isRequired }}>
+                                        <option value="" disabled {{ old($inputName) ? '' : 'selected' }}>Select an option...</option>
+                                        @foreach($options as $option)
+                                            <option value="{{ $option }}" {{ old($inputName) == $option ? 'selected' : '' }}>{{ $option }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <div class="options-wrapper" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                                        @foreach($options as $option)
+                                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                                <input 
+                                                    type="{{ $field['type'] }}" 
+                                                    name="{{ $field['type'] === 'checkbox' ? $inputName.'[]' : $inputName }}" 
+                                                    value="{{ $option }}"
+                                                    {{ ($field['type'] === 'checkbox' ? (is_array(old($inputName)) && in_array($option, old($inputName))) : (old($inputName) == $option)) ? 'checked' : '' }}
+                                                    {{ $field['type'] === 'radio' ? $isRequired : '' }}>
+                                                {{ $option }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                @endif
 
                             @else
                                 <input 
-                                    type="{{ $field['type'] === 'number' ? 'number' : ($field['type'] === 'email' ? 'email' : 'text') }}" 
+                                    type="{{ in_array($field['type'], ['number', 'email', 'date', 'file']) ? $field['type'] : 'text' }}" 
                                     name="{{ $inputName }}" 
                                     id="{{ $inputName }}" 
                                     class="form-control" 

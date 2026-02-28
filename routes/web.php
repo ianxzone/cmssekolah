@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PageController;
@@ -57,7 +58,10 @@ Route::prefix('install')->name('install.')->group(function () {
     Route::get('/', [App\Http\Controllers\InstallController::class, 'index'])->name('index');
     Route::get('/requirements', [App\Http\Controllers\InstallController::class, 'requirements'])->name('requirements');
     Route::get('/environment', [App\Http\Controllers\InstallController::class, 'environment'])->name('environment');
-    Route::post('/environment', [App\Http\Controllers\InstallController::class, 'saveEnvironment'])->name('environment.save');
+    Route::post('/environment', [
+        App\Http\Controllers\InstallController::class,
+        'saveEnvironment'
+    ])->name('environment.save');
     Route::get('/database', [App\Http\Controllers\InstallController::class, 'database'])->name('database');
     Route::post('/run', [App\Http\Controllers\InstallController::class, 'runMigration'])->name('run');
     Route::get('/admin', [App\Http\Controllers\InstallController::class, 'admin'])->name('admin');
@@ -70,11 +74,12 @@ Route::get('/berita', [FrontendController::class, 'posts'])->name('posts.index')
 Route::get('/berita/{slug}', [FrontendController::class, 'showPost'])->name('posts.show');
 Route::get('/agenda', [FrontendController::class, 'events'])->name('events.index');
 Route::get('/agenda/{event}', [FrontendController::class, 'showEvent'])->name('events.show');
+Route::get('/guru', [FrontendController::class, 'teachers'])->name('teachers.index');
 Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->name('categories.show');
 
 // Dynamic Forms
 Route::get('/form/{slug}', [FrontendController::class, 'showForm'])->name('forms.show.frontend');
 Route::post('/form/{slug}/submit', [FrontendController::class, 'submitForm'])->name('forms.submit');
 
-// Dynamic Pages
-Route::get('/page/{slug}', [FrontendController::class, 'showPage'])->name('pages.show');
+// Dynamic Pages (Catch-all at root level)
+Route::get('/{slug}', [FrontendController::class, 'showPage'])->name('pages.show');

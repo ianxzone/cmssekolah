@@ -23,6 +23,58 @@
 
     <!-- Admin CSS Styles -->
     <link href="{{ asset('css/admin.css') }}?v={{ filemtime(public_path('css/admin.css')) }}" rel="stylesheet">
+
+    <script>
+        // Inline script to prevent FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <style>
+        .admin-theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            margin-right: 1rem;
+        }
+
+        .admin-theme-toggle:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-color: var(--bg-body);
+        }
+
+        .admin-theme-toggle .sun-icon {
+            display: none;
+        }
+
+        .admin-theme-toggle .moon-icon {
+            display: block;
+        }
+
+        .dark .admin-theme-toggle .sun-icon {
+            display: block;
+        }
+
+        .dark .admin-theme-toggle .moon-icon {
+            display: none;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -136,6 +188,10 @@
                     <h1 class="page-title">@yield('title', 'Dashboard')</h1>
                 </div>
                 <div class="topbar-right">
+                    <button id="admin-theme-toggle" class="admin-theme-toggle" title="Toggle Theme">
+                        <i data-feather="moon" class="moon-icon"></i>
+                        <i data-feather="sun" class="sun-icon"></i>
+                    </button>
                     <div class="user-profile">
                         <div class="avatar">
                             {{ substr(Auth::user()->name ?? 'Admin', 0, 1) }}
@@ -169,6 +225,18 @@
     <!-- Initialize Icons -->
     <script>
         feather.replace();
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('admin-theme-toggle');
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
 
         // Responsive Mobile Sidebar Logic
         const sidebar = document.getElementById('sidebar');

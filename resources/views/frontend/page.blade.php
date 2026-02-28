@@ -5,37 +5,16 @@
 
 @push('styles')
     <style>
-        .page-header-bg {
-            background: var(--primary-dark);
-            padding: 60px 0;
-            text-align: center;
-            color: var(--white);
-            margin-bottom: 40px;
-        }
-
-        .page-header-bg h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .page-header-bg .breadcrumb {
-            color: var(--primary-light);
-            font-size: 0.95rem;
-        }
-
-        .page-header-bg .breadcrumb a {
-            color: var(--white);
-            margin: 0 5px;
-        }
-
         .layout-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 40px;
             max-width: 1200px;
-            margin: 0 auto 60px;
+            margin: -60px auto 60px;
             padding: 0 20px;
+            position: relative;
+            z-index: 10;
+            align-items: start;
         }
 
         @media (max-width: 900px) {
@@ -46,7 +25,7 @@
 
         /* MAIN CONTENT */
         .page-container {
-            background: var(--white);
+            background: var(--bg-surface);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
@@ -56,7 +35,7 @@
         .page-header {
             padding: 2.5rem 2.5rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
-            background: #f8fafc;
+            background: var(--bg-light);
         }
 
         .page-title {
@@ -71,11 +50,15 @@
             padding: 2.5rem;
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #334155;
+            color: var(--text-main);
         }
 
-        .page-content p {
+        .page-content p,
+        .page-content ul,
+        .page-content ol,
+        .page-content li {
             margin-bottom: 1.5rem;
+            color: inherit;
         }
 
         .page-content h2,
@@ -195,19 +178,32 @@
     </style>
 @endpush
 
-@section('content')
-    <div class="page-header-bg">
+@section('hero')
+    @php
+        $heroBg = $settings['hero_bg_image'] ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1920';
+        if (!Str::startsWith($heroBg, ['http://', 'https://', 'data:'])) {
+            $heroBg = Storage::url($heroBg);
+        }
+    @endphp
+    <section class="subpage-hero" style="background-image: url('{{ $heroBg }}');">
+        <div class="subpage-hero-overlay"></div>
         <div class="container">
             <h1>Halaman Informasi</h1>
-            <div class="breadcrumb">
-                <a href="{{ route('home') }}">Beranda</a> / {{ Str::limit($page->title, 40) }}
+            <div class="subpage-breadcrumb">
+                <a href="{{ route('home') }}">Beranda</a>
+                <i data-feather="chevron-right" style="width: 14px;"></i>
+                <span>{{ Str::limit($page->title, 40) }}</span>
             </div>
         </div>
-    </div>
+    </section>
+@endsection
+
+@section('content')
+    {{-- Old page-header-bg removed --}}
 
     <div class="layout-container">
         <!-- Main Content -->
-        <main>
+        <div class="page-column">
             <article class="page-container">
                 <header class="page-header">
                     <h1 class="page-title">{{ $page->title }}</h1>
@@ -217,10 +213,21 @@
                     {!! $page->content !!}
                 </div>
             </article>
-        </main>
+        </div>
 
         <!-- Sidebar -->
         <aside class="sidebar">
+            <!-- SPMB Banner Widget -->
+            <div class="sidebar-widget"
+                style="background: var(--primary); color: white; text-align: center; padding: 30px 20px;">
+                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">PPDB Dibuka!</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">Daftarkan putra-putri Anda sekarang juga.
+                </p>
+                <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="btn"
+                    style="background: white; color: var(--primary); padding: 10px 20px; font-weight: 700; width: 100%;">Info
+                    Selengkapnya</a>
+            </div>
+
             <!-- Navigate Pages Widget -->
             <div class="sidebar-widget">
                 <h3 class="sidebar-title"><i data-feather="file-text" style="width:18px;"></i> Informasi Lainnya</h3>
@@ -259,17 +266,6 @@
                         <li>Belum ada berita.</li>
                     @endforelse
                 </ul>
-            </div>
-
-            <!-- SPMB Banner Widget -->
-            <div class="sidebar-widget"
-                style="background: var(--primary); color: white; text-align: center; padding: 30px 20px;">
-                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">PPDB Dibuka!</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">Daftarkan putra-putri Anda sekarang juga.
-                </p>
-                <a href="{{ \App\Models\Setting::value('contact_ppdb_link') ?? '#' }}" class="btn"
-                    style="background: white; color: var(--primary); padding: 10px 20px; font-weight: 700; width: 100%;">Info
-                    Selengkapnya</a>
             </div>
         </aside>
     </div>

@@ -9,7 +9,16 @@
         href="{{ isset($settings['school_favicon']) && $settings['school_favicon'] ? \Illuminate\Support\Facades\Storage::url($settings['school_favicon']) : asset('favicon.ico') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        // Inline script to prevent FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
         :root {
             --primary: #065f46;
@@ -27,6 +36,165 @@
             --radius-lg: 24px;
             --container-max: 1200px;
             --transition: all 0.3s ease;
+        }
+
+        .dark {
+            --primary-dark: #10b981;
+            --primary-light: #34d399;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --bg-light: #0f172a;
+            --white: #1e293b;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+            /* Compatibility for sub-views and recursive colors */
+            --primary: var(--primary-light);
+        }
+
+        .dark .navbar {
+            background: var(--bg-light) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dark .topbar {
+            background: #020617;
+            color: var(--text-main);
+        }
+
+        .dark .stats,
+        .dark .programs,
+        .dark .teachers,
+        .dark .spmb-banner,
+        .dark .testimonials,
+        .dark .vision-mission,
+        .dark footer {
+            background: var(--bg-elevated);
+            color: var(--text-main);
+        }
+
+        .dark .welcome-section,
+        .dark .agenda,
+        .dark .news {
+            background: var(--bg-light);
+        }
+
+        .dark .prayer-card,
+        .dark .program-card,
+        .dark .teacher-card,
+        .dark .news-card,
+        .dark .agenda-card {
+            background: var(--white);
+            border-color: var(--border-color);
+        }
+
+        .dark .agenda-date {
+            background: var(--primary-light);
+            color: #064e3b;
+        }
+
+        .dark .hero {
+            color: var(--text-heading) !important;
+        }
+
+        .dark .hero h2,
+        .dark .vision-mission h2,
+        .dark .hero-badge {
+            color: var(--text-heading) !important;
+        }
+
+        .dark .hero p {
+            color: var(--text-main) !important;
+        }
+
+        .dark .btn-outline-white {
+            color: var(--text-heading) !important;
+            border-color: var(--text-heading) !important;
+        }
+
+        .dark .btn-outline-white:hover {
+            background: var(--text-heading) !important;
+            color: var(--primary-dark) !important;
+        }
+
+        .dark .nav-spmb {
+            color: var(--text-heading) !important;
+        }
+
+        .dark .stat-card {
+            border-right-color: var(--border-color);
+        }
+
+        .dark .footer-logo h3,
+        .dark .footer-col h4,
+        .dark .spmb-banner h2 {
+            color: var(--text-heading) !important;
+        }
+
+        .dark .social-links a,
+        .dark .spmb-banner p {
+            color: var(--text-main) !important;
+        }
+
+        .dark .logo-text h1 {
+            color: var(--text-heading);
+        }
+
+        .dark .logo-text p {
+            color: var(--text-muted);
+        }
+
+        .dark .nav-link {
+            color: #d1d5db;
+        }
+
+        .dark .nav-link:hover {
+            color: var(--primary-light);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            margin-left: 10px;
+        }
+
+        .dark .theme-toggle {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--primary);
+        }
+
+        .dark .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary-light);
+        }
+
+        .theme-toggle .sun-icon {
+            display: none;
+        }
+
+        .theme-toggle .moon-icon {
+            display: block;
+        }
+
+        .dark .theme-toggle .sun-icon {
+            display: block;
+        }
+
+        .dark .theme-toggle .moon-icon {
+            display: none;
         }
 
         * {
@@ -483,6 +651,10 @@
             color: var(--white);
         }
 
+        .vision-mission .section-header h2 {
+            color: var(--white);
+        }
+
         .vision-box {
             background: rgba(255, 255, 255, 0.05);
             padding: 40px;
@@ -709,7 +881,7 @@
         .spmb-banner {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             padding: 60px 0;
-            color: var(--white);
+            color: #ffffff;
             text-align: center;
         }
 
@@ -814,12 +986,12 @@
         .testimonials {
             background: var(--primary-dark);
             color: var(--white);
+            padding: 80px 0 100px;
         }
 
-        .testi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+        .testi-carousel {
+            position: relative;
+            padding: 20px 0 60px;
         }
 
         .testi-card {
@@ -829,6 +1001,16 @@
             text-align: center;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .testi-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
         }
 
         .testi-quote {
@@ -847,6 +1029,7 @@
             overflow: hidden;
             margin: 0 auto 20px;
             border: 3px solid var(--secondary);
+            flex-shrink: 0;
         }
 
         .testi-img img {
@@ -858,20 +1041,58 @@
         .testi-card p {
             font-size: 1rem;
             font-style: italic;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             opacity: 0.9;
+            line-height: 1.7;
         }
 
-        .testi-card h4 {
+        .testi-info h4 {
             color: var(--secondary);
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .testi-info .role {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-weight: 600;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 2px;
         }
 
-        .testi-card span {
-            font-size: 0.85rem;
-            opacity: 0.7;
+        .testi-info .prof {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            font-weight: 500;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--secondary) !important;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 1.5rem !important;
+        }
+
+        .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.3) !important;
+            opacity: 1 !important;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--secondary) !important;
+            width: 25px !important;
+            border-radius: 10px !important;
         }
 
         .facilities {
@@ -945,8 +1166,8 @@
         }
 
         footer {
-            background: #0f172a;
-            color: #cbd5e1;
+            background: var(--primary-dark);
+            color: var(--white);
             padding: 80px 0 20px;
         }
 
@@ -1199,30 +1420,36 @@
                     <p style="font-size: 0.75rem;">{{ $settings['school_tagline'] ?? 'Sekolah Islam Teladan' }}</p>
                 </div>
             </a>
-            <ul class="nav-menu" id="navMenu">
-                @php
-                    $navLinks = json_decode($settings['navbar_links'] ?? '[]', true);
-                    if (empty($navLinks)) {
-                        $navLinks = [
-                            ['label' => 'Beranda', 'url' => '/'],
-                        ];
+            <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+                <ul class="nav-menu" id="navMenu">
+                    @php
+                        $navLinks = json_decode($settings['navbar_links'] ?? '[]', true);
+                        if (empty($navLinks)) {
+                            $navLinks = [
+                                ['label' => 'Beranda', 'url' => '/'],
+                            ];
 
-                        // Dynamically append default pages
-                        $pages = \App\Models\Page::where('type', 'default')->get();
-                        foreach ($pages as $page) {
-                            $navLinks[] = ['label' => $page->title, 'url' => url('/page/' . $page->slug)];
+                            // Dynamically append default pages
+                            $pages = \App\Models\Page::where('type', 'default')->get();
+                            foreach ($pages as $page) {
+                                $navLinks[] = ['label' => $page->title, 'url' => url('/page/' . $page->slug)];
+                            }
+
+                            // Add default hardcoded items back if needed
+                            $navLinks[] = ['label' => 'Berita', 'url' => route('posts.index')];
                         }
-
-                        // Add default hardcoded items back if needed
-                        $navLinks[] = ['label' => 'Berita', 'url' => route('posts.index')];
-                    }
-                @endphp
-                @foreach($navLinks as $link)
-                    <li><a href="{{ $link['url'] }}" class="nav-link">{{ $link['label'] }}</a></li>
-                @endforeach
-                <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="nav-spmb">SPMB Online</a></li>
-            </ul>
-            <div class="mobile-toggle" onclick="toggleMenu()">
+                    @endphp
+                    @foreach($navLinks as $link)
+                        <li><a href="{{ $link['url'] }}" class="nav-link">{{ $link['label'] }}</a></li>
+                    @endforeach
+                    <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="nav-spmb">SPMB Online</a></li>
+                </ul>
+                <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">
+                    <i data-feather="moon" class="moon-icon"></i>
+                    <i data-feather="sun" class="sun-icon"></i>
+                </button>
+            </div>
+            <div class="mobile-toggle" onclick="toggleMenu()" style="margin-left: 10px;">
                 <i data-feather="menu"></i>
             </div>
         </div>
@@ -1340,7 +1567,7 @@
         <div class="container">
             <div class="section-header">
                 <span>Focus & Future</span>
-                <h2 style="color: var(--white);">Visi & Misi Sekolah</h2>
+                <h2>Visi & Misi Sekolah</h2>
             </div>
             <div class="vision-box">
                 <h3>Visi</h3>
@@ -1455,9 +1682,14 @@
     @if(($settings['home_show_teachers'] ?? '1') == '1')
         <section class="teachers">
             <div class="container">
-                <div class="section-header">
-                    <span>Our Professionals</span>
-                    <h2>Guru & Tenaga Kependidikan</h2>
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div style="text-align: left;">
+                        <span>Our Professionals</span>
+                        <h2 style="margin-bottom:0;">Guru & Tenaga Kependidikan</h2>
+                    </div>
+                    <a href="{{ route('teachers.index') }}" class="btn btn-outline"
+                        style="padding: 8px 20px; font-size: 0.9rem;">Lihat Semua <i data-feather="arrow-right"
+                            style="width: 14px;"></i></a>
                 </div>
                 <div class="teacher-grid">
                     @php
@@ -1557,7 +1789,6 @@
         </section>
     @endif
 
-    <!-- 13. TESTIMONIALS -->
     @if(($settings['home_show_testimonials'] ?? '1') == '1')
         <section class="testimonials">
             <div class="container">
@@ -1565,23 +1796,42 @@
                     <span>Testimonials</span>
                     <h2 style="color: var(--white);">Apa Kata Mereka?</h2>
                 </div>
-                <div class="testi-grid">
-                    @forelse($testimonials as $testi)
-                        <div class="testi-card">
-                            <i data-feather="message-square" class="testi-quote"></i>
-                            <div class="testi-img">
-                                <img src="{{ $resolveAsset($testi->image, 'https://placehold.co/100x100?text=User') }}"
-                                    alt="avatar" onerror="this.src='{{ $fallbackImg }}'">
+
+                <div class="testi-carousel swiper">
+                    <div class="swiper-wrapper">
+                        @forelse($testimonials as $testi)
+                            <div class="swiper-slide">
+                                <div class="testi-card">
+                                    <i data-feather="message-square" class="testi-quote"></i>
+                                    <div class="testi-img">
+                                        <img src="{{ $resolveAsset($testi->image, 'https://placehold.co/100x100?text=User') }}"
+                                            alt="{{ $testi->name }}" onerror="this.src='{{ $fallbackImg }}'">
+                                    </div>
+                                    <p>"{{ $testi->content }}"</p>
+                                    <div class="testi-info">
+                                        <span class="role">{{ $testi->role }}</span>
+                                        <h4>{{ $testi->name }}</h4>
+                                        @if($testi->profession)
+                                            <span class="prof">{{ $testi->profession }}</span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                            <p>"{{ $testi->content }}"</p>
-                            <h4>{{ $testi->name }}</h4>
-                            <span>{{ $testi->role }}</span>
-                        </div>
-                    @empty
-                        <div class="testi-card" style="grid-column: span 3; text-align: center;">
-                            <p>Belum ada testimoni.</p>
-                        </div>
-                    @endforelse
+                        @empty
+                            <div class="swiper-slide">
+                                <div class="testi-card" style="text-align: center;">
+                                    <p>Belum ada testimoni.</p>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <!-- Add Navigation -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
         </section>
@@ -1660,7 +1910,7 @@
                             style="height: 40px; border-radius: 4px;">
                         {{ $settings['school_name'] ?? 'SDIT Al Irsyad' }}
                     </h3>
-                    <p style="color: #94a3b8; font-size: 0.9rem;">
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
                         {{ $settings['school_tagline'] ?? 'Sekolah Islam Teladan' }} |
                         {{ $settings['hero_subtitle'] ?? '' }}
                     </p>
@@ -1712,8 +1962,28 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         feather.replace();
+
+        // Theme Toggle
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Apply theme on load
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
 
         window.addEventListener('scroll', function () {
             const navbar = document.getElementById('mainNavbar');
@@ -1730,6 +2000,33 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Swiper Initialization
+            const swiper = new Swiper('.testi-carousel', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                    },
+                }
+            });
+
             const lat = document.getElementById('setting_prayer_lat')?.value || '-6.3227';
             const lon = document.getElementById('setting_prayer_lon')?.value || '107.3075';
 
@@ -1794,6 +2091,9 @@
             window.addEventListener('load', checkCredit);
         })();
     </script>
+</body>
+
+</html>
 </body>
 
 </html>
