@@ -183,6 +183,10 @@
                         <span>Logout</span>
                     </button>
                 </form>
+                <div
+                    style="padding: 1rem; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.7; text-align: center; border-top: 1px solid var(--border-color); margin-top: 0.5rem;">
+                    CMS Sekolah v{{ $settings['system_version'] ?? '2.0.0' }}
+                </div>
             </div>
         </aside>
 

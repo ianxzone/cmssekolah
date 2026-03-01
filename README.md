@@ -1,75 +1,73 @@
-# CMS Sekolah - Murni Abadi
+# CMS Sekolah Modern v2.0.0
 
-CMS Sekolah adalah platform pengelolaan konten (Content Management System) modern yang dirancang khusus untuk kebutuhan sekolah. Dibangun dengan **Laravel 12** dan **PHP 8.2+**, sistem ini menawarkan antarmuka yang elegan (Joyful UI) dengan fitur lengkap untuk pengelolaan berita, halaman statis, agenda, dan data sekolah lainnya.
+[![Laravel Version](https://img.shields.io/badge/laravel-12.x-red)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/php-8.3-blue)](https://php.net)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## ✨ Fitur Utama
+**CMS Sekolah Modern** adalah solusi manajemen konten (CMS) khusus untuk institusi pendidikan (SD/SMP/SMA/SMK) yang dibangun dengan Laravel. Versi 2.0.0 memperkenalkan sistem tema dinamis dengan desain yang sangat premium dan berfokus pada pengalaman pengguna yang ceria namun profesional.
 
--   **Joyful UI & Dark Mode**: Desain premium yang responsif dengan dukungan Dark/Light mode otomatis.
--   **Media Manager Modern**: Kelola foto dan dokumen dengan mudah. Mendukung pengaturan *Alt Text* dan *Caption* untuk optimasi SEO.
--   **Maintenance Mode Terintegrasi**: Halaman pemeliharaan kustom dengan fitur upload update, pembersihan cache, dan optimasi sistem langsung dari panel admin.
--   **Custom Scripts**: Masukkan script pihak ketiga (Google Analytics, Meta Pixel, Custom CSS/JS) secara aman melalui menu pengaturan.
--   **Dynamic Forms & Excel Export**: Buat formulir kustom dan ekspor datanya langsung ke Excel untuk keperluan administrasi.
--   **Pengaturan Navigasi & Branding**: Ubah logo, favicon, menu navigasi, dan informasi kontak sekolah tanpa menyentuh kode.
--   **Visi, Misi & Program Unggulan**: Kelola profil sekolah secara dinamis untuk ditampilkan di beranda.
+---
 
-## 🛠️ Stack Teknologi
+## ✨ Fitur Unggulan
 
--   **Framework**: Laravel 12
--   **Bahasa**: PHP 8.2+
--   **Frontend**: Tailwind CSS / Vanilla CSS (Modern), Alpine.js, Feather Icons
--   **Editor**: Trix Editor
--   **Database**: MySQL / SQLite
+- 🎨 **Sistem Tema Dinamis**: Ganti tampilan website (Tema Modern & Default) dalam satu klik dari Admin Panel.
+- 🌈 **Kustomisasi Warna**: Sesuaikan warna Primary & Secondary sekolah Anda tanpa menyentuh kode (Color Picker terintegrasi).
+- 📱 **Desain Immersive & Responsif**: Tampilan artikel dan agenda dengan Hero Image raksasa yang modern dan adaptif di semua perangkat.
+- 📝 **Manajemen Konten Lengkap**: Kelola Berita, Agenda, Halaman Statis, Guru, dan Testimoni dengan mudah.
+- 📥 **PPDB Online Terintegrasi**: Sistem pendaftaran siswa baru yang mudah dikelola.
+- 🖼️ **Media Manager**: Manajemen galeri foto dan file aset sekolah yang rapi.
+- 🛠️ **Maintenance & Onboarding**: Mode pemeliharaan dan petunjuk instalasi yang memudahkan admin.
+- 🚨 **Halaman Error Kustom**: Desain halaman 404, 500, dll yang konsisten dengan desain sekolah Anda.
 
-## 🚀 Instalasi
+---
 
-Pastikan Anda memiliki [Composer](https://getcomposer.org/), [Node.js](https://nodejs.org/), dan PHP 8.2+ terinstal di sistem Anda.
+## 🚀 Instalasi Cepat
 
-1.  **Clone Repository**
-    ```bash
-    git clone https://github.com/ianxzone/cmssekolah.git
-    cd cmssekolah
-    ```
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/username/sdit.git
+   cd sdit
+   ```
 
-2.  **Install Dependensi PHP**
-    ```bash
-    composer install
-    ```
+2. **Install Dependencies**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
 
-3.  **Persiapkan Environment**
-    Salin file `.env.example` menjadi `.env` dan sesuaikan pengaturan database Anda.
-    ```bash
-    cp .env.example .env
-    php artisan key:generate
-    ```
+3. **Konfigurasi Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-4.  **Migrasi Database**
-    ```bash
-    php artisan migrate
-    ```
+4. **Setup Database**
+   Sesuaikan `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di `.env`, lalu jalankan:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-5.  **Install Dependensi Frontend**
-    ```bash
-    npm install
-    npm run build
-    ```
+5. **Jalankan Aplikasi**
+   ```bash
+   php artisan serve
+   ```
 
-6.  **Jalankan Server**
-    ```bash
-    php artisan serve
-    ```
+---
 
-## 🤝 Kontribusi
+## 🛠️ Teknologi yang Digunakan
 
-Aplikasi ini dikembangkan untuk mempermudah digitalisasi sekolah. Jika Anda ingin berkontribusi dalam pengembangan, silakan lakukan *Fork* repository ini dan buat *Pull Request*.
+- **Backend**: Laravel 12.x
+- **Frontend**: Blade Templating, Vanilla CSS (Premium Aesthetics)
+- **Icons**: Feather Icons
+- **Database**: MySQL / MariaDB
+- **Editor**: Trix Editor
 
-## 📱 Komunitas & Dukungan
-
-Ikuti channel WhatsApp resmi kami untuk mendapatkan update terbaru seputar pengembangan CMS Sekolah:
-[Channel WhatsApp CMS Sekolah](https://whatsapp.com/channel/0029VbBvDRu0G0XeKAMQxI1i)
+---
 
 ## 📄 Lisensi
 
-Proyek ini berlisensi [MIT](LICENSE).
+Proyek ini berada di bawah lisensi **MIT**. Anda bebas menggunakan dan memodifikasinya untuk kebutuhan sekolah Anda.
 
 ---
-*Developed with ❤️ by [MATEK](https://www.murniabadi.co.id)*
+
+Developed with ❤️ by **MATEK**

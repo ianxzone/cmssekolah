@@ -14,6 +14,7 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             ['key' => 'school_name', 'value' => 'SDIT Murni Abadi', 'type' => 'text'],
+            ['key' => 'system_version', 'value' => '2.0.0', 'type' => 'text'],
             ['key' => 'school_tagline', 'value' => 'Mencetak Generasi Qurani yang Cendekia', 'type' => 'text'],
             ['key' => 'school_logo', 'value' => '', 'type' => 'image'],
             ['key' => 'school_favicon', 'value' => '', 'type' => 'image'],
