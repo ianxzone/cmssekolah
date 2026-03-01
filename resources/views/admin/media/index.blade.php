@@ -185,8 +185,15 @@
         }
 
         @keyframes modalFadeIn {
-            from { transform: translateY(20px) scale(0.95); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
+            from {
+                transform: translateY(20px) scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
         }
 
         .modal-body {
@@ -223,44 +230,17 @@
         }
 
         /* Fixed form styles for User Complaint */
-        .modal-form .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-form .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background-color: var(--bg-body);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 0.875rem;
-            color: var(--text-primary);
-            transition: all 0.2s;
-        }
-
-        .modal-form .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-            background-color: white;
-        }
-
-        .dark .modal-form .form-control:focus {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
 
         @media (max-width: 800px) {
             .modal-content {
                 flex-direction: column;
                 max-height: 95vh;
             }
+
             .modal-body {
                 flex-direction: column;
             }
+
             .modal-preview {
                 flex: none;
                 height: 250px;
@@ -278,7 +258,7 @@
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
             z-index: 3000;
             align-items: center;
             gap: 0.75rem;
@@ -286,8 +266,15 @@
         }
 
         @keyframes toastIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 @endpush
@@ -395,13 +382,43 @@
                             <label class="form-label" for="edit-alt-text">Alt Text (Alternative Description)</label>
                             <input type="text" id="edit-alt-text" class="form-control"
                                 placeholder="Describe the image for SEO...">
-                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem;">Bagus untuk SEO
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem;">Bagus untuk
+                                SEO
                                 dan aksesibilitas.</p>
                         </div>
 
                         <div class="form-group" style="margin-top: 1rem;">
+                            <label class="form-label">File URL</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="edit-url" class="form-control" readonly
+                                    style="background: var(--bg-light); cursor: default;">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="copyUrl(document.getElementById('edit-url').value)"
+                                    style="padding: 0.75rem; min-width: 45px;">
+                                    <i data-feather="copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1rem;" id="shortcode-info-group">
+                            <label class="form-label">PDF Shortcode (Copy to Post/Page)</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="edit-shortcode" class="form-control" readonly
+                                    style="background: var(--bg-light); cursor: default; font-family: monospace; font-size: 0.75rem;">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="copyUrl(document.getElementById('edit-shortcode').value)"
+                                    style="padding: 0.75rem; min-width: 45px;">
+                                    <i data-feather="copy"></i>
+                                </button>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem;">Tempel kode
+                                ini di editor Berita/Halaman untuk menampilkan PDF.</p>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1rem;">
                             <label class="form-label" for="edit-caption">Caption</label>
-                            <textarea id="edit-caption" class="form-control" rows="3" placeholder="Tambahkan caption..."></textarea>
+                            <textarea id="edit-caption" class="form-control" rows="3"
+                                placeholder="Tambahkan caption..."></textarea>
                         </div>
 
                         <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
@@ -470,15 +487,24 @@
                 }
 
                 infoContainer.innerHTML = `
-                    <div style="margin-bottom: 2px;"><strong>Nama File:</strong> ${data.name}</div>
-                    <div style="margin-bottom: 2px;"><strong>Tipe:</strong> ${data.mime_type}</div>
-                    <div style="margin-bottom: 2px;"><strong>Ukuran:</strong> ${data.size}</div>
-                    <div><strong>Upload:</strong> ${data.created_at}</div>
-                `;
+                                <div style="margin-bottom: 2px;"><strong>Nama File:</strong> ${data.name}</div>
+                                <div style="margin-bottom: 2px;"><strong>Tipe:</strong> ${data.mime_type}</div>
+                                <div style="margin-bottom: 2px;"><strong>Ukuran:</strong> ${data.size}</div>
+                                <div><strong>Upload:</strong> ${data.created_at}</div>
+                            `;
 
                 document.getElementById('edit-media-id').value = data.id;
                 document.getElementById('edit-alt-text').value = data.alt_text || '';
                 document.getElementById('edit-caption').value = data.caption || '';
+                document.getElementById('edit-url').value = data.url;
+
+                const shortcodeGroup = document.getElementById('shortcode-info-group');
+                if (data.mime_type === 'application/pdf') {
+                    shortcodeGroup.style.display = 'block';
+                    document.getElementById('edit-shortcode').value = `[pdf url="${data.url}"]`;
+                } else {
+                    shortcodeGroup.style.display = 'none';
+                }
 
                 modal.classList.add('show');
                 feather.replace();

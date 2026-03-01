@@ -35,7 +35,8 @@ class SettingController extends Controller
             'home_show_news',
             'home_show_events',
             'home_show_facilities',
-            'home_show_testimonials'
+            'home_show_testimonials',
+            'whatsapp_show'
         ];
 
         foreach ($booleanKeys as $key) {

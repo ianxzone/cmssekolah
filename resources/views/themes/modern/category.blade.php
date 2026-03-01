@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
 @section('title', 'Kategori: ' . $category->name . ' - ' . ($settings['school_name'] ?? config('app.name')))
 @section('meta_description', 'Artikel dalam kategori ' . $category->name)
@@ -209,7 +209,7 @@
             </div>
 
             <div class="pagination-wrapper">
-                {{ $posts->links('frontend.layouts.pagination') }}
+                {{ $posts->links('theme::layouts.pagination') }}
             </div>
         @else
             <div class="empty-state">

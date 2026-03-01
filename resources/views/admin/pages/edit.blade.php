@@ -27,39 +27,6 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .text-danger {
-            color: var(--danger-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: block;
-        }
 
         .grid-2 {
             display: grid;
@@ -401,21 +368,21 @@
 
             // 4. Add Color Button & Dialog
             const colorHtml = `
-                    <button type="button" class="trix-button trix-button--icon trix-button--icon-color" data-trix-action="show-color-picker" title="Text Color"></button>
-                    <div class="trix-dialog trix-dialog--color" data-trix-dialog="color-picker" data-trix-dialog-attribute="color">
-                        <div class="color-picker-grid">
-                            <div class="color-circle" style="background: %23000000" data-color="%23000000"></div>
-                            <div class="color-circle" style="background: %23ef4444" data-color="%23ef4444"></div>
-                            <div class="color-circle" style="background: %233b82f6" data-color="%233b82f6"></div>
-                            <div class="color-circle" style="background: %2310b981" data-color="%2310b981"></div>
-                            <div class="color-circle" style="background: %23f59e0b" data-color="%23f59e0b"></div>
-                            <div class="color-circle" style="background: %236366f1" data-color="%236366f1"></div>
-                            <div class="color-circle" style="background: %23ec4899" data-color="%23ec4899"></div>
-                            <div class="color-circle" style="background: %238b5cf6" data-color="%238b5cf6"></div>
-                            <div class="color-circle" style="background: %236b7280" data-color="%236b7280"></div>
-                            <div class="color-circle" style="background: transparent; border: 1px dashed %23ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;" data-color="">X</div>
-                        </div>
-                    </div>`;
+                        <button type="button" class="trix-button trix-button--icon trix-button--icon-color" data-trix-action="show-color-picker" title="Text Color"></button>
+                        <div class="trix-dialog trix-dialog--color" data-trix-dialog="color-picker" data-trix-dialog-attribute="color">
+                            <div class="color-picker-grid">
+                                <div class="color-circle" style="background: %23000000" data-color="%23000000"></div>
+                                <div class="color-circle" style="background: %23ef4444" data-color="%23ef4444"></div>
+                                <div class="color-circle" style="background: %233b82f6" data-color="%233b82f6"></div>
+                                <div class="color-circle" style="background: %2310b981" data-color="%2310b981"></div>
+                                <div class="color-circle" style="background: %23f59e0b" data-color="%23f59e0b"></div>
+                                <div class="color-circle" style="background: %236366f1" data-color="%236366f1"></div>
+                                <div class="color-circle" style="background: %23ec4899" data-color="%23ec4899"></div>
+                                <div class="color-circle" style="background: %238b5cf6" data-color="%238b5cf6"></div>
+                                <div class="color-circle" style="background: %236b7280" data-color="%236b7280"></div>
+                                <div class="color-circle" style="background: transparent; border: 1px dashed %23ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;" data-color="">X</div>
+                            </div>
+                        </div>`;
             textGroup.insertAdjacentHTML("beforeend", colorHtml);
 
             // 5. Add Full Screen Button
@@ -424,8 +391,8 @@
 
             // Add Media Button (Existing)
             const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media" style="background-image: none !important; display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                </button>`;
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </button>`;
             blockGroup.insertAdjacentHTML("beforeend", btnHtml);
 
             // Event Listeners for new actions
@@ -437,9 +404,9 @@
 
             toolbar.querySelector('[data-trix-action="insert-table"]').addEventListener("click", () => {
                 const table = `<table border="1" style="width:100%; border-collapse: collapse; margin: 10px 0;">
-                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                    </table><p>&nbsp;</p>`;
+                            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        </table><p>&nbsp;</p>`;
                 event.target.editor.insertHTML(table);
             });
 
@@ -505,9 +472,9 @@
                         : `<svg style="width: 48px; height: 48px; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
 
                     div.innerHTML = `
-                                    <div class="media-item-preview">${preview}</div>
-                                    <div class="media-item-name">${item.name}</div>
-                                `;
+                                        <div class="media-item-preview">${preview}</div>
+                                        <div class="media-item-name">${item.name}</div>
+                                    `;
                     grid.appendChild(div);
                 });
                 feather.replace();

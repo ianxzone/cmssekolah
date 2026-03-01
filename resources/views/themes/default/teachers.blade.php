@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
 @section('title', 'Guru & Tenaga Kependidikan - ' . ($settings['school_name'] ?? config('app.name')))
 

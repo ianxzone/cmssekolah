@@ -17,6 +17,9 @@ class SettingSeeder extends Seeder
             ['key' => 'school_tagline', 'value' => 'Mencetak Generasi Qurani yang Cendekia', 'type' => 'text'],
             ['key' => 'school_logo', 'value' => '', 'type' => 'image'],
             ['key' => 'school_favicon', 'value' => '', 'type' => 'image'],
+            ['key' => 'active_theme', 'value' => 'modern', 'type' => 'text'],
+            ['key' => 'theme_color_primary', 'value' => '#4f46e5', 'type' => 'text'],
+            ['key' => 'theme_color_secondary', 'value' => '#f43f5e', 'type' => 'text'],
 
             // Hero Section
             ['key' => 'hero_title', 'value' => 'Pendidikan Islam Modern & Berkualitas', 'type' => 'text'],

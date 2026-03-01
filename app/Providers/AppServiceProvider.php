@@ -14,16 +14,18 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        \Illuminate\Support\Facades\View::composer('*', function ($view) {
-            $settings = \Cache::remember('site_settings', 3600, function () {
-                return \App\Models\Setting::pluck('value', 'key')->toArray();
-            });
+        $settings = \Cache::remember('site_settings', 3600, function () {
+            return \App\Models\Setting::pluck('value', 'key')->toArray();
+        });
+
+        $activeTheme = $settings['active_theme'] ?? 'default';
+        \Illuminate\Support\Facades\View::addNamespace('theme', resource_path('views/themes/' . $activeTheme));
+
+        \Illuminate\Support\Facades\View::composer('*', function ($view) use ($settings) {
             $view->with('settings', $settings);
         });
     }
+
 }

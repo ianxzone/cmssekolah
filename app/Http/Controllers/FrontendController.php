@@ -41,7 +41,7 @@ class FrontendController extends Controller
                 ->get();
         }
 
-        return view('welcome', compact('settings', 'posts', 'events', 'testimonials'));
+        return view('theme::home', compact('settings', 'posts', 'events', 'testimonials'));
     }
 
     /**
@@ -55,7 +55,7 @@ class FrontendController extends Controller
             ->latest('published_at')
             ->paginate(9);
 
-        return view('frontend.index', compact('posts'));
+        return view('theme::index', compact('posts'));
     }
 
     /**
@@ -67,7 +67,7 @@ class FrontendController extends Controller
             ->orderBy('start_time', 'asc')
             ->paginate(12);
 
-        return view('frontend.events', compact('events'));
+        return view('theme::events', compact('events'));
     }
 
     /**
@@ -91,7 +91,7 @@ class FrontendController extends Controller
             "&details=" . urlencode(strip_tags($event->description)) .
             "&location=" . urlencode($event->location ?? ($event->type == 'online' ? $event->meeting_link : ''));
 
-        return view('frontend.event', compact('event', 'otherEvents', 'googleCalendarUrl'));
+        return view('theme::event', compact('event', 'otherEvents', 'googleCalendarUrl'));
     }
 
     /**
@@ -135,7 +135,7 @@ class FrontendController extends Controller
             ->where('published_at', '<=', now())
             ->firstOrFail();
 
-        return view('frontend.post', compact('post'));
+        return view('theme::post', compact('post'));
     }
 
     /**
@@ -151,7 +151,7 @@ class FrontendController extends Controller
             ->latest('published_at')
             ->paginate(9);
 
-        return view('frontend.category', compact('category', 'posts'));
+        return view('theme::category', compact('category', 'posts'));
     }
 
     /**
@@ -163,7 +163,7 @@ class FrontendController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        return view('frontend.form', compact('form'));
+        return view('theme::form', compact('form'));
     }
 
     /**
@@ -240,7 +240,7 @@ class FrontendController extends Controller
             ->where('type', 'default')
             ->firstOrFail();
 
-        return view('frontend.page', compact('page'));
+        return view('theme::page', compact('page'));
     }
 
     /**
@@ -249,6 +249,6 @@ class FrontendController extends Controller
     public function teachers()
     {
         $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
-        return view('frontend.teachers', compact('settings'));
+        return view('theme::teachers', compact('settings'));
     }
 }

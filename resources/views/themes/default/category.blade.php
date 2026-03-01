@@ -1,11 +1,11 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
-@section('title', 'Berita & Artikel - ' . ($settings['school_name'] ?? config('app.name')))
-@section('meta_description', 'Baca berita, artikel, dan pembaruan terkini dari ' . ($settings['school_name'] ?? config('app.name')))
+@section('title', 'Kategori: ' . $category->name . ' - ' . ($settings['school_name'] ?? config('app.name')))
+@section('meta_description', 'Artikel dalam kategori ' . $category->name)
 
 @push('styles')
     <style>
-        .news-archive {
+        .category-archive {
             padding: 0 20px 80px;
             margin: -60px auto 0;
             max-width: 1200px;
@@ -163,19 +163,21 @@
     <section class="subpage-hero" style="background-image: url('{{ $heroBg }}');">
         <div class="subpage-hero-overlay"></div>
         <div class="container">
-            <h1>Berita & Artikel Terkini</h1>
+            <h1>Kategori: {{ $category->name }}</h1>
             <div class="subpage-breadcrumb">
                 <a href="{{ route('home') }}">Beranda</a>
                 <i data-feather="chevron-right" style="width: 14px;"></i>
-                <span>Berita</span>
+                <a href="{{ route('posts.index') }}">Berita</a>
+                <i data-feather="chevron-right" style="width: 14px;"></i>
+                <span>{{ $category->name }}</span>
             </div>
         </div>
     </section>
 @endsection
 
 @section('content')
-    <div class="news-archive">
-        {{-- Removed old page-header as it's now in hero --}}
+    <div class="category-archive">
+        {{-- Old page-header removed --}}
 
         @if($posts->count() > 0)
             <div class="news-grid">
@@ -192,9 +194,7 @@
                             <div class="news-meta">
                                 <span><i data-feather="calendar"></i>
                                     {{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}</span>
-                                @if($post->category)
-                                    <span><i data-feather="tag"></i> {{ $post->category->name }}</span>
-                                @endif
+                                <span><i data-feather="tag"></i> {{ $category->name }}</span>
                             </div>
                             <h3>
                                 <a href="{{ route('posts.show', $post->slug) }}" style="color: inherit;">{{ $post->title }}</a>
@@ -209,13 +209,13 @@
             </div>
 
             <div class="pagination-wrapper">
-                {{ $posts->links('frontend.layouts.pagination') }}
+                {{ $posts->links('theme::layouts.pagination') }}
             </div>
         @else
             <div class="empty-state">
-                <i data-feather="book-open" style="width: 48px; height: 48px; opacity: 0.3; margin-bottom: 20px;"></i>
-                <h3>Belum ada berita dipublikasikan</h3>
-                <p>Silakan kembali lagi nanti untuk informasi terbaru.</p>
+                <i data-feather="folder" style="width: 48px; height: 48px; opacity: 0.3; margin-bottom: 20px;"></i>
+                <h3>Belum ada berita dalam kategori ini</h3>
+                <p>Silakan coba kategori lain atau kembali lagi nanti.</p>
             </div>
         @endif
     </div>

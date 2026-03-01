@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
 @section('title', 'Agenda Kegiatan - ' . config('app.name'))
 @section('meta_description', 'Jadwal dan agenda kegiatan mendatang di sekolah kami.')

@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
 @section('title', $form->title . ' - ' . config('app.name'))
 @section('meta_description', $form->description ?? 'Securely submit your information using our online form.')

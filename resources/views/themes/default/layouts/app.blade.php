@@ -621,6 +621,47 @@
                 text-align: center;
             }
         }
+
+        /* WhatsApp Floating Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-decoration: none !important;
+        }
+
+        .whatsapp-float:hover {
+            background-color: #128c7e;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(18, 140, 126, 0.5);
+            color: #fff !important;
+        }
+
+        .whatsapp-float i {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
     @stack('styles')
     {!! $settings['custom_header_scripts'] ?? '' !!}
@@ -815,6 +856,19 @@
     </script>
     @stack('scripts')
     {!! $settings['custom_footer_scripts'] ?? '' !!}
+
+    @if(($settings['whatsapp_show'] ?? '0') == '1')
+        @php
+            $waNumber = $settings['whatsapp_number'] ?? '6281234567890';
+            $waMsg = urlencode($settings['whatsapp_message'] ?? 'Halo Admin, saya ingin bertanya tentang SDIT Al Irsyad...');
+            $waUrl = "https://wa.me/{$waNumber}?text={$waMsg}";
+        @endphp
+        <a href="{{ $waUrl }}" class="whatsapp-float" target="_blank">
+            <i data-feather="{{ $settings['whatsapp_icon'] ?? 'message-circle' }}"></i>
+            <span>{{ $settings['whatsapp_btn_text'] ?? 'Chat dengan Kami' }}</span>
+        </a>
+        <script>feather.replace();</script>
+    @endif
 </body>
 
 </html>

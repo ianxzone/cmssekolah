@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
 @section('title', $page->title . ' - ' . config('app.name'))
 @section('meta_description', $page->seo_description ?? Str::limit(strip_tags($page->content), 150))
@@ -210,7 +210,7 @@
                 </header>
 
                 <div class="page-content trix-content">
-                    {!! $page->content !!}
+                    {!! \App\Helpers\ShortcodeHelper::parse($page->content) !!}
                 </div>
             </article>
         </div>
@@ -221,7 +221,8 @@
             <div class="sidebar-widget"
                 style="background: var(--primary); color: white; text-align: center; padding: 30px 20px;">
                 <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">
-                    {{ $settings['sidebar_ppdb_title'] ?? 'PPDB Dibuka!' }}</h3>
+                    {{ $settings['sidebar_ppdb_title'] ?? 'PPDB Dibuka!' }}
+                </h3>
                 <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">
                     {{ $settings['sidebar_ppdb_desc'] ?? 'Daftarkan putra-putri Anda sekarang juga.' }}
                 </p>

@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('theme::layouts.app')
 
 @section('title', $event->title . ' - Agenda Kegiatan')
 @section('meta_description', Str::limit(strip_tags($event->description), 150))
@@ -6,25 +6,16 @@
 @push('styles')
     <style>
         .layout-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 40px;
-            max-width: 1200px;
+            max-width: 900px;
+            /* Narrower for readability */
             margin: -60px auto 60px;
             padding: 0 20px;
             position: relative;
             z-index: 10;
-            align-items: start;
-        }
-
-        @media (max-width: 900px) {
-            .layout-container {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* MAIN CONTENT */
-        .event-container {
+        .article-container {
             background: var(--bg-surface);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
@@ -32,12 +23,12 @@
             overflow: hidden;
         }
 
-        .event-header {
+        .article-header {
             padding: 2.5rem 2.5rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .event-title {
+        .article-title {
             font-size: 2.2rem;
             font-weight: 700;
             line-height: 1.3;
@@ -90,24 +81,24 @@
             color: var(--primary);
         }
 
-        .event-thumbnail {
+        .article-thumbnail {
             width: 100%;
             max-height: 450px;
             object-fit: cover;
             background-color: var(--bg-body);
         }
 
-        .event-description {
+        .article-content {
             padding: 2.5rem;
             font-size: 1.1rem;
             line-height: 1.8;
             color: var(--text-main);
         }
 
-        .event-description p,
-        .event-description ul,
-        .event-description ol,
-        .event-description li {
+        .article-content p,
+        .article-content ul,
+        .article-content ol,
+        .article-content li {
             margin-bottom: 1.5rem;
             color: inherit;
         }
@@ -122,56 +113,6 @@
             gap: 0.5rem;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .sidebar-widget {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 25px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-        }
-
-        .sidebar-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-list li {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed var(--border-color);
-        }
-
-        .sidebar-list a {
-            color: var(--text-main);
-            font-weight: 500;
-            display: block;
-            line-height: 1.4;
-        }
-
-        .sidebar-list a:hover {
-            color: var(--primary);
-        }
-
         .sidebar-meta {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -183,8 +124,8 @@
 
         @media (max-width: 768px) {
 
-            .event-description,
-            .event-header {
+            .article-content,
+            .article-header {
                 padding: 1.5rem;
             }
 
@@ -192,7 +133,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .event-title {
+            .article-title {
                 font-size: 1.8rem;
             }
         }
@@ -260,21 +201,38 @@
 
 @section('hero')
     @php
-        $heroBg = $settings['hero_bg_image'] ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1920';
-        if (!Str::startsWith($heroBg, ['http://', 'https://', 'data:'])) {
+        $heroBg = $event->image ? Storage::url($event->image) : ($settings['hero_bg_image'] ?? 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1920');
+        if (!Str::startsWith($heroBg, ['http://', 'https://', 'data:', '/storage'])) {
             $heroBg = Storage::url($heroBg);
         }
     @endphp
-    <section class="subpage-hero" style="background-image: url('{{ $heroBg }}');">
-        <div class="subpage-hero-overlay"></div>
-        <div class="container">
-            <h1>Agenda Kegiatan</h1>
-            <div class="subpage-breadcrumb">
-                <a href="{{ route('home') }}">Beranda</a>
-                <i data-feather="chevron-right" style="width: 14px;"></i>
-                <a href="{{ route('events.index') }}">Agenda</a>
-                <i data-feather="chevron-right" style="width: 14px;"></i>
-                <span>Detail</span>
+    <section class="subpage-hero"
+        style="background-image: url('{{ $heroBg }}'); min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative;">
+        <!-- Gradient overlay -->
+        <div class="subpage-hero-overlay"
+            style="background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.85)); position: absolute; inset: 0;">
+        </div>
+
+        <div class="container" style="position: relative; z-index: 2; max-width: 900px; padding-top: 60px;">
+            <span
+                style="background: var(--secondary); color: white; padding: 6px 20px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; margin-bottom: 25px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                Agenda Kegiatan
+            </span>
+            <h1
+                style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.2; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                {{ $event->title }}
+            </h1>
+
+            <div
+                style="color: rgba(255,255,255,0.9); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 25px; font-weight: 500;">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <i data-feather="calendar" style="width:18px;"></i>
+                    {{ $event->start_time->format('l, d F Y') }}
+                </span>
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <i data-feather="clock" style="width:18px;"></i>
+                    {{ $event->start_time->format('H:i') }} WIB
+                </span>
             </div>
         </div>
     </section>
@@ -283,14 +241,10 @@
 @section('content')
     <div class="layout-container">
         <!-- Main Content -->
-        <div class="event-column">
-            <article class="event-container">
-                @if($event->image)
-                    <img src="{{ Storage::url($event->image) }}" alt="{{ $event->title }}" class="event-thumbnail">
-                @endif
-
-                <header class="event-header">
-                    <h1 class="event-title">{{ $event->title }}</h1>
+        <div class="article-column">
+            <article class="article-container"
+                style="border: none; margin-top: -80px; position: relative; z-index: 10; box-shadow: var(--shadow-xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25)); padding-top: 1rem;">
+                <header class="article-header" style="border-bottom: none; padding-bottom: 0;">
 
                     <div class="event-meta-grid">
                         <div class="meta-box">
@@ -357,9 +311,9 @@
                     </div>
                 </header>
 
-                <div class="event-description trix-content">
+                <div class="article-content trix-content">
                     <h3 class="event-section-title"><i data-feather="info" style="width:18px;"></i> Detail Kegiatan</h3>
-                    {!! $event->description !!}
+                    {!! \App\Helpers\ShortcodeHelper::parse($event->description) !!}
 
                     @if($event->type == 'offline' && $event->map_link)
                         <div style="margin-top: 2.5rem;">
@@ -377,55 +331,5 @@
                 </div>
             </article>
         </div>
-
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <!-- SPMB Banner -->
-            <div class="sidebar-widget" style="background: var(--primary); color: white; text-align: center;">
-                <h3 style="color: white; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">
-                    {{ $settings['sidebar_ppdb_title'] ?? 'PPDB Dibuka!' }}
-                </h3>
-                <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9;">
-                    {{ $settings['sidebar_ppdb_desc'] ?? 'Daftarkan putra-putri Anda sekarang juga.' }}
-                </p>
-                <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="btn btn-white"
-                    style="width: 100%; font-weight: 700;">{{ $settings['sidebar_ppdb_btn_text'] ?? 'Info Selengkapnya' }}</a>
-            </div>
-
-            <!-- Other Events -->
-            <div class="sidebar-widget">
-                <h3 class="sidebar-title"><i data-feather="calendar" style="width:18px;"></i> Agenda Lainnya</h3>
-                <ul class="sidebar-list">
-                    @forelse($otherEvents as $other)
-                        <li>
-                            <a href="{{ route('events.show', $other->id) }}">{{ $other->title }}</a>
-                            <div class="sidebar-meta">
-                                <i data-feather="calendar" style="width:12px;"></i> {{ $other->start_time->format('d M Y') }}
-                            </div>
-                        </li>
-                    @empty
-                        <li>Belum ada agenda lain.</li>
-                    @endforelse
-                </ul>
-            </div>
-
-            <!-- News Widget -->
-            <div class="sidebar-widget">
-                <h3 class="sidebar-title"><i data-feather="book-open" style="width:18px;"></i> Berita Terbaru</h3>
-                <ul class="sidebar-list">
-                    @php
-                        $latestNews = \App\Models\Post::whereNotNull('published_at')->latest('published_at')->take(3)->get();
-                    @endphp
-                    @foreach($latestNews as $news)
-                        <li>
-                            <a href="{{ route('posts.show', $news->slug) }}">{{ $news->title }}</a>
-                            <div class="sidebar-meta">
-                                <i data-feather="calendar" style="width:12px;"></i> {{ $news->published_at->format('d M Y') }}
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </aside>
     </div>
 @endsection

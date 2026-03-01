@@ -19,32 +19,6 @@
             padding-bottom: 0;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            transition: all 0.15s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
 
         .form-text {
             font-size: 0.75rem;
@@ -297,6 +271,42 @@
                             <textarea name="contact_address" class="form-control"
                                 rows="3">{{ $settings['contact_address'] ?? 'Jl. Raya Telukjambe, Karawang Barat, Jawa Barat 41361' }}</textarea>
                         </div>
+
+                        <h3
+                            style="font-size: 1.125rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            Integrasi WhatsApp Floating Button</h3>
+                        <div class="toggle-wrap" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <span class="toggle-label">Tampilkan Tombol WhatsApp</span>
+                                <span class="toggle-desc">Menampilkan tombol melayang di pojok kanan bawah</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="whatsapp_show" value="1" {{ ($settings['whatsapp_show'] ?? '0') == '1' ? 'checked' : '' }}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label class="form-label">Nomor WhatsApp (Gunakan Kode Negara tanpa +, ex: 62812...)</label>
+                                <input type="text" name="whatsapp_number" class="form-control"
+                                    value="{{ $settings['whatsapp_number'] ?? '6281234567890' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Pesan Otomatis (Default Message)</label>
+                                <input type="text" name="whatsapp_message" class="form-control"
+                                    value="{{ $settings['whatsapp_message'] ?? 'Halo Admin, saya ingin bertanya tentang SDIT Al Irsyad...' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Teks pada Tombol (ex: Chat dengan Kami)</label>
+                                <input type="text" name="whatsapp_btn_text" class="form-control"
+                                    value="{{ $settings['whatsapp_btn_text'] ?? 'Chat dengan Kami' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Icon (Nama Icon Feather, ex: message-circle, phone)</label>
+                                <input type="text" name="whatsapp_icon" class="form-control"
+                                    value="{{ $settings['whatsapp_icon'] ?? 'message-circle' }}">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="setting-section">
@@ -431,6 +441,65 @@
 
                 <!-- TAB 3: WIDGET & LAYOUT -->
                 <div x-show="activeTab === 'layout'" style="display: none;" x-transition>
+                    <div class="setting-section">
+                        <h3
+                            style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            Tema Tampilan</h3>
+
+                        <div class="form-group">
+                            <label class="form-label">Tema Aktif</label>
+                            <select name="active_theme" class="form-control">
+                                @php
+                                    $themes = array_map('basename', \Illuminate\Support\Facades\File::directories(resource_path('views/themes')));
+                                @endphp
+                                @foreach($themes as $theme)
+                                    <option value="{{ $theme }}" {{ ($settings['active_theme'] ?? 'default') == $theme ? 'selected' : '' }}>
+                                        {{ ucfirst($theme) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <span class="form-text">Pilih tema untuk mengubah seluruh tata letak website depan.</span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Warna Utama (Primary)</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="color" name="theme_color_primary"
+                                        value="{{ $settings['theme_color_primary'] ?? '#4f46e5' }}"
+                                        style="height: 40px; width: 60px; padding: 2px; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">
+                                    <input type="text" class="form-control" name="theme_color_primary_hex"
+                                        value="{{ $settings['theme_color_primary'] ?? '#4f46e5' }}" readonly
+                                        style="background: #f1f5f9;">
+                                </div>
+                                <span class="form-text">Digunakan untuk tombol utama, navbar, dan teks sorotan.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Warna Kedua (Secondary/Aksen)</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="color" name="theme_color_secondary"
+                                        value="{{ $settings['theme_color_secondary'] ?? '#f43f5e' }}"
+                                        style="height: 40px; width: 60px; padding: 2px; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">
+                                    <input type="text" class="form-control" name="theme_color_secondary_hex"
+                                        value="{{ $settings['theme_color_secondary'] ?? '#f43f5e' }}" readonly
+                                        style="background: #f1f5f9;">
+                                </div>
+                                <span class="form-text">Digunakan untuk aksen tombol hover, badge, dan elemen minor.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // Simple script to keep the text input in sync with the color picker
+                        document.querySelector('input[name="theme_color_primary"]').addEventListener('input', function (e) {
+                            document.querySelector('input[name="theme_color_primary_hex"]').value = e.target.value;
+                        });
+                        document.querySelector('input[name="theme_color_secondary"]').addEventListener('input', function (e) {
+                            document.querySelector('input[name="theme_color_secondary_hex"]').value = e.target.value;
+                        });
+                    </script>
+
                     <div class="setting-section">
                         <h3
                             style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">

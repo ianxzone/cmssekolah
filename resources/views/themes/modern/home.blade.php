@@ -7,7 +7,7 @@
     <title>{{ $title ?? ($settings['school_name'] ?? 'SDIT Al Irsyad') }}</title>
     <link rel="icon"
         href="{{ isset($settings['school_favicon']) && $settings['school_favicon'] ? \Illuminate\Support\Facades\Storage::url($settings['school_favicon']) : asset('favicon.ico') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://unpkg.com/feather-icons"></script>
@@ -21,19 +21,19 @@
     </script>
     <style>
         :root {
-            --primary: #065f46;
-            --primary-dark: #064e3b;
-            --primary-light: #10b981;
-            --secondary: #fbbf24;
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #818cf8;
+            --secondary: #f43f5e;
             --text-main: #1f2937;
             --text-muted: #6b7280;
-            --bg-light: #f9fafb;
+            --bg-light: #f8fafc;
             --white: #ffffff;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --radius-md: 12px;
-            --radius-lg: 24px;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --radius-md: 16px;
+            --radius-lg: 32px;
             --container-max: 1200px;
             --transition: all 0.3s ease;
         }
@@ -145,6 +145,47 @@
             color: var(--text-muted);
         }
 
+        /* WhatsApp Floating Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-decoration: none !important;
+        }
+
+        .whatsapp-float:hover {
+            background-color: #128c7e;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(18, 140, 126, 0.5);
+            color: #fff !important;
+        }
+
+        .whatsapp-float i {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+        }
+
         .dark .nav-link {
             color: #d1d5db;
         }
@@ -204,9 +245,9 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text-main);
-            background-color: var(--white);
+            background-color: var(--bg-light);
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -339,17 +380,23 @@
         }
 
         .navbar {
-            background: var(--white);
-            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 10px 25px;
             position: sticky;
-            top: 0;
+            top: 20px;
             z-index: 1000;
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            margin: 20px auto;
+            max-width: var(--container-max);
+            width: calc(100% - 40px);
         }
 
         .navbar.sticky-active {
-            padding: 10px 0;
+            padding: 10px 25px;
             box-shadow: var(--shadow-md);
         }
 
@@ -421,58 +468,79 @@
 
         .hero {
             position: relative;
-            height: 85vh;
+            min-height: 85vh;
             display: flex;
             align-items: center;
-            color: var(--white);
-            margin-top: -1px;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            padding: 80px 0;
         }
 
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to right, rgba(6, 78, 59, 0.95), rgba(6, 78, 59, 0.5));
-            z-index: 0;
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
         }
 
         .hero .container {
             position: relative;
             z-index: 1;
+            width: 100%;
         }
 
         .hero-content {
-            max-width: 800px;
+            max-width: 600px;
         }
 
         .hero-badge {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
             padding: 8px 20px;
             border-radius: 50px;
             display: inline-block;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
         }
 
+        .dark .hero-badge {
+            background: rgba(129, 140, 248, 0.2);
+            color: var(--primary-light);
+        }
+
         .hero h2 {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            line-height: 1.1;
+            line-height: 1.15;
             margin-bottom: 20px;
+            color: var(--primary-dark);
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             margin-bottom: 35px;
-            opacity: 0.9;
-            max-width: 700px;
+            color: var(--text-muted);
+            line-height: 1.7;
         }
 
         .hero-btns {
             display: flex;
             gap: 15px;
+        }
+
+        .hero-image {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25));
+            height: 500px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .prayer-bar {
@@ -718,16 +786,15 @@
             background: var(--white);
             padding: 40px 30px;
             border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
             text-align: center;
             transition: var(--transition);
-            border: 1px solid transparent;
+            border: none;
         }
 
         .program-card:hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary-light);
         }
 
         .program-icon {
@@ -768,17 +835,24 @@
             display: flex;
             gap: 20px;
             padding: 25px;
-            background: #f1f5f9;
-            border-radius: var(--radius-md);
+            background: var(--white);
+            border-radius: var(--radius-lg);
             align-items: center;
-            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: none;
+        }
+
+        .agenda-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
 
         .agenda-date {
-            background: var(--primary);
-            color: var(--white);
+            background: var(--bg-light);
+            color: var(--primary);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             text-align: center;
             min-width: 80px;
         }
@@ -901,7 +975,7 @@
         }
 
         .news {
-            background: var(--white);
+            background: var(--bg-light); /* Different background from agenda to create section break */
         }
 
         .news-grid {
@@ -914,9 +988,9 @@
             background: var(--white);
             border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
             transition: var(--transition);
-            border: 1px solid #f1f5f9;
+            border: none;
             display: flex;
             flex-direction: column;
         }
@@ -1455,24 +1529,28 @@
         </div>
     </nav>
 
-    <!-- 3. HERO SECTION -->
+    <!-- 3. HERO SECTION (Modern Split Screen) -->
     @php
         $heroBg = $resolveAsset($settings['hero_bg_image'] ?? '', 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1920');
-        $heroBgUrl = "url('" . $heroBg . "')";
     @endphp
-    <div class="hero" style="background-image: {{ $heroBgUrl }}; background-size: cover; background-position: center;">
-        <div class="hero-overlay"></div>
+    <div class="hero">
         <div class="container">
-            <div class="hero-content">
-                <div class="hero-badge">{{ $settings['ppdb_title'] ?? 'Penerimaan Murid Baru TA 2025/2026' }}</div>
-                <h2>{!! nl2br(e($settings['hero_title'] ?? "SMA Islam Teladan \n Al Irsyad Karawang")) !!}</h2>
-                <p>{{ $settings['hero_subtitle'] ?? 'Menjadi Sekolah Islam Teladan Yang Berakhlakul Karimah, Unggul Dalam Prestasi & Berdaya Guna Di Masyarakat.' }}
-                </p>
-                <div class="hero-btns">
-                    <a href="{{ $settings['hero_btn_link'] ?? '#' }}"
-                        class="btn btn-primary">{{ $settings['hero_btn_text'] ?? 'Daftar Sekarang' }} <i
-                            data-feather="chevron-right"></i></a>
-                    <a href="#" class="btn btn-outline-white">Jelajahi Profil</a>
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge">{{ $settings['ppdb_title'] ?? 'Penerimaan Murid Baru TA 2025/2026' }}</div>
+                    <h2>{!! nl2br(e($settings['hero_title'] ?? "SMA Islam Teladan \n Al Irsyad Karawang")) !!}</h2>
+                    <p>{{ $settings['hero_subtitle'] ?? 'Menjadi Sekolah Islam Teladan Yang Berakhlakul Karimah, Unggul Dalam Prestasi & Berdaya Guna Di Masyarakat.' }}
+                    </p>
+                    <div class="hero-btns">
+                        <a href="{{ $settings['hero_btn_link'] ?? '#' }}"
+                            class="btn btn-primary">{{ $settings['hero_btn_text'] ?? 'Daftar Sekarang' }} <i
+                                data-feather="chevron-right" style="width: 18px;"></i></a>
+                        <a href="#about" class="btn btn-outline"
+                            style="border-color: var(--primary); color: var(--primary);">Jelajahi Profil</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="{{ $heroBg }}" alt="Hero Image">
                 </div>
             </div>
         </div>
@@ -2091,9 +2169,18 @@
             window.addEventListener('load', checkCredit);
         })();
     </script>
-</body>
-
-</html>
+    @if(($settings['whatsapp_show'] ?? '0') == '1')
+        @php
+            $waNumber = $settings['whatsapp_number'] ?? '6281234567890';
+            $waMsg = urlencode($settings['whatsapp_message'] ?? 'Halo Admin, saya ingin bertanya tentang SDIT Al Irsyad...');
+            $waUrl = "https://wa.me/{$waNumber}?text={$waMsg}";
+        @endphp
+        <a href="{{ $waUrl }}" class="whatsapp-float" target="_blank">
+            <i data-feather="{{ $settings['whatsapp_icon'] ?? 'message-circle' }}"></i>
+            <span>{{ $settings['whatsapp_btn_text'] ?? 'Chat dengan Kami' }}</span>
+        </a>
+        <script>feather.replace();</script>
+    @endif
 </body>
 
 </html>
