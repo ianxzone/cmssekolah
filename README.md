@@ -54,6 +54,29 @@
 
 ---
 
+## 🌐 Panduan Deploy ke Hosting
+
+### 1. Deployment di cPanel (Shared Hosting)
+1. **Upload File**: Upload semua file proyek ke root folder (di luar `public_html`) atau gunakan Git Version Control di cPanel.
+2. **Setup Domain**: Arahkan *Document Root* domain/subdomain Anda ke folder `public`.
+3. **Konfigurasi PHP**: Pastikan versi PHP minimal 8.2 dan aktifkan ekstensi yang diperlukan (bcmath, ctype, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml).
+4. **Setup Database**: Buat database & user di *MySQL® Databases*, lalu update `.env`.
+5. **Simlink Storage**: Jika Anda tidak punya akses SSH, buat file `cronjob` atau `route` sementara untuk menjalankan `Storage::link()`.
+
+### 2. Deployment di DirectAdmin
+1. **File Manager**: Upload file ke folder aplikasi Anda.
+2. **Domain Setup**: Masuk ke *Domain Setup* -> Pilih domain -> Ganti *Document Root* ke folder `public`.
+3. **Terminal/SSH**: Jika tersedia, jalankan:
+   ```bash
+   composer install --no-dev
+   php artisan migrate --seed
+   php artisan storage:link
+   ```
+4. **Select PHP Version**: Pastikan versi PHP sesuai melalui *Select PHP version*.
+5. **SSL**: Aktifkan SSL melalui *SSL Certificates* (Let's Encrypt) demi keamanan pendaftaran PPDB.
+
+---
+
 ## 🛠️ Teknologi yang Digunakan
 
 - **Backend**: Laravel 12.x
