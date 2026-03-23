@@ -98,9 +98,20 @@ class InstallController extends Controller
     public function saveAdmin(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => [
+                'required',
+                'min:10',
+                'confirmed',
+                'regex:/[a-z]/',      // Must contain lowercase
+                'regex:/[A-Z]/',      // Must contain uppercase
+                'regex:/[0-9]/',      // Must contain number
+                'regex:/[@$!%*?&#]/', // Must contain special character
+            ],
+        ], [
+            'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'password.min' => 'Password must be at least 10 characters long.',
         ]);
 
         // Clear existing users just in case
@@ -110,7 +121,7 @@ class InstallController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin', // Ensure role field exists or matches your schema
+            'role' => 'admin',
         ]);
 
         return redirect()->route('install.finish');

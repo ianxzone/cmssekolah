@@ -675,7 +675,8 @@
         }
     </style>
     @stack('styles')
-    {!! $settings['custom_header_scripts'] ?? '' !!}
+    {{-- Disabled custom scripts for security - prevents XSS attacks --}}
+    {{-- {!! $settings['custom_header_scripts'] ?? '' !!} --}}
 </head>
 
 <body>
@@ -853,7 +854,8 @@
         })();
     </script>
     @stack('scripts')
-    {!! $settings['custom_footer_scripts'] ?? '' !!}
+    {{-- Disabled custom footer scripts for security - prevents XSS attacks --}}
+    {{-- {!! $settings['custom_footer_scripts'] ?? '' !!} --}}
 
     @if(($settings['whatsapp_show'] ?? '0') == '1')
         @php

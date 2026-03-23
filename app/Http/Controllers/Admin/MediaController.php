@@ -16,6 +16,27 @@ class MediaController extends Controller
         return view('admin.media.index', compact('media'));
     }
 
+    /**
+     * List of allowed MIME types for file uploads
+     */
+    protected $allowedMimeTypes = [
+        // Images
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/svg+xml',
+        // Documents
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        // Text
+        'text/plain',
+        'text/csv',
+    ];
+
     public function store(Request $request)
     {
         $request->validate([
@@ -23,17 +44,44 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('file');
+        
+        // Verify MIME type is allowed
+        $mimeType = $file->getMimeType();
+        if (!in_array($mimeType, $this->allowedMimeTypes)) {
+            return redirect()->back()
+                ->withErrors(['file' => 'File type not allowed. Allowed types: Images, PDFs, Documents.'])
+                ->withInput();
+        }
+        
+        // Additional security: Check file extension matches MIME type
+        $extension = strtolower($file->getClientOriginalExtension());
+        $validExtensions = $this->getValidExtensionsForMimeType($mimeType);
+        
+        if (!in_array($extension, $validExtensions)) {
+            return redirect()->back()
+                ->withErrors(['file' => 'File extension does not match content type.'])
+                ->withInput();
+        }
+        
+        // Check for executable content
+        $sampleContent = file_get_contents($file->getRealPath(), false, null, 0, 512);
+        if ($this->containsExecutableContent($sampleContent)) {
+            return redirect()->back()
+                ->withErrors(['file' => 'File contains suspicious executable content.'])
+                ->withInput();
+        }
+        
         $originalName = $file->getClientOriginalName();
         $fileName = pathinfo($originalName, PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-
+        
+        // Sanitize filename
         $safeFileName = Str::slug($fileName) . '-' . time() . '.' . $extension;
         $path = $file->storeAs('media', $safeFileName, 'public');
 
         $media = Media::create([
             'name' => $originalName,
             'file_name' => $safeFileName,
-            'mime_type' => $file->getMimeType(),
+            'mime_type' => $mimeType,
             'path' => $path,
             'disk' => 'public',
             'size' => $file->getSize(),
@@ -48,6 +96,52 @@ class MediaController extends Controller
         }
 
         return redirect()->route('admin.media.index')->with('success', 'File uploaded successfully.');
+    }
+    
+    /**
+     * Get valid file extensions for a given MIME type
+     */
+    protected function getValidExtensionsForMimeType(string $mimeType): array
+    {
+        $mapping = [
+            'image/jpeg' => ['jpg', 'jpeg'],
+            'image/png' => ['png'],
+            'image/gif' => ['gif'],
+            'image/webp' => ['webp'],
+            'image/svg+xml' => ['svg'],
+            'application/pdf' => ['pdf'],
+            'application/msword' => ['doc'],
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => ['docx'],
+            'application/vnd.ms-excel' => ['xls'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => ['xlsx'],
+            'text/plain' => ['txt'],
+            'text/csv' => ['csv'],
+        ];
+        
+        return $mapping[$mimeType] ?? [];
+    }
+    
+    /**
+     * Check if content contains executable signatures
+     */
+    protected function containsExecutableContent(string $content): bool
+    {
+        $executableSignatures = [
+            '<?php',
+            '<script language="php">',
+            '#!/usr/bin/perl',
+            '#!/usr/bin/python',
+            '#!/bin/bash',
+            'MZ', // DOS/Windows executable
+        ];
+        
+        foreach ($executableSignatures as $signature) {
+            if (strpos($content, $signature) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     public function apiList(Request $request)

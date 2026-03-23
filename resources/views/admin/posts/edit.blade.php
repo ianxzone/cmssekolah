@@ -3,195 +3,107 @@
 @section('title', 'Edit Post')
 
 @push('styles')
-    <!-- Trix CDN -->
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
-    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
+    
     <style>
-        /* Trix Customization */
-        trix-toolbar [data-trix-button-group="file-tools"] {
-            display: none;
+        /* Summernote Custom Styling */
+        .note-editor {
+            border: 1px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
         }
-
-        trix-editor {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--bg-surface);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            min-height: 300px;
+        
+        .note-editor.note-frame {
+            border-color: #e5e7eb !important;
         }
-
-        trix-editor:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        
+        .note-editor.note-frame:focus-within {
+            border-color: #4f46e5 !important;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
         }
-
-        .grid-layout {
-
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            align-items: start;
+        
+        .note-toolbar {
+            background: #f9fafb !important;
+            border-bottom: 1px solid #e5e7eb !important;
+            padding: 8px !important;
         }
-
-        @media (max-width: 900px) {
-            .grid-layout {
-                grid-template-columns: 1fr;
-            }
+        
+        .note-btn {
+            background: #ffffff !important;
+            border: 1px solid #d1d5db !important;
+            color: #374151 !important;
+            border-radius: 4px !important;
+            padding: 6px 12px !important;
+            font-size: 14px !important;
+            transition: all 0.2s ease !important;
         }
-
-        .sidebar-panel {
-            background-color: #f9fafb;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+        
+        .note-btn:hover,
+        .note-btn:active,
+        .note-btn.active {
+            background: #4f46e5 !important;
+            border-color: #4f46e5 !important;
+            color: #ffffff !important;
         }
-
-        /* Media Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
+        
+        .note-btn:disabled {
+            opacity: 0.4 !important;
+            cursor: not-allowed !important;
         }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            width: 80%;
-            max-width: 900px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            flex-direction: column;
-            max-height: 85vh;
+        
+        .note-editable {
+            min-height: 400px !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+            color: #111827 !important;
+            padding: 16px !important;
         }
-
-        .modal-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        .note-editable:focus {
+            outline: none !important;
         }
-
-        .modal-body {
-            padding: 1.5rem;
-            overflow-y: auto;
-            flex-grow: 1;
+        
+        .note-statusbar {
+            background: #f9fafb !important;
+            border-top: 1px solid #e5e7eb !important;
         }
-
-        .media-picker-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1rem;
+        
+        .note-resizebar {
+            display: none !important;
         }
-
-        .media-item {
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.2s;
+        
+        .note-placeholder {
+            color: #9ca3af !important;
         }
-
-        .media-item:hover {
-            border-color: var(--primary-color);
+        
+        /* Dropdown Styling */
+        .note-dropdown-menu {
+            border-radius: 8px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid #e5e7eb !important;
         }
-
-        .media-item.selected {
-            border-color: var(--primary-color);
-            background: rgba(79, 70, 229, 0.05);
+        
+        .note-dropdown-item:hover {
+            background: #4f46e5 !important;
+            color: #ffffff !important;
         }
-
-        .media-item-preview {
-            aspect-ratio: 1;
-            background: #f3f4f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        /* Modal Styling */
+        .note-modal {
+            border-radius: 12px !important;
         }
-
-        .media-item-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        
+        .note-modal .note-btn {
+            background: #4f46e5 !important;
+            color: #ffffff !important;
         }
-
-        .media-item-name {
-            font-size: 0.75rem;
-            padding: 0.5rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-align: center;
-        }
-
-        /* Trix Enhancements */
-        .trix-editor-container {
-            position: relative;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .trix-editor-container.full-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 9999;
-            padding: 2rem;
-            background: white;
-        }
-
-        .trix-editor-container.full-screen trix-editor {
-            height: calc(100vh - 150px) !important;
-        }
-
-        .trix-button--icon-color::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20h16'/%3E%3Cmpath d='m6 16 6-12 6 12'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E") !important;
-        }
-
-        .trix-button--icon-align-center::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='10' x2='6' y2='10'/%3E%3Cline x1='21' y1='6' x2='3' y2='6'/%3E%3Cline x1='21' y1='14' x2='3' y2='14'/%3E%3Cline x1='18' y1='18' x2='6' y2='18'/%3E%3C/svg%3E") !important;
-        }
-
-        .trix-button--icon-align-right::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' y1='10' x2='10' y2='10'/%3E%3Cline x1='21' y1='6' x2='3' y2='6'/%3E%3Cline x1='21' y1='14' x2='3' y2='14'/%3E%3Cline x1='21' y1='18' x2='10' y2='18'/%3E%3C/svg%3E") !important;
-        }
-
-        .trix-button--icon-table::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18'/%3E%3C/svg%3E") !important;
-        }
-
-        .trix-button--icon-fullscreen::before {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3'/%3E%3C/svg%3E") !important;
-        }
-
-        .color-picker-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            padding: 10px;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .color-circle {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        
+        /* Hide file image buttons if needed */
+        .note-btn[data-event="imageShape"],
+        .note-btn[data-event="colorTable"] {
+            display: none !important;
         }
     </style>
 @endpush
@@ -236,11 +148,7 @@
                                 <span id="content-word-count" style="font-size: 0.75rem; color: var(--text-secondary);">0
                                     words</span>
                             </div>
-                            <div class="trix-editor-container" id="editor-container">
-                                <input id="content" type="hidden" name="content"
-                                    value="{{ old('content', $post->content) }}">
-                                <trix-editor input="content"></trix-editor>
-                            </div>
+                            <textarea id="content" name="content" class="form-control" rows="10">{{ old('content', $post->content) }}</textarea>
                             @error('content') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
@@ -413,83 +321,12 @@
             return str.split(' ').length;
         }
 
-        function updateWordCount(inputId, displayId, isTrix = false) {
+        function updateWordCount(inputId, displayId) {
             const display = document.getElementById(displayId);
-            let text = "";
-            if (isTrix) {
-                const editor = document.querySelector("trix-editor");
-                text = editor.editor.getDocument().toString();
-            } else {
-                text = document.getElementById(inputId).value;
-            }
+            const text = document.getElementById(inputId).value;
             const count = countWords(text);
             display.innerText = `${count} word${count !== 1 ? 's' : ''}`;
         }
-
-        document.addEventListener('trix-change', () => {
-            updateWordCount('content', 'content-word-count', true);
-        });
-
-        // Trix Global Configuration Enhancements
-        Trix.config.textAttributes.color = {
-            style: { color: "value" },
-            parser: function (element) {
-                return element.style.color;
-            },
-            inheritable: true
-        };
-
-        Trix.config.blockAttributes.alignCenter = {
-            tagName: "div",
-            terminal: true,
-            breakOnReturn: true,
-            group: false,
-            style: { textAlign: "center" }
-        };
-
-        Trix.config.blockAttributes.alignRight = {
-            tagName: "div",
-            terminal: true,
-            breakOnReturn: true,
-            group: false,
-            style: { textAlign: "right" }
-        };
-
-        // Trix Toolbar Customization
-        document.addEventListener("trix-initialize", function (event) {
-            const toolbar = event.target.toolbarElement;
-            const blockGroup = toolbar.querySelector(".trix-button-group--block-tools");
-            const textGroup = toolbar.querySelector(".trix-button-group--text-tools");
-            const historyGroup = toolbar.querySelector(".trix-button-group--history-tools");
-
-            // 1. Add Center Align Button
-            const alignCenterHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-center" data-trix-attribute="alignCenter" title="Align Center"></button>`;
-            blockGroup.insertAdjacentHTML("beforeend", alignCenterHtml);
-
-            // 2. Add Right Align Button
-            const alignRightHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-right" data-trix-attribute="alignRight" title="Align Right"></button>`;
-            blockGroup.insertAdjacentHTML("beforeend", alignRightHtml);
-
-            // 3. Add Table Button
-            const tableHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-table" data-trix-action="insert-table" title="Insert Table"></button>`;
-            blockGroup.insertAdjacentHTML("beforeend", tableHtml);
-
-            // 4. Add Color Button & Dialog
-            const colorHtml = `
-                        <button type="button" class="trix-button trix-button--icon trix-button--icon-color" data-trix-action="show-color-picker" title="Text Color"></button>
-                        <div class="trix-dialog trix-dialog--color" data-trix-dialog="color-picker" data-trix-dialog-attribute="color">
-                            <div class="color-picker-grid">
-                                <div class="color-circle" style="background: %23000000" data-color="%23000000"></div>
-                                <div class="color-circle" style="background: %23ef4444" data-color="%23ef4444"></div>
-                                <div class="color-circle" style="background: %233b82f6" data-color="%233b82f6"></div>
-                                <div class="color-circle" style="background: %2310b981" data-color="%2310b981"></div>
-                                <div class="color-circle" style="background: %23f59e0b" data-color="%23f59e0b"></div>
-                                <div class="color-circle" style="background: %236366f1" data-color="%236366f1"></div>
-                                <div class="color-circle" style="background: %23ec4899" data-color="%23ec4899"></div>
-                                <div class="color-circle" style="background: %238b5cf6" data-color="%238b5cf6"></div>
-                                <div class="color-circle" style="background: %236b7280" data-color="%236b7280"></div>
-                                <div class="color-circle" style="background: transparent; border: 1px dashed %23ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;" data-color="">X</div>
-                            </div>
                         </div>`;
             textGroup.insertAdjacentHTML("beforeend", colorHtml);
 
@@ -641,48 +478,66 @@
             }
         }
 
-        // Trix Attachment Handling
-        document.addEventListener("trix-attachment-add", function (event) {
-            if (event.attachment.file) {
-                uploadFileAttachment(event.attachment);
-            }
+        // Summernote Initialization
+        $(document).ready(function() {
+            $('#content').summernote({
+                placeholder: 'Write your content here...',
+                tabsize: 2,
+                height: 400,
+                toolbar: [
+                    ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph', 'height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video', 'hr']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadImage(files[0], this);
+                    }
+                }
+            });
         });
 
-        function uploadFileAttachment(attachment) {
-            const file = attachment.file;
-            const form = new FormData();
-            form.append("file", file);
+        function uploadImage(file, editor) {
+            const formData = new FormData();
+            formData.append('file', file);
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "{{ route('admin.media.store') }}", true);
-            xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}");
-            xhr.setRequestHeader("Accept", "application/json");
-
-            xhr.upload.onprogress = function (event) {
-                const progress = event.loaded / event.total * 100;
-                attachment.setUploadProgress(progress);
-            };
-
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    attachment.setAttributes({
-                        url: response.url,
-                        href: response.url
-                    });
+            $.ajax({
+                url: "{{ route('admin.media.store') }}",
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    $(editor).summernote('insertImage', response.url);
+                },
+                error: function(xhr) {
+                    alert('Failed to upload image');
                 }
-            };
-
-            xhr.send(form);
+            });
         }
+
+        // Word count update for Summernote
+        $('#content').on('summernote.change', function() {
+            updateWordCount('content', 'content-word-count');
+        });
 
         // Initialize counts
         window.onload = function () {
             updateWordCount('description', 'description-word-count');
             updateWordCount('seo_title', 'seo_title-word-count');
             updateWordCount('seo_description', 'seo_description-word-count');
-            // Trix takes a moment to initialize
-            setTimeout(() => updateWordCount('content', 'content-word-count', true), 500);
+            updateWordCount('content', 'content-word-count');
         };
     </script>
+
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
 @endpush

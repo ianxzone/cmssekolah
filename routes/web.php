@@ -22,7 +22,7 @@ use App\Http\Controllers\Admin\AuthController;
 // Admin Auth Routes
 Route::prefix('admin')->middleware(['web'])->group(function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('login', [AuthController::class, 'login'])->name('admin.login.post');
+    Route::post('login', [AuthController::class, 'login'])->name('admin.login.post')->middleware('throttle:5,1'); // 5 attempts per minute
     Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 });
 
@@ -59,6 +59,10 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     Route::post('maintenance/optimize', [AdminMaintenanceController::class, 'optimize'])->name('admin.maintenance.optimize');
     Route::post('maintenance/upload-update', [AdminMaintenanceController::class, 'uploadUpdate'])->name('admin.maintenance.uploadUpdate');
 
+    // Tools & Import
+    Route::get('tools/import', [App\Http\Controllers\Admin\ImportController::class, 'index'])->name('admin.tools.import.index');
+    Route::post('tools/import', [App\Http\Controllers\Admin\ImportController::class, 'store'])->name('admin.tools.import.store');
+
     // About/Developer Page
     Route::get('about', [DashboardController::class, 'about'])->name('admin.about');
 });
@@ -82,18 +86,20 @@ Route::prefix('install')->name('install.')->group(function () {
     Route::get('/finish', [App\Http\Controllers\InstallController::class, 'finish'])->name('finish');
 });
 
+// --- Public Frontend Routes ---
 Route::get('/', [FrontendController::class, 'index'])->name('home');
+
+// Post & Event Index (Static for now, but bases could be dynamic later)
 Route::get('/berita', [FrontendController::class, 'posts'])->name('posts.index');
-Route::get('/berita/{slug}', [FrontendController::class, 'showPost'])->name('posts.show');
 Route::get('/agenda', [FrontendController::class, 'events'])->name('events.index');
-Route::get('/agenda/{event}', [FrontendController::class, 'showEvent'])->name('events.show');
 Route::get('/agenda/{event}/ics', [FrontendController::class, 'downloadIcs'])->name('events.ics');
+
 Route::get('/guru', [FrontendController::class, 'teachers'])->name('teachers.index');
 Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->name('categories.show');
 
 // Dynamic Forms
 Route::get('/form/{slug}', [FrontendController::class, 'showForm'])->name('forms.show.frontend');
-Route::post('/form/{slug}/submit', [FrontendController::class, 'submitForm'])->name('forms.submit');
+Route::post('/form/{slug}/submit', [FrontendController::class, 'submitForm'])->name('forms.submit')->middleware('throttle:10,1'); // 10 submissions per minute
 
-// Dynamic Pages (Catch-all at root level)
-Route::get('/{slug}', [FrontendController::class, 'showPage'])->name('pages.show');
+// Catch-all Dynamic Permalinks (Pages, Posts, Events)
+Route::get('{path}', [\App\Http\Controllers\PermalinkController::class, 'resolve'])->where('path', '.*')->name('permalink.resolve');

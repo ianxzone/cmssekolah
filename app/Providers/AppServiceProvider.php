@@ -16,11 +16,16 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $settings = \Cache::remember('site_settings', 3600, function () {
-            return \App\Models\Setting::pluck('value', 'key')->toArray();
-        });
+        $activeTheme = 'default';
+        $settings = [];
 
-        $activeTheme = $settings['active_theme'] ?? 'default';
+        if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+            $settings = \Cache::remember('site_settings', 3600, function () {
+                return \App\Models\Setting::pluck('value', 'key')->toArray();
+            });
+            $activeTheme = $settings['active_theme'] ?? 'default';
+        }
+
         \Illuminate\Support\Facades\View::addNamespace('theme', resource_path('views/themes/' . $activeTheme));
 
         \Illuminate\Support\Facades\View::composer('*', function ($view) use ($settings) {

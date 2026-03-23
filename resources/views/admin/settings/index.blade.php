@@ -185,10 +185,10 @@
                     @click="activeTab = 'layout'">Widget & Layout</button>
                 <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'profile' }"
                     @click="activeTab = 'profile'">Profil & Visi</button>
-                <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'data1' }"
-                    @click="activeTab = 'data1'">Program & Stats</button>
                 <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'data2' }"
                     @click="activeTab = 'data2'">Ekskul & Fasilitas</button>
+                <button type="button" class="tab-btn" :class="{ 'active': activeTab === 'permalink' }"
+                    @click="activeTab = 'permalink'">Permalink</button>
             </div>
 
             <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
@@ -774,6 +774,80 @@
                             <label class="form-label">Footer Scripts (Diletakkan sebelum &lt;/body&gt;)</label>
                             <textarea name="custom_footer_scripts" class="form-control" rows="8"
                                 placeholder="<!-- Masukkan script footer di sini -->">{{ $settings['custom_footer_scripts'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 8: PERMALINK SETTINGS -->
+                <div x-show="activeTab === 'permalink'" style="display: none;" x-transition>
+                    <div class="setting-section">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-color);">Struktur Permalink Berita</h3>
+                        <p class="form-text mb-4">Pilih struktur URL untuk postingan berita Anda.</p>
+                        
+                        <div class="form-group" x-data="{ 
+                            structure: '{{ $settings['permalink_structure'] ?? '/berita/%postname%' }}',
+                            customStructure: '{{ $settings['permalink_structure'] ?? '/berita/%postname%' }}',
+                            isCustom: {{ in_array($settings['permalink_structure'] ?? '/berita/%postname%', ['/index.php?p=%post_id%', '/%year%/%monthnum%/%day%/%postname%', '/berita/%postname%', '/%postname%']) ? 'false' : 'true' }}
+                        }">
+                            <div class="radio-group" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="permalink_structure" value="/index.php?p=%post_id%" x-model="structure" @change="isCustom = false">
+                                    <span>Biasa (Plain) <small class="text-secondary" style="margin-left:10px; color:#64748b; font-size:0.8rem;">?p=123</small></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="permalink_structure" value="/%year%/%monthnum%/%day%/%postname%" x-model="structure" @change="isCustom = false">
+                                    <span>Tanggal dan nama <small class="text-secondary" style="margin-left:10px; color:#64748b; font-size:0.8rem;">/2026/03/23/sample-post</small></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="permalink_structure" value="/berita/%postname%" x-model="structure" @change="isCustom = false">
+                                    <span>Berita dan nama (Default) <small class="text-secondary" style="margin-left:10px; color:#64748b; font-size:0.8rem;">/berita/sample-post</small></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="permalink_structure" value="/%postname%" x-model="structure" @change="isCustom = false">
+                                    <span>Nama pos <small class="text-secondary" style="margin-left:10px; color:#64748b; font-size:0.8rem;">/sample-post</small></span>
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                    <input type="radio" name="permalink_structure_type" value="custom" x-model="isCustom" :checked="isCustom">
+                                    <span>Struktur Kustom:</span>
+                                    <input type="text" name="permalink_structure_custom" class="form-control" style="flex: 1; max-width: 400px;" 
+                                        x-model="customStructure" 
+                                        :name="isCustom ? 'permalink_structure' : 'permalink_structure_custom_ignored'"
+                                        placeholder="/blog/%category%/%postname%">
+                                </div>
+                                <template x-if="!isCustom">
+                                    <input type="hidden" name="permalink_structure" :value="structure">
+                                </template>
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 0.5rem; color: var(--primary-color);">Struktur Permalink Agenda</h3>
+                        <p class="form-text mb-4">Pilih struktur URL untuk agenda kegiatan.</p>
+                        <div class="form-group">
+                            @php
+                                $currentEventStructure = $settings['permalink_event_structure'] ?? '/agenda/%postname%';
+                            @endphp
+                            <div class="radio-group" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="permalink_event_structure" value="/agenda/%postname%" {{ $currentEventStructure == '/agenda/%postname%' ? 'checked' : '' }}>
+                                    <span>Agenda dan nama (Default) <small class="text-secondary" style="margin-left:10px; color:#64748b; font-size:0.8rem;">/agenda/sample-event</small></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="permalink_event_structure" value="/%postname%" {{ $currentEventStructure == '/%postname%' ? 'checked' : '' }}>
+                                    <span>Nama agenda saja <small class="text-secondary" style="margin-left:10px; color:#64748b; font-size:0.8rem;">/sample-event</small></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1.5rem; color: var(--primary-color);">Opsional (Basis)</h3>
+                        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                             <div class="form-group">
+                                <label class="form-label">Basis Kategori</label>
+                                <input type="text" name="permalink_category_base" class="form-control" value="{{ $settings['permalink_category_base'] ?? 'category' }}" placeholder="category">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Basis Tag</label>
+                                <input type="text" name="permalink_tag_base" class="form-control" value="{{ $settings['permalink_tag_base'] ?? 'tag' }}" placeholder="tag">
+                            </div>
                         </div>
                     </div>
                 </div>

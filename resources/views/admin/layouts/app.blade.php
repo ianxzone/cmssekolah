@@ -168,6 +168,12 @@
                     <span>Maintenance Mode</span>
                 </a>
 
+                <a href="{{ route('admin.tools.import.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.tools.import.*') ? 'active' : '' }}">
+                    <i data-feather="download"></i>
+                    <span>WordPress Import</span>
+                </a>
+
                 <a href="{{ route('admin.about') }}"
                     class="nav-item {{ request()->routeIs('admin.about') ? 'active' : '' }}">
                     <i data-feather="info"></i>
@@ -315,6 +321,10 @@
             }, 3000);
         });
     </script>
+    
+    <!-- jQuery for Summernote -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     @stack('scripts')
 </body>
 

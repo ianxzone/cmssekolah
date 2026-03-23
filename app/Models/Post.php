@@ -3,9 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasUniqueSlug;
 
 class Post extends Model
 {
+    use HasUniqueSlug;
+
+    protected $appends = ['url'];
+
+    public function getUrlAttribute()
+    {
+        return \App\Services\PermalinkService::getPostUrl($this);
+    }
     protected $fillable = [
         'title',
         'subtitle',

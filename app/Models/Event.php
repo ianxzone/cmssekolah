@@ -3,11 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasUniqueSlug;
 
 class Event extends Model
 {
+    use HasUniqueSlug;
+
+    protected $appends = ['url'];
+
+    public function getUrlAttribute()
+    {
+        return \App\Services\PermalinkService::getEventUrl($this);
+    }
     protected $fillable = [
         'title',
+        'slug',
         'type',
         'meeting_link',
         'description',

@@ -34,12 +34,15 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Regenerate CSRF token for additional security
+            $request->session()->regenerateToken();
+
             return redirect()->intended(route('admin.dashboard'));
         }
 
         throw ValidationException::withMessages([
             'email' => __('auth.failed'),
-        ]);
+        ])->errorBag('login');
     }
 
     /**
