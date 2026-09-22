@@ -7,24 +7,9 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
     <style>
-        /* Trix Customization */
+        /* Trix Customization handled in admin.css */
         trix-toolbar [data-trix-button-group="file-tools"] {
             display: none;
-        }
-
-        trix-editor {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--bg-surface);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            min-height: 250px;
-        }
-
-        trix-editor:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         .form-group {

@@ -27,7 +27,7 @@
                             class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition duration-300 overflow-hidden flex flex-col h-full border border-gray-100">
                             <a href="{{ route('posts.show', $post->slug) }}" class="block relative h-48 overflow-hidden">
                                 @if($post->image)
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($post->image) }}" alt="{{ $post->title }}"
+                                    <img src="{{ $post->image_url }}" alt="{{ $post->title }}"
                                         class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
                                 @else
                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">

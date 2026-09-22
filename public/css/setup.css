@@ -24,14 +24,22 @@ body {
     background: var(--bg-gradient);
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     color: var(--text);
-    padding: 20px;
+    padding: 40px 20px;
+}
+
+.setup-wrapper {
+    width: 100%;
+    max-width: 620px;
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .setup-container {
-    max-width: 600px;
     width: 100%;
     background: var(--card-bg);
     backdrop-filter: blur(10px);
@@ -64,6 +72,25 @@ body {
 .setup-logo {
     max-width: 100px;
     margin-bottom: 20px;
+}
+
+.setup-icon-badge {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: #93c5fd;
+}
+
+.setup-icon-badge i,
+.setup-icon-badge svg {
+    width: 28px;
+    height: 28px;
 }
 
 .setup-header h1 {
@@ -224,13 +251,39 @@ body {
 
 .footer-credit {
     text-align: center;
-    margin-top: 20px;
-    font-size: 0.8rem;
+    margin-top: 24px;
+    font-size: 0.85rem;
     color: var(--text-muted);
+    width: 100%;
 }
 
 .footer-credit a {
     color: var(--accent);
     font-weight: 700;
     text-decoration: none;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .setup-header {
+        padding: 30px 20px;
+    }
+
+    .setup-body {
+        padding: 25px 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
 }

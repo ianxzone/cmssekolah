@@ -39,11 +39,43 @@
     font-family: 'Inter', sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: var(--bg-body);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
+
+/* Modern Slim Sleek Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 
 a {
     text-decoration: none;
@@ -67,6 +99,8 @@ a {
     position: fixed;
     height: 100vh;
     z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
 }
 
 /* Collapsed Sidebar State */
@@ -185,6 +219,33 @@ a {
     padding: 1.5rem 1rem;
     flex: 1;
     overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.sidebar-nav::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 .nav-section {
@@ -468,7 +529,7 @@ a {
 
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: none;
     }
 }
 
@@ -557,4 +618,459 @@ select,
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
+}
+
+/* ==========================================================================
+   Trix Editor Enhanced Typography & Spacing (WordPress-like Experience)
+   ========================================================================== */
+trix-toolbar {
+    margin-bottom: 0.65rem;
+    padding: 6px 8px;
+    background: #ffffff;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+trix-toolbar .trix-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+}
+
+trix-toolbar .trix-button-group {
+    margin-bottom: 0 !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+trix-toolbar .trix-button {
+    border: none !important;
+    border-right: 1px solid #e2e8f0 !important;
+    background: transparent;
+    padding: 6px 10px;
+    height: 34px;
+    transition: all 0.15s ease;
+}
+
+trix-toolbar .trix-button:last-child {
+    border-right: none !important;
+}
+
+trix-toolbar .trix-button:hover {
+    background: #e2e8f0;
+}
+
+trix-toolbar .trix-button.trix-active {
+    background: #006837 !important;
+    color: #ffffff !important;
+}
+
+/* Hide default Trix inline link dialog because we use WordPress-style Link Modal */
+trix-toolbar .trix-dialog--link {
+    display: none !important;
+}
+
+/* Trix Editor Surface */
+trix-editor {
+    border: 1px solid var(--border-color, #e2e8f0) !important;
+    border-radius: 12px !important;
+    background-color: #ffffff !important;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 1.05rem !important; /* 16.8px readable editorial size */
+    line-height: 1.85 !important;   /* comfortable paragraph reading line-height */
+    min-height: 420px !important;
+    padding: 1.5rem 1.75rem !important; /* spacious padding */
+    color: #1e293b !important;       /* slate-800 soft dark text */
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+trix-editor:focus {
+    border-color: #006837 !important;
+    box-shadow: 0 0 0 3px rgba(0, 104, 55, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* CRITICAL FIX: Override `* { margin: 0; padding: 0; }` for elements inside Trix Editor */
+trix-editor div,
+trix-editor p {
+    margin-bottom: 1.35rem !important;
+    line-height: 1.85 !important;
+}
+
+trix-editor div:last-child,
+trix-editor p:last-child {
+    margin-bottom: 0 !important;
+}
+
+trix-editor h1 {
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    color: #0f172a !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+}
+
+trix-editor h2 {
+    font-size: 1.45rem !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+    color: #0f172a !important;
+    margin-top: 1.75rem !important;
+    margin-bottom: 0.85rem !important;
+}
+
+trix-editor h3 {
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    line-height: 1.45 !important;
+    color: #0f172a !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+trix-editor blockquote {
+    border-left: 4px solid #006837 !important;
+    padding: 0.85rem 1.25rem !important;
+    margin: 1.5rem 0 !important;
+    font-style: italic !important;
+    color: #475569 !important;
+    background: #f8fafc !important;
+    border-radius: 0 8px 8px 0 !important;
+}
+
+trix-editor ul,
+trix-editor ol {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1.35rem !important;
+    padding-left: 2rem !important;
+}
+
+trix-editor li {
+    margin-bottom: 0.5rem !important;
+    line-height: 1.8 !important;
+}
+
+trix-editor a {
+    color: #006837 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+trix-editor a:hover {
+    color: #024324 !important;
+}
+
+trix-editor pre {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    padding: 1rem 1.25rem !important;
+    border-radius: 8px !important;
+    margin: 1.25rem 0 !important;
+    overflow-x: auto;
+    font-family: monospace !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+}
+
+trix-editor code {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-size: 0.9em !important;
+    font-family: monospace !important;
+}
+
+/* WordPress-Style 'Tambah Media' Button */
+.btn-wp-add-media {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1.2;
+}
+
+.btn-wp-add-media:hover {
+    background-color: #f8fafc;
+    border-color: #006837;
+    color: #006837;
+    box-shadow: 0 2px 4px rgba(0, 104, 55, 0.12);
+}
+
+.btn-wp-add-media:active {
+    transform: translateY(1px);
+}
+
+.btn-wp-add-media svg {
+    color: #006837;
+    transition: transform 0.2s ease;
+}
+
+.btn-wp-add-media:hover svg {
+    transform: scale(1.1);
+}
+
+/* Trix Editor Attachment & Image Styles */
+trix-editor figure.attachment,
+trix-editor figure.attachment-image {
+    margin: 1.5rem auto !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    display: block !important;
+}
+
+trix-editor figure.attachment img,
+trix-editor figure.attachment-image img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    display: inline-block !important;
+}
+
+trix-editor figure.attachment figcaption,
+trix-editor figure.attachment-image figcaption {
+    font-size: 0.85rem !important;
+    color: #64748b !important;
+    margin-top: 0.5rem !important;
+    font-style: italic !important;
+    text-align: center !important;
+}
+
+/* ==========================================================================
+   WordPress-Style Link Modal UI
+   ========================================================================== */
+.wp-link-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.wp-link-modal-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.wp-link-modal-container {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid #e2e8f0;
+}
+
+.wp-link-modal-backdrop.active .wp-link-modal-container {
+    transform: scale(1);
+}
+
+.wp-link-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.wp-link-modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.wp-link-modal-close {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.wp-link-modal-close:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.wp-link-modal-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.wp-link-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.wp-link-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #475569;
+}
+
+.wp-link-input {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #0f172a;
+    transition: all 0.15s;
+    outline: none;
+    background: #f8fafc;
+}
+
+.wp-link-input:focus {
+    background: #ffffff;
+    border-color: #006837;
+    box-shadow: 0 0 0 3px rgba(0, 104, 55, 0.12);
+}
+
+.wp-link-helper {
+    font-size: 0.72rem;
+    color: #64748b;
+}
+
+.wp-link-options-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.wp-link-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wp-link-checkbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid #94a3b8;
+    accent-color: #006837;
+    cursor: pointer;
+}
+
+.wp-link-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-wp-link-unlink {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s;
+}
+
+.btn-wp-link-unlink:hover {
+    background: #fca5a5;
+    color: #7f1d1d;
+}
+
+.btn-wp-link-cancel {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-wp-link-cancel:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.btn-wp-link-save {
+    background: #006837;
+    color: #ffffff;
+    border: 1px solid #004d28;
+    border-radius: 8px;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(0, 104, 55, 0.2);
+    transition: all 0.15s;
+}
+
+.btn-wp-link-save:hover {
+    background: #024324;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 104, 55, 0.25);
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -15,13 +16,24 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'home_headmaster_image' => 'nullable|image|max:2048',
+            'seo_default_image' => 'nullable|image|max:2048',
+        ]);
+
         $data = $request->except('_token');
 
-        // Handle file uploads (e.g., headmaster_image)
+        // Handle file uploads (e.g., headmaster_image, seo_default_image)
         if ($request->hasFile('home_headmaster_image')) {
-            $imagePath = $request->file('home_headmaster_image')->store('settings', 'public');
-            \App\Models\Setting::set('home_headmaster_image', $imagePath, 'image');
+            $optimized = ImageService::optimizeAndStore($request->file('home_headmaster_image'), 'settings', 'headmaster');
+            \App\Models\Setting::set('home_headmaster_image', $optimized['path'], 'image');
             unset($data['home_headmaster_image']); // unset so we don't process it below
+        }
+        
+        if ($request->hasFile('seo_default_image')) {
+            $optimized = ImageService::optimizeAndStore($request->file('seo_default_image'), 'settings', 'og_image');
+            \App\Models\Setting::set('seo_default_image', $optimized['path'], 'image');
+            unset($data['seo_default_image']); // unset so we don't process it below
         }
 
         // Handle booleans (checkboxes are not sent if unchecked)
@@ -31,7 +43,13 @@ class SettingController extends Controller
             'home_show_news',
             'home_show_events',
             'home_show_facilities',
-            'home_show_testimonials'
+            'home_show_testimonials',
+            'home_show_teachers',
+            'home_show_prayer',
+            'home_show_units',
+            'home_show_curriculum',
+            'home_show_pearson',
+            'matomo_disable_cookies'
         ];
 
         foreach ($booleanKeys as $key) {
@@ -45,18 +63,25 @@ class SettingController extends Controller
             'navbar_links',
             'hero_slider_images',
             'stats_data',
+            'school_missions',
             'superior_programs',
             'teachers_data',
             'facilities_list',
-            'extracurriculars_list'
+            'extracurriculars_list',
+            'units_data',
+            'curriculum_pillars'
         ];
 
         foreach ($arrayKeys as $key) {
             if ($request->has($key) && is_array($request->input($key))) {
                 // Remove empty rows before encoding
                 $filteredArray = array_filter($request->input($key), function ($item) {
-                    // Check if at least one meaningful sub-key has a value
-                    return !empty(array_filter($item));
+                    if (is_array($item)) {
+                        return !empty(array_filter($item, function ($val) {
+                            return !is_null($val) && $val !== '';
+                        }));
+                    }
+                    return !is_null($item) && $item !== '';
                 });
                 // Re-index array starting from 0
                 $filteredArray = array_values($filteredArray);

@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TestimonialSeeder::class,
             EventSeeder::class,
+            TeacherSeeder::class,
+            PostSeeder::class,
         ]);
     }
 }

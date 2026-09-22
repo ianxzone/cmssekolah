@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
@@ -23,6 +24,7 @@ class TestimonialController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role' => 'required|in:parent,student,alumni',
+            'occupation' => 'nullable|string|max:255',
             'content' => 'required|string',
             'is_active' => 'boolean',
             'image' => 'nullable|image|max:2048',
@@ -31,7 +33,8 @@ class TestimonialController extends Controller
         $validated['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('testimonials', 'public');
+            $opt = ImageService::optimizeAndStore($request->file('image'), 'testimonials');
+            $validated['image'] = $opt['path'];
         }
 
         \App\Models\Testimonial::create($validated);
@@ -49,6 +52,7 @@ class TestimonialController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'role' => 'required|in:parent,student,alumni',
+            'occupation' => 'nullable|string|max:255',
             'content' => 'required|string',
             'is_active' => 'boolean',
             'image' => 'nullable|image|max:2048',
@@ -60,7 +64,8 @@ class TestimonialController extends Controller
             if ($testimonial->image) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($testimonial->image);
             }
-            $validated['image'] = $request->file('image')->store('testimonials', 'public');
+            $opt = ImageService::optimizeAndStore($request->file('image'), 'testimonials');
+            $validated['image'] = $opt['path'];
         }
 
         $testimonial->update($validated);

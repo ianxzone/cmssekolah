@@ -7,24 +7,9 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
     <style>
-        /* Trix Customization */
+        /* Trix Customization handled in admin.css */
         trix-toolbar [data-trix-button-group="file-tools"] {
             display: none;
-        }
-
-        trix-editor {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--bg-surface);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            min-height: 300px;
-        }
-
-        trix-editor:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         .form-group {
@@ -81,80 +66,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Media Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            width: 80%;
-            max-width: 900px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            flex-direction: column;
-            max-height: 85vh;
-        }
-        .modal-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-body {
-            padding: 1.5rem;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-        .media-picker-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1rem;
-        }
-        .media-item {
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-        .media-item:hover {
-            border-color: var(--primary-color);
-        }
-        .media-item.selected {
-            border-color: var(--primary-color);
-            background: rgba(79, 70, 229, 0.05);
-        }
-        .media-item-preview {
-            aspect-ratio: 1;
-            background: #f3f4f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .media-item-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .media-item-name {
-            font-size: 0.75rem;
-            padding: 0.5rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-align: center;
-        }
+
 
         /* Trix Enhancements */
         .trix-editor-container {
@@ -233,10 +145,20 @@
 
                         <div class="form-group">
                             <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <label class="form-label" for="content" style="margin-bottom: 0;">Content <span
-                                        class="text-danger">*</span></label>
-                                <span id="content-word-count" style="font-size: 0.75rem; color: var(--text-secondary);">0
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; flex-wrap: wrap; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label class="form-label" for="content" style="margin-bottom: 0; font-weight: 600;">Content <span
+                                            class="text-danger">*</span></label>
+                                    <button type="button" class="btn-wp-add-media" onclick="openMediaModalForEditor()" title="Tambahkan gambar atau berkas media dari komputer atau pustaka media">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <polyline points="21 15 16 10 5 21"/>
+                                        </svg>
+                                        <span>Tambah Media</span>
+                                    </button>
+                                </div>
+                                <span id="content-word-count" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">0
                                     words</span>
                             </div>
                             <div class="trix-editor-container" id="editor-container">
@@ -256,29 +178,8 @@
                             @error('description') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
-                        <h3
-                            style="font-size: 1.125rem; font-weight: 600; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                            SEO Settings</h3>
-
-                        <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <label class="form-label" for="seo_title" style="margin-bottom: 0;">SEO Title</label>
-                                <span id="seo_title-word-count" style="font-size: 0.75rem; color: var(--text-secondary);">0 words</span>
-                            </div>
-                            <input type="text" id="seo_title" name="seo_title" class="form-control"
-                                value="{{ old('seo_title') }}">
-                            @error('seo_title') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <label class="form-label" for="seo_description" style="margin-bottom: 0;">SEO Description</label>
-                                <span id="seo_description-word-count" style="font-size: 0.75rem; color: var(--text-secondary);">0 words</span>
-                            </div>
-                            <textarea id="seo_description" name="seo_description" class="form-control"
-                                rows="3">{{ old('seo_description') }}</textarea>
-                            @error('seo_description') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
+                        <!-- SEO Meta Box Component -->
+                        @include('admin.partials.seo-meta-box')
                     </div>
 
                     <!-- Sidebar Area -->
@@ -312,14 +213,79 @@
                             @error('category_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
+                        <!-- Author Selection Field -->
+                        @php
+                            $currentUser = auth()->user() ?? \App\Models\User::find(1);
+                            $canChangeAuthor = $currentUser ? $currentUser->canChangeAuthor() : true;
+                            $selectedAuthorId = old('user_id', $currentUser ? $currentUser->id : 1);
+                        @endphp
+                        <div class="form-group">
+                            <label class="form-label" for="user_id">
+                                <i data-feather="user" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>
+                                Penulis (Author) <span class="text-danger">*</span>
+                            </label>
+                            @if($canChangeAuthor)
+                                <select id="user_id" name="user_id" class="form-control" required style="font-weight: 500;">
+                                    @foreach($authors as $author)
+                                        <option value="{{ $author->id }}" {{ (string)$selectedAuthorId === (string)$author->id ? 'selected' : '' }}>
+                                            {{ $author->name }} ({{ $author->role_label }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem; display: block;">
+                                    Sebagai <strong>{{ $currentUser->role_label ?? 'Admin' }}</strong>, Anda dapat memilih author untuk artikel ini.
+                                </span>
+                            @else
+                                <div style="padding: 0.65rem 0.85rem; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.875rem; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: #065f46; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">
+                                            {{ substr($currentUser->name ?? 'A', 0, 1) }}
+                                        </div>
+                                        <span><strong>{{ $currentUser->name ?? 'Anda' }}</strong></span>
+                                    </div>
+                                    <span style="font-size: 0.72rem; background: #ecfdf5; color: #065f46; padding: 2px 8px; border-radius: 4px; font-weight: 600;">{{ $currentUser->role_label ?? 'Penulis' }}</span>
+                                </div>
+                                <input type="hidden" name="user_id" value="{{ $currentUser->id ?? 1 }}">
+                            @endif
+                            @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
                         <div class="form-group" style="margin-top: 1.5rem;">
-                            <label class="form-label" for="image">Featured Image</label>
-                            <input type="file" id="image" name="image" class="form-control" accept="image/*"
-                                onchange="previewImage(event)">
-                            <div id="image-preview"
-                                style="margin-top: 1rem; width: 100%; aspect-ratio: 16/9; background-color: var(--border-color); border-radius: 8px; overflow: hidden; display: none; align-items: center; justify-content: center;">
-                                <img id="preview-img" src="#" alt="Preview"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span>Gambar Utama (Featured Image)</span>
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">16:9 disarankan</span>
+                            </label>
+
+                            <!-- Hidden inputs for media library path & remove image flag -->
+                            <input type="hidden" id="featured_image_path" name="featured_image_path" value="{{ old('featured_image_path') }}">
+                            <input type="hidden" id="remove_image" name="remove_image" value="0">
+
+                            <!-- Card Preview Container -->
+                            <div id="featured-image-box" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 1rem; background: #ffffff; text-align: center; transition: all 0.2s;">
+                                <!-- Image Preview Area -->
+                                <div id="image-preview-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; background: #f3f4f6; border-radius: 8px; overflow: hidden; display: none; margin-bottom: 0.75rem;">
+                                    <img id="preview-img" src="#" alt="Featured Image Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <button type="button" onclick="removeFeaturedImage()" style="position: absolute; top: 8px; right: 8px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i> Hapus
+                                    </button>
+                                </div>
+
+                                <!-- Placeholder when no image is selected -->
+                                <div id="image-placeholder" style="padding: 1.25rem 1rem;">
+                                    <svg style="width: 40px; height: 40px; color: #9ca3af; margin: 0 auto 0.5rem auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <p style="font-size: 0.8125rem; color: #6b7280; margin: 0 0 0.75rem 0;">Belum ada gambar utama dipilih</p>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                                    <button type="button" class="btn btn-primary" onclick="openFeaturedImageMediaPicker()" style="font-size: 0.8125rem; padding: 0.4rem 0.875rem;">
+                                        <i data-feather="image" style="width: 15px; height: 15px; margin-right: 4px;"></i> Pilih dari Media
+                                    </button>
+                                    <label class="btn" style="font-size: 0.8125rem; padding: 0.4rem 0.875rem; background: #f3f4f6; border: 1px solid #d1d5db; color: #374151; cursor: pointer; margin-bottom: 0;">
+                                        <i data-feather="upload" style="width: 15px; height: 15px; margin-right: 4px;"></i> Upload File
+                                        <input type="file" id="image" name="image" accept="image/*" style="display: none;" onchange="handleDirectFileSelect(event)">
+                                    </label>
+                                </div>
                             </div>
                             @error('image') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
@@ -347,29 +313,8 @@
         </div>
     </div>
 
-    <!-- Media Library Modal -->
-    <div id="mediaModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="font-weight: 600; margin: 0;">Media Library</h3>
-                <button onclick="closeMediaModal()" style="border: none; background: none; cursor: pointer; color: var(--text-secondary);">
-                    <i data-feather="x"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem;">
-                    <input type="text" id="mediaSearch" class="form-control" placeholder="Search media..." onkeyup="fetchMediaItems()">
-                    <button class="btn btn-primary" onclick="insertSelectedMedia()">Insert Selected</button>
-                </div>
-                <div id="mediaPickerGrid" class="media-picker-grid">
-                    <!-- Loaded via JS -->
-                </div>
-                <div id="mediaLoading" style="text-align: center; padding: 2rem; display: none;">
-                    <div style="color: var(--text-secondary);">Loading...</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{-- WordPress-Style Media Library Modal --}}
+    @include('admin.partials.media-modal')
 @endsection
 
 @push('scripts')
@@ -436,200 +381,246 @@
             style: { textAlign: "right" }
         };
 
-        // Trix Toolbar Customization
-        document.addEventListener("trix-initialize", function(event) {
-            const toolbar = event.target.toolbarElement;
+        // Trix Toolbar Customization & Enhancements
+        function initTrixToolbarEnhancements(editorEl) {
+            if (!editorEl) return;
+            const toolbar = editorEl.toolbarElement;
+            if (!toolbar) return;
+            if (toolbar.dataset.enhanced === "true") return;
+            toolbar.dataset.enhanced = "true";
+
             const blockGroup = toolbar.querySelector(".trix-button-group--block-tools");
             const textGroup = toolbar.querySelector(".trix-button-group--text-tools");
             const historyGroup = toolbar.querySelector(".trix-button-group--history-tools");
 
+            if (!blockGroup || !textGroup || !historyGroup) return;
+
             // 1. Add Center Align Button
-            const alignCenterHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-center" data-trix-attribute="alignCenter" title="Align Center"></button>`;
-            blockGroup.insertAdjacentHTML("beforeend", alignCenterHtml);
+            if (!toolbar.querySelector('.trix-button--icon-align-center')) {
+                const alignCenterHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-center" data-trix-attribute="alignCenter" title="Rata Tengah (Align Center)"></button>`;
+                blockGroup.insertAdjacentHTML("beforeend", alignCenterHtml);
+            }
 
             // 2. Add Right Align Button
-            const alignRightHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-right" data-trix-attribute="alignRight" title="Align Right"></button>`;
-            blockGroup.insertAdjacentHTML("beforeend", alignRightHtml);
+            if (!toolbar.querySelector('.trix-button--icon-align-right')) {
+                const alignRightHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-right" data-trix-attribute="alignRight" title="Rata Kanan (Align Right)"></button>`;
+                blockGroup.insertAdjacentHTML("beforeend", alignRightHtml);
+            }
 
             // 3. Add Table Button
-            const tableHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-table" data-trix-action="insert-table" title="Insert Table"></button>`;
-            blockGroup.insertAdjacentHTML("beforeend", tableHtml);
+            if (!toolbar.querySelector('[data-trix-action="insert-table"]')) {
+                const tableHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-table" data-trix-action="insert-table" title="Sisipkan Tabel"></button>`;
+                blockGroup.insertAdjacentHTML("beforeend", tableHtml);
+            }
 
             // 4. Add Color Button & Dialog
-            const colorHtml = `
-                <button type="button" class="trix-button trix-button--icon trix-button--icon-color" data-trix-action="show-color-picker" title="Text Color"></button>
-                <div class="trix-dialog trix-dialog--color" data-trix-dialog="color-picker" data-trix-dialog-attribute="color">
-                    <div class="color-picker-grid">
-                        <div class="color-circle" style="background: %23000000" data-color="%23000000"></div>
-                        <div class="color-circle" style="background: %23ef4444" data-color="%23ef4444"></div>
-                        <div class="color-circle" style="background: %233b82f6" data-color="%233b82f6"></div>
-                        <div class="color-circle" style="background: %2310b981" data-color="%2310b981"></div>
-                        <div class="color-circle" style="background: %23f59e0b" data-color="%23f59e0b"></div>
-                        <div class="color-circle" style="background: %236366f1" data-color="%236366f1"></div>
-                        <div class="color-circle" style="background: %23ec4899" data-color="%23ec4899"></div>
-                        <div class="color-circle" style="background: %238b5cf6" data-color="%238b5cf6"></div>
-                        <div class="color-circle" style="background: %236b7280" data-color="%236b7280"></div>
-                        <div class="color-circle" style="background: transparent; border: 1px dashed %23ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;" data-color="">X</div>
-                    </div>
-                </div>`;
-            textGroup.insertAdjacentHTML("beforeend", colorHtml);
+            if (!toolbar.querySelector('[data-trix-action="show-color-picker"]')) {
+                const colorHtml = `
+                    <button type="button" class="trix-button trix-button--icon trix-button--icon-color" data-trix-action="show-color-picker" title="Warna Teks"></button>
+                    <div class="trix-dialog trix-dialog--color" data-trix-dialog="color-picker" data-trix-dialog-attribute="color">
+                        <div class="color-picker-grid">
+                            <div class="color-circle" style="background: #000000" data-color="#000000" title="Hitam"></div>
+                            <div class="color-circle" style="background: #ef4444" data-color="#ef4444" title="Merah"></div>
+                            <div class="color-circle" style="background: #3b82f6" data-color="#3b82f6" title="Biru"></div>
+                            <div class="color-circle" style="background: #006837" data-color="#006837" title="Hijau SDIT"></div>
+                            <div class="color-circle" style="background: #f59e0b" data-color="#f59e0b" title="Oranye"></div>
+                            <div class="color-circle" style="background: #6366f1" data-color="#6366f1" title="Indigo"></div>
+                            <div class="color-circle" style="background: #ec4899" data-color="#ec4899" title="Pink"></div>
+                            <div class="color-circle" style="background: #8b5cf6" data-color="#8b5cf6" title="Ungu"></div>
+                            <div class="color-circle" style="background: #6b7280" data-color="#6b7280" title="Abu-abu"></div>
+                            <div class="color-circle" style="background: transparent; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;" data-color="" title="Reset Warna">✕</div>
+                        </div>
+                    </div>`;
+                textGroup.insertAdjacentHTML("beforeend", colorHtml);
+            }
 
-            // 5. Add Full Screen Button
-            const fsHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-fullscreen" data-trix-action="toggle-fullscreen" title="Full Screen" style="margin-left: auto; border-left: 1px solid %23eee;"></button>`;
-            historyGroup.insertAdjacentHTML("beforeend", fsHtml);
+            // 5. Add Media Button (Pustaka Media & Unggah)
+            if (!toolbar.querySelector('[data-trix-action="add-media"]')) {
+                const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Tambah Media (Pustaka Media & Unggah Gambar)" style="background-image: none !important; display: inline-flex; align-items: center; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none; color: #006837;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </button>`;
+                blockGroup.insertAdjacentHTML("beforeend", btnHtml);
+            }
 
-            // Add Media Button (Existing)
-            const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media" style="background-image: none !important; display: flex; align-items: center; justify-content: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </button>`;
-            blockGroup.insertAdjacentHTML("beforeend", btnHtml);
+            // 6. Add Full Screen Button
+            if (!toolbar.querySelector('[data-trix-action="toggle-fullscreen"]')) {
+                const fsHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-fullscreen" data-trix-action="toggle-fullscreen" title="Layar Penuh (Full Screen)" style="margin-left: auto; border-left: 1px solid #eee;"></button>`;
+                historyGroup.insertAdjacentHTML("beforeend", fsHtml);
+            }
 
-            // Event Listeners for new actions
-            toolbar.querySelector('[data-trix-action="add-media"]').addEventListener("click", () => openMediaModal());
-
-            toolbar.querySelector('[data-trix-action="toggle-fullscreen"]').addEventListener("click", () => {
-                document.getElementById('editor-container').classList.toggle('full-screen');
+            // Event Listeners for actions
+            toolbar.querySelector('[data-trix-action="add-media"]')?.addEventListener("click", (e) => {
+                e.preventDefault();
+                openMediaModalForEditor(editorEl.editor);
             });
 
-            toolbar.querySelector('[data-trix-action="insert-table"]').addEventListener("click", () => {
-                const table = `<table border="1" style="width:100%; border-collapse: collapse; margin: 10px 0;">
-                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                </table><p>&nbsp;</p>`;
-                event.target.editor.insertHTML(table);
+            toolbar.querySelector('[data-trix-action="toggle-fullscreen"]')?.addEventListener("click", (e) => {
+                e.preventDefault();
+                document.getElementById('editor-container')?.classList.toggle('full-screen');
             });
 
-            toolbar.querySelector('[data-trix-action="show-color-picker"]').addEventListener("click", () => {
+            toolbar.querySelector('[data-trix-action="insert-table"]')?.addEventListener("click", (e) => {
+                e.preventDefault();
+                const table = `<table border="1" style="width:100%; border-collapse: collapse; margin: 15px 0;">
+                    <thead><tr style="background:#f8fafc;"><th style="padding:8px; border:1px solid #cbd5e1;">Kolom 1</th><th style="padding:8px; border:1px solid #cbd5e1;">Kolom 2</th></tr></thead>
+                    <tbody><tr><td style="padding:8px; border:1px solid #cbd5e1;">&nbsp;</td><td style="padding:8px; border:1px solid #cbd5e1;">&nbsp;</td></tr></tbody>
+                </table><p><br></p>`;
+                editorEl.editor.insertHTML(table);
+            });
+
+            toolbar.querySelector('[data-trix-action="show-color-picker"]')?.addEventListener("click", (e) => {
+                e.preventDefault();
                 const dialog = toolbar.querySelector('[data-trix-dialog="color-picker"]');
-                if (dialog.hasAttribute("data-trix-active")) {
-                    dialog.removeAttribute("data-trix-active");
-                } else {
-                    dialog.setAttribute("data-trix-active", "");
+                if (dialog) {
+                    if (dialog.hasAttribute("data-trix-active")) {
+                        dialog.removeAttribute("data-trix-active");
+                    } else {
+                        dialog.setAttribute("data-trix-active", "");
+                    }
                 }
             });
 
             toolbar.querySelectorAll(".color-circle").forEach(circle => {
                 circle.addEventListener("click", (e) => {
+                    e.preventDefault();
                     const color = e.target.getAttribute("data-color");
                     if (color) {
-                        event.target.editor.activateAttribute("color", color);
+                        editorEl.editor.activateAttribute("color", color);
                     } else {
-                        event.target.editor.removeAttribute("color");
+                        editorEl.editor.removeAttribute("color");
                     }
-                    toolbar.querySelector('[data-trix-dialog="color-picker"]').removeAttribute("data-trix-active");
+                    toolbar.querySelector('[data-trix-dialog="color-picker"]')?.removeAttribute("data-trix-active");
                 });
             });
+        }
+
+        // Initialize immediately or on event
+        document.addEventListener("trix-initialize", function (event) {
+            initTrixToolbarEnhancements(event.target);
         });
 
-        let selectedMediaItem = null;
-
-        function openMediaModal() {
-            document.getElementById('mediaModal').style.display = 'block';
-            fetchMediaItems();
-        }
-
-        function closeMediaModal() {
-            document.getElementById('mediaModal').style.display = 'none';
-        }
-
-        async function fetchMediaItems() {
-            const search = document.getElementById('mediaSearch').value;
-            const grid = document.getElementById('mediaPickerGrid');
-            const loader = document.getElementById('mediaLoading');
-
-            grid.innerHTML = '';
-            loader.style.display = 'block';
-
-            try {
-                const response = await fetch(`{{ route('admin.media.list') }}?search=${search}`);
-                const result = await response.json();
-                
-                loader.style.display = 'none';
-                
-                if (result.data.length === 0) {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No media found.</div>';
-                    return;
+        function setupAllTrixEditors() {
+            document.querySelectorAll("trix-editor").forEach(el => {
+                if (el.toolbarElement) {
+                    initTrixToolbarEnhancements(el);
                 }
-
-                result.data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'media-item';
-                    div.onclick = () => selectMediaItem(item, div);
-                    
-                    const preview = item.mime_type.startsWith('image/') 
-                        ? `<img src="/storage/${item.path}" alt="${item.name}">`
-                        : `<svg style="width: 48px; height: 48px; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-
-                    div.innerHTML = `
-                        <div class="media-item-preview">${preview}</div>
-                        <div class="media-item-name">${item.name}</div>
-                    `;
-                    grid.appendChild(div);
-                });
-                feather.replace();
-            } catch (error) {
-                console.error('Error fetching media:', error);
-                loader.innerText = 'Failed to load media.';
-            }
-        }
-
-        function selectMediaItem(item, element) {
-            document.querySelectorAll('.media-item').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedMediaItem = item;
-        }
-
-        function insertSelectedMedia() {
-            if (!selectedMediaItem) {
-                alert('Please select a media item first.');
-                return;
-            }
-
-            const trix = document.querySelector("trix-editor");
-            const attachment = new Trix.Attachment({
-                url: `/storage/${selectedMediaItem.path}`,
-                href: `/storage/${selectedMediaItem.path}`,
-                filename: selectedMediaItem.name,
-                contentType: selectedMediaItem.mime_type
             });
-            
-            trix.editor.insertAttachment(attachment);
-            closeMediaModal();
         }
 
-        document.getElementById('description').addEventListener('input', () => {
-            updateWordCount('description', 'description-word-count');
-        });
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", setupAllTrixEditors);
+        } else {
+            setupAllTrixEditors();
+        }
+        setTimeout(setupAllTrixEditors, 150);
+        setTimeout(setupAllTrixEditors, 600);
 
-        document.getElementById('seo_title').addEventListener('input', () => {
-            updateWordCount('seo_title', 'seo_title-word-count');
-        });
-
-        document.getElementById('seo_description').addEventListener('input', () => {
-            updateWordCount('seo_description', 'seo_description-word-count');
-        });
-
-        function generateSlug() {
-            let title = document.getElementById('title').value;
-            let slug = title.toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-')
-                .trim();
-            document.getElementById('slug').value = slug;
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const preview = document.getElementById('image-preview');
-                const img = document.getElementById('preview-img');
-                img.src = reader.result;
-                preview.style.display = 'flex';
+        function openMediaModalForEditor(editorInstance) {
+            window.openWpMediaModal({
+                mode: 'editor',
+                onSelect: function(item) {
+                    const editorEl = document.querySelector("trix-editor");
+                    const editor = editorInstance || editorEl?.editor;
+                    if (!editor) return;
+
+                    const imgUrl = item.url ? item.url : `/storage/${item.path}`;
+                    const altAttr = item.alt_text ? escapeHtml(item.alt_text) : escapeHtml(item.title || item.name || '');
+                    const titleAttr = item.title ? escapeHtml(item.title) : '';
+                    const captionText = item.caption ? escapeHtml(item.caption.trim()) : '';
+
+                    const attachmentData = {
+                        url: imgUrl,
+                        contentType: item.mime_type || 'image/jpeg',
+                        filename: item.name || '',
+                        filesize: item.size || 0
+                    };
+
+                    let figureHtml = `<figure data-trix-attachment='${JSON.stringify(attachmentData)}'`;
+                    if (captionText) {
+                        figureHtml += ` data-trix-attributes='${JSON.stringify({caption: captionText})}'`;
+                    }
+                    figureHtml += ` class="attachment attachment--preview">`;
+                    figureHtml += `<img src="${imgUrl}" alt="${altAttr}" ${titleAttr ? `title="${titleAttr}"` : ''} style="max-width: 100%; height: auto; border-radius: 8px;" />`;
+                    if (captionText) {
+                        figureHtml += `<figcaption class="attachment__caption">${captionText}</figcaption>`;
+                    }
+                    figureHtml += `</figure><p><br></p>`;
+
+                    try {
+                        editor.insertHTML(figureHtml);
+                    } catch (err) {
+                        console.warn('insertHTML fallback to Trix.Attachment:', err);
+                        const attachment = new Trix.Attachment({
+                            url: imgUrl,
+                            caption: captionText,
+                            contentType: item.mime_type || 'image/jpeg',
+                            filename: item.name || ''
+                        });
+                        editor.insertAttachment(attachment);
+                    }
+                }
+            });
+        }
+
+        // Backward compatibility
+        function insertMediaFromLibrary(editorInstance) {
+            openMediaModalForEditor(editorInstance);
+        }
+
+        function openFeaturedImageMediaPicker() {
+            window.openWpMediaModal({
+                mode: 'featured',
+                onSelect: function(item) {
+                    document.getElementById('featured_image_path').value = item.path;
+                    document.getElementById('remove_image').value = '0';
+                    
+                    const previewImg = document.getElementById('preview-img');
+                    const previewWrapper = document.getElementById('image-preview-wrapper');
+                    const placeholder = document.getElementById('image-placeholder');
+                    
+                    previewImg.src = item.url ? item.url : `/storage/${item.path}`;
+                    previewWrapper.style.display = 'block';
+                    placeholder.style.display = 'none';
+
+                    if (window.feather) feather.replace();
+                }
+            });
+        }
+
+        function handleDirectFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-img').src = e.target.result;
+                    document.getElementById('image-preview-wrapper').style.display = 'block';
+                    document.getElementById('image-placeholder').style.display = 'none';
+                    document.getElementById('remove_image').value = '0';
+                    document.getElementById('featured_image_path').value = '';
+                    if (window.feather) feather.replace();
+                };
+                reader.readAsDataURL(file);
             }
-            if (event.target.files[0]) {
-                reader.readAsDataURL(event.target.files[0]);
-            }
+        }
+
+        function removeFeaturedImage() {
+            document.getElementById('featured_image_path').value = '';
+            document.getElementById('remove_image').value = '1';
+            document.getElementById('preview-img').src = '#';
+            document.getElementById('image-preview-wrapper').style.display = 'none';
+            document.getElementById('image-placeholder').style.display = 'block';
+            const fileInput = document.getElementById('image');
+            if (fileInput) fileInput.value = '';
         }
 
         // Trix Attachment Handling

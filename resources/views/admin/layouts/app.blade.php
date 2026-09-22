@@ -53,10 +53,31 @@
                     <span>Pages</span>
                 </a>
 
+                <a href="{{ route('admin.biolink.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.biolink.*') ? 'active' : '' }}">
+                    <i data-feather="share-2"></i>
+                    <span>Biolink Manager</span>
+                </a>
+
                 <a href="{{ route('admin.posts.index') }}"
                     class="nav-item {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
                     <i data-feather="edit-3"></i>
                     <span>Posts</span>
+                </a>
+                <a href="{{ route('admin.comments.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i data-feather="message-circle"></i>
+                        <span>Komentar</span>
+                    </div>
+                    @php
+                        $pendingCommentsCount = \App\Models\PostComment::where('status', 'pending')->count();
+                    @endphp
+                    @if($pendingCommentsCount > 0)
+                        <span style="background: #f59e0b; color: #ffffff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 50px;">
+                            {{ $pendingCommentsCount }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('admin.categories.index') }}"
                     class="nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
@@ -76,7 +97,19 @@
                     <span>Events</span>
                 </a>
 
+                <a href="{{ route('admin.teachers.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}">
+                    <i data-feather="users"></i>
+                    <span>Data SDM & Pimpinan</span>
+                </a>
+
                 <div class="nav-section">DATA COLLECTION</div>
+
+                <a href="{{ route('admin.guestbook.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.guestbook.*') ? 'active' : '' }}">
+                    <i data-feather="book-open"></i>
+                    <span>Buku Tamu</span>
+                </a>
 
                 <a href="{{ route('admin.forms.index') }}"
                     class="nav-item {{ request()->routeIs('admin.forms.*') ? 'active' : '' }}">
@@ -91,6 +124,18 @@
                 </a>
 
                 <div class="nav-section">SYSTEM</div>
+
+                <a href="{{ route('admin.wordpress-import.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.wordpress-import.*') ? 'active' : '' }}">
+                    <i data-feather="download-cloud"></i>
+                    <span>Import WordPress</span>
+                </a>
+
+                <a href="{{ route('admin.redirects.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.redirects.*') ? 'active' : '' }}">
+                    <i data-feather="corner-up-right"></i>
+                    <span>Redirections (SEO)</span>
+                </a>
 
                 <a href="{{ route('admin.settings.index') }}"
                     class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
@@ -219,6 +264,9 @@
             }, 3000);
         });
     </script>
+    {{-- WordPress-Style Link Insert & Edit Modal for Trix Editors --}}
+    @include('admin.partials.link-modal')
+
     @stack('scripts')
 </body>
 

@@ -7,6 +7,7 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\ImageService;
 
 class EventController extends Controller
 {
@@ -49,8 +50,8 @@ class EventController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('events', 'public');
-            $validated['image'] = $imagePath;
+            $opt = ImageService::optimizeAndStore($request->file('image'), 'events');
+            $validated['image'] = $opt['path'];
         }
 
         $sponsors = [];
@@ -59,7 +60,8 @@ class EventController extends Controller
                 if ($name) {
                     $logoPath = null;
                     if ($request->hasFile("sponsor_logos.$index")) {
-                        $logoPath = $request->file("sponsor_logos.$index")->store('sponsors', 'public');
+                        $optLogo = ImageService::optimizeAndStore($request->file("sponsor_logos.$index"), 'sponsors');
+                        $logoPath = $optLogo['path'];
                     }
                     $sponsors[] = [
                         'name' => $name,
@@ -118,8 +120,8 @@ class EventController extends Controller
             if ($event->image) {
                 Storage::disk('public')->delete($event->image);
             }
-            $imagePath = $request->file('image')->store('events', 'public');
-            $validated['image'] = $imagePath;
+            $opt = ImageService::optimizeAndStore($request->file('image'), 'events');
+            $validated['image'] = $opt['path'];
         }
 
         $sponsors = [];
@@ -132,7 +134,8 @@ class EventController extends Controller
                         if ($logoPath) {
                             Storage::disk('public')->delete($logoPath);
                         }
-                        $logoPath = $request->file("sponsor_logos.$index")->store('sponsors', 'public');
+                        $optLogo = ImageService::optimizeAndStore($request->file("sponsor_logos.$index"), 'sponsors');
+                        $logoPath = $optLogo['path'];
                     }
                     $sponsors[] = [
                         'name' => $name,

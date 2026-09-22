@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -19,31 +20,43 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:10240', // 10MB max
+            'file' => 'required|file|max:2048', // 2MB max
+            'alt_text' => 'nullable|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'caption' => 'nullable|string',
+            'description' => 'nullable|string',
         ]);
 
         $file = $request->file('file');
         $originalName = $file->getClientOriginalName();
         $fileName = pathinfo($originalName, PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
 
-        $safeFileName = Str::slug($fileName) . '-' . time() . '.' . $extension;
-        $path = $file->storeAs('media', $safeFileName, 'public');
+        $optimized = ImageService::optimizeAndStore($file, 'media');
 
         $media = Media::create([
             'name' => $originalName,
-            'file_name' => $safeFileName,
-            'mime_type' => $file->getMimeType(),
-            'path' => $path,
+            'file_name' => $optimized['file_name'],
+            'mime_type' => $optimized['mime_type'],
+            'path' => $optimized['path'],
             'disk' => 'public',
-            'size' => $file->getSize(),
+            'size' => $optimized['size'],
+            'alt_text' => $request->input('alt_text', Str::headline($fileName)),
+            'title' => $request->input('title', Str::headline($fileName)),
+            'caption' => $request->input('caption'),
+            'description' => $request->input('description'),
         ]);
 
         if ($request->header('Accept') === 'application/json' || $request->ajax()) {
             return response()->json([
-                'url' => Storage::disk('public')->url($path),
+                'success' => true,
+                'media' => $media,
+                'url' => $media->url,
                 'id' => $media->id,
-                'name' => $media->name
+                'name' => $media->name,
+                'alt_text' => $media->alt_text,
+                'title' => $media->title,
+                'caption' => $media->caption,
+                'description' => $media->description,
             ]);
         }
 
@@ -56,25 +69,56 @@ class MediaController extends Controller
         $query = Media::latest();
 
         if ($search) {
-            $query->where('name', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
+                  ->orWhere('alt_text', 'like', "%{$search}%")
+                  ->orWhere('caption', 'like', "%{$search}%");
+            });
         }
 
-        $media = $query->paginate(20);
+        $media = $query->paginate(24);
 
         return response()->json([
             'data' => $media->items(),
             'current_page' => $media->currentPage(),
             'last_page' => $media->lastPage(),
+            'total' => $media->total(),
         ]);
     }
 
-    public function destroy(Media $media)
+    public function apiUpdate(Request $request, Media $media)
+    {
+        $validated = $request->validate([
+            'alt_text' => 'nullable|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'caption' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        $media->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Metadata media berhasil disimpan.',
+            'media' => $media,
+        ]);
+    }
+
+    public function destroy(Request $request, Media $media)
     {
         if (Storage::disk($media->disk)->exists($media->path)) {
             Storage::disk($media->disk)->delete($media->path);
         }
 
         $media->delete();
+
+        if ($request->header('Accept') === 'application/json' || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'File berhasil dihapus.',
+            ]);
+        }
 
         return redirect()->route('admin.media.index')->with('success', 'File deleted successfully.');
     }

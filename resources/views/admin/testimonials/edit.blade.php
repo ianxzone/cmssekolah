@@ -86,6 +86,14 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label" for="occupation">Jabatan / Pekerjaan / Keterangan (Opsional)</label>
+                    <input type="text" id="occupation" name="occupation" class="form-control"
+                        value="{{ old('occupation', $testimonial->occupation) }}" placeholder="Contoh: Senior General Manager PT KIIC / Dokter Spesialis RSUD / Mahasiswa ITB">
+                    <small style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; display: block;">Keterangan profesi, kantor, atau kampus untuk meningkatkan prestise & kredibilitas testimoni.</small>
+                    @error('occupation') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group">
                     <label class="form-label" for="content">Testimonial Content <span class="text-danger">*</span></label>
                     <textarea id="content" name="content" class="form-control" rows="5"
                         required>{{ old('content', $testimonial->content) }}</textarea>

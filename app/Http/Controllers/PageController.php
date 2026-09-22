@@ -12,9 +12,15 @@ class PageController extends Controller
      */
     public function show($slug)
     {
-        // Find page by slug
         $page = Page::where('slug', $slug)->firstOrFail();
 
-        return view('pages.show', compact('page'));
+        // If page is not published and viewer is not logged in, return 404
+        if (!$page->is_published && !auth()->check()) {
+            abort(404);
+        }
+
+        $isPreview = !$page->is_published && auth()->check();
+
+        return view('pages.show', compact('page', 'isPreview'));
     }
 }

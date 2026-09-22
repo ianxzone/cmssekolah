@@ -37,7 +37,12 @@
                                                     <i data-feather="user"></i>
                                                 </div>
                                             @endif
-                                            <span style="font-weight: 500;">{{ $testimonial->name }}</span>
+                                            <div>
+                                                <div style="font-weight: 500;">{{ $testimonial->name }}</div>
+                                                @if($testimonial->occupation)
+                                                    <div style="font-size: 0.8rem; color: var(--primary-color); font-weight: 500;">{{ $testimonial->occupation }}</div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </td>
                                     <td style="padding: 1rem; text-transform: capitalize;">{{ $testimonial->role }}</td>

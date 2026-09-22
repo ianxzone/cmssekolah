@@ -13,9 +13,9 @@
 
             <article class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
                 <!-- Header Image -->
-                @if($post->image)
+                @if($post->image_url)
                     <div class="w-full h-64 md:h-96 relative">
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($post->image) }}" alt="{{ $post->title }}"
+                        <img src="{{ $post->image_url }}" alt="{{ $post->title }}"
                             class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     </div>

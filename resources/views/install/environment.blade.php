@@ -21,7 +21,7 @@
             <input type="text" name="app_name" class="form-control" value="CMS Sekolah SDIT" required>
         </div>
 
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+        <div class="form-row">
             <div class="form-group">
                 <label>Link Database (Host)</label>
                 <input type="text" name="db_host" class="form-control" value="127.0.0.1" required>

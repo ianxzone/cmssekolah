@@ -24,7 +24,7 @@
             </ul>
         </div>
 
-        <a href="{{ url('/admin/login') }}" class="btn-setup">
+        <a href="{{ url('/admin') }}" class="btn-setup">
             Masuk ke Dashboard Admin <i data-feather="log-in"></i>
         </a>
     </div>

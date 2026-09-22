@@ -6,146 +6,457 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'SDIT Al Irsyad Karawang' }}</title>
-    <meta name="description"
-        content="{{ $metaDescription ?? 'Sekolah Dasar Islam Terpadu Al Irsyad Al Islamiyah Karawang - Islamic Value x Technology' }}">
+    <!-- Dynamic SEO Meta Tags -->
+    @php
+        $siteName = config('app.name', 'LPP Al Irsyad Karawang');
+        $defaultTitleFormat = \App\Models\Setting::get('seo_default_title_format', '%title% - ' . $siteName);
+        $defaultDescription = \App\Models\Setting::get('seo_default_description', 'LPP Al Irsyad Al Islamiyyah Karawang - Lajnah Pendidikan & Pengajaran');
+        $defaultKeywords = \App\Models\Setting::get('seo_default_keywords', 'sekolah, islam, karawang, sdit');
+        $defaultImage = \App\Models\Setting::get('seo_default_image', '');
+        
+        $pageTitle = $title ?? $siteName;
+        // Jika sedang di beranda (tidak ada section title spesifik), gunakan title utuh
+        $finalTitle = (!empty($title) && $pageTitle !== $siteName) ? str_replace('%title%', $pageTitle, $defaultTitleFormat) : $pageTitle;
+        
+        $finalDescription = $metaDescription ?? $defaultDescription;
+        $metaImage = $metaImage ?? ($defaultImage ? Storage::url($defaultImage) : asset('assets/images/default-og.png'));
+        $metaUrl = url()->current();
+    @endphp
+
+    <title>{{ $finalTitle }}</title>
+    <meta name="description" content="{{ $finalDescription }}">
+    <meta name="keywords" content="{{ $metaKeywords ?? $defaultKeywords }}">
+    
+    <link rel="canonical" href="{{ $metaUrl }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{{ $metaType ?? 'website' }}">
+    <meta property="og:url" content="{{ $metaUrl }}">
+    <meta property="og:title" content="{{ $finalTitle }}">
+    <meta property="og:description" content="{{ $finalDescription }}">
+    <meta property="og:image" content="{{ $metaImage }}">
+    <meta property="og:site_name" content="{{ $siteName }}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ $metaUrl }}">
+    <meta name="twitter:title" content="{{ $finalTitle }}">
+    <meta name="twitter:description" content="{{ $finalDescription }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
+
+    <!-- Webmaster Tools & Analytics -->
+    @if(\App\Models\Setting::get('seo_google_site_verification'))
+    <meta name="google-site-verification" content="{{ \App\Models\Setting::get('seo_google_site_verification') }}" />
+    @endif
+
+    @include('partials.analytics')
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --primary: #065f46;
+            --primary-dark: #064e3b;
+            --primary-light: #10b981;
+            --secondary: #fbbf24;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --container-max: 1200px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* 1. TOPBAR */
+        .topbar {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 10px 0;
+            font-size: 0.85rem;
+        }
+
+        .topbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .topbar-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .topbar-info div {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 2. NAVBAR */
+        .navbar {
+            background: var(--white);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .navbar.sticky-active {
+            padding: 10px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .logo-emblem {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(10, 77, 60, 0.2);
+            flex-shrink: 0;
+            border: 2px solid var(--secondary);
+        }
+
+        .logo-emblem span {
+            font-size: 0.88rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--primary-light);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-spmb {
+            background: var(--primary);
+            color: var(--white) !important;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-spmb:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .mobile-toggle {
+            display: none;
+            cursor: pointer;
+            color: var(--primary-dark);
+        }
+
+        /* FOOTER */
+        footer {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 80px 0 20px;
+            margin-top: auto;
+        }
+
+        footer .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo h3 {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .footer-logo p {
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            color: var(--primary-dark);
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #cbd5e1;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contact-list li {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+
+        .contact-list i {
+            color: var(--secondary);
+            margin-top: 5px;
+            width: 18px;
+            flex-shrink: 0;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        /* Floating WhatsApp Button */
+        .mobile-fab-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            z-index: 999;
+            background: #25D366;
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .mobile-fab-whatsapp:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 28px rgba(37, 211, 102, 0.55);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                flex-direction: column;
+                padding: 16px 20px 24px;
+                display: none;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+                border-top: 1px solid #f1f5f9;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                animation: navSlideDown 0.25s ease-out;
+            }
+
+            @keyframes navSlideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #f8fafc;
+                padding: 10px 0;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+                padding-top: 15px;
+            }
+
+            .nav-spmb {
+                display: block;
+                text-align: center;
+                width: 100%;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-fab-whatsapp {
+                bottom: 16px;
+                right: 16px;
+                padding: 10px 16px;
+                font-size: 0.84rem;
+            }
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased text-gray-900 bg-gray-50 flex flex-col min-h-screen">
 
-    <!-- Navbar -->
-    <header class="bg-white/90 backdrop-blur-md fixed w-full z-50 transition-all duration-300 border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <a href="/" class="flex items-center gap-2">
-                        <!-- Placeholder Logo -->
-                        <div
-                            class="w-10 h-10 bg-primary-800 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                            AI
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-bold text-lg leading-tight text-primary-900">SDIT Al Irsyad</span>
-                            <span class="text-xs text-secondary-600 font-medium tracking-wider">ISLAMIC & TECH</span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Desktop Menu -->
-                <nav class="hidden md:flex space-x-8">
-                    <x-nav-link href="/" :active="request()->is('/')">Home</x-nav-link>
-                    <x-nav-link href="{{ route('posts.index') }}"
-                        :active="request()->routeIs('posts.*')">Berita</x-nav-link>
-                    <x-nav-link href="{{ route('events.index') }}"
-                        :active="request()->routeIs('events.*')">Agenda</x-nav-link>
-                    <div class="relative group">
-                        <button
-                            class="flex items-center gap-1 text-gray-600 hover:text-primary-600 font-medium transition py-2">
-                            Profil
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <!-- Dropdown -->
-                        <div
-                            class="absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50 border border-gray-100">
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 first:rounded-t-lg">Visi
-                                & Misi</a>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700">Sejarah</a>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 last:rounded-b-lg">Struktur
-                                Organisasi</a>
-                        </div>
-                    </div>
-                    <a href="#"
-                        class="px-5 py-2 bg-primary-800 text-white rounded-full font-medium hover:bg-primary-900 transition shadow-lg shadow-primary-800/20">PPDB
-                        Online</a>
-                </nav>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-gray-500 hover:text-gray-900 focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('frontend.layouts.navbar')
 
     <!-- Main Content -->
-    <main class="flex-grow pt-16">
+    <main class="flex-grow">
         {{ $slot }}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div
-                            class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                            AI
-                        </div>
-                        <span class="font-bold text-xl">SDIT Al Irsyad Karawang</span>
-                    </div>
-                    <p class="text-gray-400 mb-6 max-w-sm">
-                        Mewujudkan generasi Rabbani yang unggul dalam Imtaq dan Iptek. Sekolah penggerak bernafaskan
-                        Islam dengan kurikulum teknologi terdepan.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white transition"><span
-                                class="sr-only">Facebook</span>FB</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><span
-                                class="sr-only">Instagram</span>IG</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><span
-                                class="sr-only">Youtube</span>YT</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg mb-4 text-primary-400">Tautan</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-primary-400 transition">Beranda</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition">Profil Sekolah</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition">Berita & Artikel</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition">Agenda Kegiatan</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition">PPDB</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg mb-4 text-primary-400">Kontak</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-start gap-2">
-                            <span class="mt-1 text-primary-500">📍</span>
-                            <span>Jl. RH. Jaja Abdullah No.12, Karawang Kulon, Karawang Barat</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="text-primary-500">📞</span>
-                            <span>(0267) 123456</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="text-primary-500">✉️</span>
-                            <span>info@sdit.alirsyad.sch.id</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} SDIT Al Irsyad Al Islamiyah Karawang. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    @include('frontend.layouts.footer')
+
 </body>
 
 </html>

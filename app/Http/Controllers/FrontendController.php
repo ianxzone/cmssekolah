@@ -36,12 +36,22 @@ class FrontendController extends Controller
 
         $testimonials = collect();
         if (($settings['home_show_testimonials'] ?? '1') == '1') {
+            $testiLimit = (int) ($settings['home_testimonials_limit'] ?? 5);
             $testimonials = \App\Models\Testimonial::where('is_active', true)
                 ->latest()
+                ->take($testiLimit)
                 ->get();
         }
 
-        return view('welcome', compact('settings', 'posts', 'events', 'testimonials'));
+        $teachers = collect();
+        if (($settings['home_show_teachers'] ?? '1') == '1') {
+            $teachers = \App\Models\Teacher::where('is_active', true)
+                ->orderBy('order', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
+        }
+
+        return view('welcome', compact('settings', 'posts', 'events', 'testimonials', 'teachers'));
     }
 
     /**
@@ -79,17 +89,100 @@ class FrontendController extends Controller
     }
 
     /**
-     * Show a detailed Post
+     * Show a detailed Post with sidebar data and approved comments
      */
     public function showPost($slug)
     {
-        $post = Post::with('category')
+        $post = Post::with(['category', 'author', 'approvedComments'])
             ->where('slug', $slug)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->firstOrFail();
 
-        return view('frontend.post', compact('post'));
+        // Sidebar data
+        $recentPosts = Post::with(['category', 'author'])
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->where('id', '!=', $post->id)
+            ->latest('published_at')
+            ->take(5)
+            ->get();
+
+        $categories = Category::withCount(['posts' => function ($q) {
+            $q->whereNotNull('published_at')->where('published_at', '<=', now());
+        }])->having('posts_count', '>', 0)->get();
+
+        $upcomingEvents = \App\Models\Event::where('start_time', '>=', now())
+            ->orderBy('start_time', 'asc')
+            ->take(2)
+            ->get();
+
+        return view('frontend.post', compact('post', 'recentPosts', 'categories', 'upcomingEvents'));
+    }
+
+    /**
+     * Store a comment submitted by visitors (pending moderation).
+     */
+    public function storeComment(Request $request, $slug)
+    {
+        $post = Post::where('slug', $slug)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|max:150',
+            'phone' => 'required|string|min:8|max:25',
+            'content' => 'required|string|max:2000',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama maksimal 100 karakter.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'phone.required' => 'Nomor HP / WhatsApp wajib diisi.',
+            'phone.min' => 'Nomor HP minimal 8 karakter.',
+            'phone.max' => 'Nomor HP maksimal 25 karakter.',
+            'content.required' => 'Isi komentar tidak boleh kosong.',
+            'content.max' => 'Komentar maksimal 2000 karakter.',
+        ]);
+
+        $post->comments()->create([
+            'name' => strip_tags($validated['name']),
+            'email' => $validated['email'],
+            'phone' => strip_tags($validated['phone']),
+            'content' => strip_tags($validated['content']),
+            'status' => 'pending',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return back()->with('comment_success', 'Terima kasih! Komentar Anda berhasil dikirim dan akan diverifikasi oleh moderator terlebih dahulu sebelum dipublikasikan.');
+    }
+
+    /**
+     * Resolve a slug — try Post first, then Page.
+     */
+    public function showSlug($slug)
+    {
+        // Try post first
+        $post = Post::with('category')
+            ->where('slug', $slug)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->first();
+
+        if ($post) {
+            return $this->showPost($slug);
+        }
+
+        // Fallback to page
+        $page = \App\Models\Page::where('slug', $slug)->firstOrFail();
+        if (!$page->is_published && !auth()->check()) {
+            abort(404);
+        }
+        $isPreview = !$page->is_published && auth()->check();
+        return view('pages.show', compact('page', 'isPreview'));
     }
 
     /**
@@ -153,7 +246,7 @@ class FrontendController extends Controller
                 } elseif ($field['type'] === 'date') {
                     $rule[] = 'date';
                 } elseif ($field['type'] === 'file') {
-                    $rule[] = 'file|max:5120'; // 5MB limit
+                    $rule[] = 'file|max:2048'; // 2MB limit
                     $fileFields[] = $inputName;
                 } elseif ($field['type'] === 'checkbox') {
                     $rule[] = 'array';
@@ -183,5 +276,77 @@ class FrontendController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Terima kasih! Formulir Anda telah berhasil dikirim.');
+    }
+
+    /**
+     * Testimonials Listing Page
+     */
+    public function testimonials(Request $request)
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        $query = \App\Models\Testimonial::where('is_active', true);
+
+        if ($request->has('role') && in_array($request->role, ['parent', 'student', 'alumni'])) {
+            $query->where('role', $request->role);
+        }
+
+        $testimonials = $query->latest()->paginate(12)->withQueryString();
+
+        return view('testimonials.index', compact('testimonials', 'settings'));
+    }
+
+    /**
+     * Halaman Khusus: Kurikulum Khas Al Irsyad
+     */
+    public function kurikulum()
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        return view('frontend.kurikulum', compact('settings'));
+    }
+
+    /**
+     * Halaman Khusus: Fasilitas & Sarana Prasarana
+     */
+    public function fasilitas()
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        return view('frontend.fasilitas', compact('settings'));
+    }
+
+    /**
+     * Halaman Khusus: Pearson International Class Program (ICP)
+     */
+    public function pearson()
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        return view('frontend.pearson-icp', compact('settings'));
+    }
+
+    /**
+     * Generate dynamic sitemap.xml
+     */
+    public function sitemap()
+    {
+        $posts = Post::whereNotNull('published_at')->where('published_at', '<=', now())->orderBy('updated_at', 'desc')->get();
+        $pages = \App\Models\Page::where('status', 'published')->orderBy('updated_at', 'desc')->get();
+        $categories = Category::orderBy('updated_at', 'desc')->get();
+        $events = \App\Models\Event::orderBy('updated_at', 'desc')->get();
+
+        return response()->view('frontend.sitemap', compact('posts', 'pages', 'categories', 'events'))
+            ->header('Content-Type', 'text/xml');
+    }
+
+    /**
+     * Generate dynamic robots.txt
+     */
+    public function robots()
+    {
+        $content = "User-agent: *\n";
+        $content .= "Allow: /\n";
+        $content .= "Disallow: /admin/\n";
+        $content .= "Disallow: /install/\n\n";
+        $content .= "Sitemap: " . url('sitemap.xml') . "\n";
+
+        return response($content, 200)->header('Content-Type', 'text/plain');
     }
 }

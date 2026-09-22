@@ -44,6 +44,7 @@
                     <thead>
                         <tr style="border-bottom: 2px solid var(--border-color);">
                             <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Post</th>
+                            <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Author</th>
                             <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Category</th>
                             <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Status</th>
                             <th style="padding: 1rem; color: var(--text-secondary); font-weight: 500;">Date</th>
@@ -55,7 +56,7 @@
                             <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.15s ease;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'">
                                 <td style="padding: 1rem; display: flex; align-items: center; gap: 1rem;">
                                     @if($post->image)
-                                        <img src="{{ Storage::url($post->image) }}" class="thumbnail" alt="Thumb">
+                                        <img src="{{ $post->image_url }}" class="thumbnail" alt="Thumb">
                                     @else
                                         <div class="thumbnail" style="display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
                                             <i data-feather="image"></i>
@@ -63,7 +64,18 @@
                                     @endif
                                     <div>
                                         <div class="post-title">{{ $post->title }}</div>
-                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">/berita/{{ $post->slug }}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">/{{ $post->slug }}</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #ecfdf5; color: #065f46; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; border: 1px solid #a7f3d0;">
+                                            {{ substr($post->author_name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);">{{ $post->author_name }}</div>
+                                            <div style="font-size: 0.6875rem; color: var(--text-secondary);">{{ $post->author->role_label ?? 'Penulis' }}</div>
+                                        </div>
                                     </div>
                                 </td>
                                 <td style="padding: 1rem;">

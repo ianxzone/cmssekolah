@@ -17,7 +17,13 @@ class Media extends Model
         'path',
         'disk',
         'size',
+        'alt_text',
+        'title',
+        'caption',
+        'description',
     ];
+
+    protected $appends = ['url', 'is_image', 'human_size'];
 
     public function getUrlAttribute()
     {
@@ -27,5 +33,16 @@ class Media extends Model
     public function getIsImageAttribute()
     {
         return str_starts_with($this->mime_type, 'image/');
+    }
+
+    public function getHumanSizeAttribute()
+    {
+        $bytes = $this->size;
+        if ($bytes >= 1048576) {
+            return number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            return number_format($bytes / 1024, 1) . ' KB';
+        }
+        return $bytes . ' B';
     }
 }

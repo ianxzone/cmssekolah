@@ -130,8 +130,8 @@
         <div class="posts-grid">
             @foreach($posts as $post)
                 <article class="post-card">
-                    @if($post->image)
-                        <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="post-image" loading="lazy">
+                    @if($post->image_url)
+                        <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="post-image" loading="lazy">
                     @endif
                     <div class="post-content">
                         <div class="post-meta">

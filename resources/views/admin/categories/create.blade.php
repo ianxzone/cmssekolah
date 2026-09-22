@@ -82,22 +82,8 @@
                     @error('slug') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <h3
-                    style="font-size: 1.125rem; font-weight: 600; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                    SEO Settings</h3>
-
-                <div class="form-group">
-                    <label class="form-label" for="seo_title">SEO Title</label>
-                    <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ old('seo_title') }}">
-                    @error('seo_title') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="seo_description">SEO Description</label>
-                    <textarea id="seo_description" name="seo_description" class="form-control"
-                        rows="3">{{ old('seo_description') }}</textarea>
-                    @error('seo_description') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
+                <!-- SEO Meta Box Component -->
+                @include('admin.partials.seo-meta-box')
 
                 <div style="margin-top: 2rem; display: flex; gap: 1rem;">
                     <button type="submit" class="btn btn-primary">

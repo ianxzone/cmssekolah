@@ -1,7 +1,8 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Category: ' . $category->name . ' - ' . config('app.name'))
-@section('meta_description', 'Articles listed under the category ' . $category->name)
+@section('title', $category->seo_title ?: 'Kategori: ' . $category->name)
+@section('meta_description', $category->seo_description ?: 'Kumpulan artikel dan berita terbaru di kategori ' . $category->name)
+@section('meta_type', 'website')
 
 @push('styles')
     <style>
@@ -116,7 +117,7 @@
             @foreach($posts as $post)
                 <article class="post-card">
                     @if($post->image)
-                        <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="post-image" loading="lazy">
+                        <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="post-image" loading="lazy">
                     @endif
                     <div class="post-content">
                         <div class="post-meta">
