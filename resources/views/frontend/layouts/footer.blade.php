@@ -9,7 +9,7 @@
                     </div>
                     LPP AL IRSYAD
                 </h3>
-                <p style="color: #94a3b8; font-size: 0.9rem;">{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (KB-TK, SDIT, SMPIT, SMAIT) yang berlandaskan Al-Qur\'an, As-Sunnah, dan keunggulan sains-teknologi global.' }}</p>
+                <p style="color: #94a3b8; font-size: 0.9rem;">{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (Daycare, KB-TK Montessori, SDIT, SMPIT, SMAIT) yang berlandaskan Al-Qur\'an, As-Sunnah, dan keunggulan sains-teknologi global.' }}</p>
                 <div class="social-links">
                     <a href="{{ $settings['social_facebook'] ?? '#' }}" target="_blank" rel="noopener noreferrer"><i data-feather="facebook"></i></a>
                     <a href="{{ $settings['social_instagram'] ?? '#' }}" target="_blank" rel="noopener noreferrer"><i data-feather="instagram"></i></a>
@@ -31,7 +31,7 @@
             <div class="footer-col">
                 <h4>Unit & Layanan</h4>
                 <ul class="footer-links">
-                    <li><a href="/#unit-pendidikan">KB-TK Islam Al Irsyad</a></li>
+                    <li><a href="/#unit-pendidikan">Daycare, KB & TK Islam Al Irsyad</a></li>
                     <li><a href="/#unit-pendidikan">SDIT Al Irsyad 01 & 02</a></li>
                     <li><a href="/#unit-pendidikan">SMPIT Al Irsyad Karawang</a></li>
                     <li><a href="/#unit-pendidikan">SMAIT Al Irsyad Karawang</a></li>

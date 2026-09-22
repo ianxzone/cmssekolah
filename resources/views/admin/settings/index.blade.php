@@ -513,12 +513,12 @@
                         @php
                             $defaultUnitsJson = json_encode([
                                 [
-                                    'badge' => 'PAUD / TK',
-                                    'age' => 'Usia 3 - 6 Thn',
-                                    'title' => 'KB-TK Islam Al Irsyad',
-                                    'desc' => 'Meletakkan fondasi akidah, adab nabawiyah, dan keceriaan belajar melalui stimulasi sentra motorik serta hafalan Al-Qur\'an sejak usia dini.',
+                                    'badge' => 'DAYCARE, KB & TK',
+                                    'age' => 'Usia 0 - 6 Thn (Sejak Lahir)',
+                                    'title' => 'Daycare, Playgroup & TK Islam Al Irsyad',
+                                    'desc' => 'Layanan terpadu pengasuhan & pendidikan usia emas anak dalam 1 unit: Daycare sejak bayi (newborn/brojol), Playgroup, dan TK Islam berbasis metode Montessori Islami, stimulasi sensori motorik, serta adab nabawiyah sejak dini.',
                                     'image' => 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=600',
-                                    'pills' => 'Sentra Karakter, Tahfidz Juz 30 Awal, Stimulasi Motorik',
+                                    'pills' => 'Daycare Sejak Bayi, Metode Montessori, Playgroup & TK, Tahfidz Balita',
                                     'spmb_link' => ''
                                 ],
                                 [

@@ -408,12 +408,11 @@
                         </div>
                         LPP AL IRSYAD
                     </h3>
-                    <p>{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (KB-TK, SDIT, SMPIT, SMAIT).' }}</p>
+                    <p>{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (Daycare, KB-TK Montessori, SDIT, SMPIT, SMAIT).' }}</p>
                     <div class="social-links">
-                        <a href="{{ $settings['social_facebook'] ?? '#' }}"><i data-feather="facebook"></i></a>
-                        <a href="{{ $settings['social_instagram'] ?? '#' }}"><i data-feather="instagram"></i></a>
-                        <a href="{{ $settings['social_youtube'] ?? '#' }}"><i data-feather="youtube"></i></a>
-                        <a href="{{ $settings['social_twitter'] ?? '#' }}"><i data-feather="twitter"></i></a>
+                        <a href="#"><i data-feather="facebook"></i></a>
+                        <a href="#"><i data-feather="instagram"></i></a>
+                        <a href="#"><i data-feather="youtube"></i></a>
                     </div>
                 </div>
                 <div class="footer-col">
@@ -422,15 +421,14 @@
                         <li><a href="/">Beranda</a></li>
                         <li><a href="/#welcome">Ketua LPP</a></li>
                         <li><a href="/#unit-pendidikan">Unit Pendidikan</a></li>
-                        <li><a href="/#kurikulum-khas">Kurikulum Khas</a></li>
                         <li><a href="{{ route('posts.index') }}">Berita & Artikel</a></li>
-                        <li><a href="{{ route('testimonials.index') }}">Testimoni</a></li>
+                        <li><a href="{{ route('events.index') }}">Agenda</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Unit Pendidikan</h4>
                     <ul class="footer-links">
-                        <li><a href="/#unit-pendidikan">KB-TK Islam Al Irsyad</a></li>
+                        <li><a href="/#unit-pendidikan">Daycare, KB & TK Islam Al Irsyad</a></li>
                         <li><a href="/#unit-pendidikan">SDIT Al Irsyad 01 & 02</a></li>
                         <li><a href="/#unit-pendidikan">SMPIT Al Irsyad Karawang</a></li>
                         <li><a href="/#unit-pendidikan">SMAIT Al Irsyad Karawang</a></li>

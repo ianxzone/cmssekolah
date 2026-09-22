@@ -267,7 +267,7 @@
                 Kurikulum Khas LPP Al Irsyad Al Islamiyyah Karawang dirancang khusus agar santri tidak hanya cerdas secara kognitif, melainkan juga tangguh dalam akidah tauhid, terbiasa berakhlak mulia (adab nabawiyah), serta fasih berkomunikasi dengan bahasa internasional.
             </p>
             <p>
-                Melalui ekosistem belajar yang menyenangkan dan terintegrasi dari jenjang KB-TK, SDIT, SMPIT hingga SMAIT, peserta didik disiapkan menjadi pribadi muslim yang siap memimpin peradaban.
+                Melalui ekosistem belajar yang menyenangkan dan terintegrasi dari jenjang usia dini (Daycare sejak bayi lahir, Playgroup, TK Montessori), SDIT, SMPIT hingga SMAIT, peserta didik disiapkan menjadi pribadi muslim yang siap memimpin peradaban.
             </p>
         </div>
         <div class="overview-img">

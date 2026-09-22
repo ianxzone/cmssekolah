@@ -1031,7 +1031,7 @@
                                 {{ $settings['ppdb_badge'] ?? ($settings['ppdb_title'] ?? 'SPMB TA 2025/2026 - LPP Al Irsyad Karawang') }}
                             </div>
                             <h2>{!! nl2br(e($settings['hero_title'] ?? "Pendidikan Islam Terpadu & Rabbani\nLPP Al Irsyad Al Islamiyyah")) !!}</h2>
-                            <p class="hero-subtitle">{{ $settings['hero_subtitle'] ?? 'Membina generasi Rabbani jenjang KB-TK, SDIT, SMPIT, hingga SMAIT dengan perpaduan akidah tauhid, adab nabawiyah, dan sains teknologi modern.' }}</p>
+                            <p class="hero-subtitle">{{ $settings['hero_subtitle'] ?? 'Membina generasi Rabbani dari usia emas anak (Daycare sejak lahir, Playgroup & TK Montessori) hingga SDIT, SMPIT, dan SMAIT berpadu akidah tauhid dan adab nabawiyah.' }}</p>
                             <div class="hero-btns">
                                 <a href="{{ $settings['hero_btn_link'] ?? ($settings['contact_ppdb_link'] ?? '#') }}" class="btn btn-primary">
                                     {{ $settings['hero_btn_text'] ?? 'Daftar SPMB Online' }} <i data-feather="chevron-right"></i>
@@ -1358,7 +1358,7 @@
                     @else
                         <p><em>Bismillahirrohmanirrohim. Assalamu'alaikum Warahmatullahi Wabarakatuh.</em></p>
                         <p>Segala puji bagi Allah Subhanahu wa Ta'ala, Rabb semesta alam. Shalawat dan salam senantiasa tercurah kepada Baginda Rasulullah Muhammad ﷺ, keluarga, sahabat, dan umatnya hingga akhir zaman.</p>
-                        <p>Selamat datang di portal resmi <strong>LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang</strong>. Sebagai lembaga pengelola dan pembina seluruh satuan unit pendidikan Al Irsyad di Kabupaten Karawang—mulai dari KB-TK, SDIT, SMPIT, hingga SMAIT—kami memegang amanah luhur untuk mencetak generasi Rabbani yang kokoh dalam akidah tauhid, beradab mulia (Akhlakul Karimah), unggul dalam sains teknologi, serta berdaya saing global.</p>
+                        <p>Selamat datang di portal resmi <strong>LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang</strong>. Sebagai lembaga pengelola dan pembina seluruh satuan unit pendidikan Al Irsyad di Kabupaten Karawang—mulai dari layanan usia dini (Daycare sejak bayi lahir, Playgroup, TK Montessori), SDIT, SMPIT, hingga SMAIT—kami memegang amanah luhur untuk mencetak generasi Rabbani yang kokoh dalam akidah tauhid, beradab mulia (Akhlakul Karimah), unggul dalam sains teknologi, serta berdaya saing global.</p>
                         <p>Melalui kurikulum khas terpadu, pembinaan Tahfidz Al-Qur'an bersanad, penguasaan dwi-bahasa (Arab & Inggris), serta didukung oleh asatidz dan fasilitas modern terintegrasi, LPP Al Irsyad Karawang terus berikhtiar memberikan ekosistem pendidikan terbaik bagi keluarga muslim di Karawang dan sekitarnya.</p>
                     @endif
                     <div class="welcome-name">
@@ -1425,7 +1425,7 @@
                 </span>
                 <h2>{{ $settings['units_section_title'] ?? 'Unit Pendidikan LPP Al Irsyad' }}</h2>
                 <p>
-                    {{ $settings['units_section_desc'] ?? 'LPP Al Irsyad Al Islamiyyah Karawang menyelenggarakan pendidikan berjenjang dan berkelanjutan dari usia emas anak (PAUD) hingga kematangan akademik tingkat menengah atas.' }}
+                    {{ $settings['units_section_desc'] ?? 'LPP Al Irsyad Al Islamiyyah Karawang menyelenggarakan pendidikan berjenjang dan berkelanjutan dalam satu atap: mulai dari layanan usia emas anak (Daycare sejak bayi lahir, Playgroup, dan TK Islam Montessori) hingga kematangan akademik tingkat menengah atas.' }}
                 </p>
             </div>
 
@@ -1435,12 +1435,12 @@
                     if (empty($units)) {
                         $units = [
                             [
-                                'badge' => 'PAUD / TK',
-                                'age' => 'Usia 3 - 6 Thn',
-                                'title' => 'KB-TK Islam Al Irsyad',
-                                'desc' => 'Meletakkan fondasi akidah, adab nabawiyah, dan keceriaan belajar melalui stimulasi sentra motorik serta hafalan Al-Qur\'an sejak usia dini.',
+                                'badge' => 'DAYCARE, KB & TK',
+                                'age' => 'Usia 0 - 6 Thn (Sejak Lahir)',
+                                'title' => 'Daycare, Playgroup & TK Islam Al Irsyad',
+                                'desc' => 'Layanan terpadu pengasuhan & pendidikan usia emas anak dalam 1 unit: Daycare sejak bayi (newborn/brojol), Playgroup, dan TK Islam berbasis metode Montessori Islami, stimulasi sensori motorik, serta adab nabawiyah sejak dini.',
                                 'image' => 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=600',
-                                'pills' => 'Sentra Karakter, Tahfidz Juz 30 Awal, Stimulasi Motorik',
+                                'pills' => 'Daycare Sejak Bayi, Metode Montessori, Playgroup & TK, Tahfidz Balita',
                                 'spmb_link' => ''
                             ],
                             [
@@ -1722,7 +1722,7 @@
     <div class="spmb-banner">
         <div class="container">
             <h2>{{ $settings['ppdb_title'] ?? 'Pendaftaran Santri Baru (SPMB) Telah Dibuka!' }}</h2>
-            <p>{{ $settings['ppdb_desc'] ?? 'Raih kesempatan emas mendaftarkan putra-putri tercinta di unit pendidikan unggulan LPP Al Irsyad Karawang (KB-TK, SDIT, SMPIT, SMAIT).' }}</p>
+            <p>{{ $settings['ppdb_desc'] ?? 'Raih kesempatan emas mendaftarkan putra-putri tercinta di unit pendidikan unggulan LPP Al Irsyad Karawang (Daycare sejak bayi lahir, Playgroup, TK Montessori, SDIT, SMPIT, SMAIT).' }}</p>
             <a href="{{ $settings['contact_ppdb_link'] ?? ($settings['hero_btn_link'] ?? '#') }}" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);">
                 {{ $settings['ppdb_btn_text'] ?? 'Daftar Sekarang' }} <i data-feather="arrow-right"></i>
             </a>
@@ -1901,7 +1901,7 @@
                         </div>
                         LPP AL IRSYAD
                     </h3>
-                    <p style="color: #94a3b8; font-size: 0.9rem;">{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (KB-TK, SDIT, SMPIT, SMAIT) yang berlandaskan Al-Qur\'an, As-Sunnah, dan keunggulan sains-teknologi global.' }}</p>
+                    <p style="color: #94a3b8; font-size: 0.9rem;">{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (Daycare, KB-TK Montessori, SDIT, SMPIT, SMAIT) yang berlandaskan Al-Qur\'an, As-Sunnah, dan keunggulan sains-teknologi global.' }}</p>
                     <div class="social-links">
                         <a href="{{ $settings['social_facebook'] ?? '#' }}"><i data-feather="facebook"></i></a>
                         <a href="{{ $settings['social_instagram'] ?? '#' }}"><i data-feather="instagram"></i></a>
@@ -1923,7 +1923,7 @@
                 <div class="footer-col">
                     <h4>Unit & Layanan</h4>
                     <ul class="footer-links">
-                        <li><a href="#unit-pendidikan">KB-TK Islam Al Irsyad</a></li>
+                        <li><a href="#unit-pendidikan">Daycare, KB & TK Islam Al Irsyad</a></li>
                         <li><a href="#unit-pendidikan">SDIT Al Irsyad 01 & 02</a></li>
                         <li><a href="#unit-pendidikan">SMPIT Al Irsyad Karawang</a></li>
                         <li><a href="#unit-pendidikan">SMAIT Al Irsyad Karawang</a></li>
