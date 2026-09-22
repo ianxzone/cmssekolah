@@ -314,6 +314,15 @@ class FrontendController extends Controller
     }
 
     /**
+     * Halaman Khusus: Ekstrakurikuler & Pengembangan Bakat Santri
+     */
+    public function ekskul()
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        return view('frontend.ekskul', compact('settings'));
+    }
+
+    /**
      * Halaman Khusus: Pearson International Class Program (ICP)
      */
     public function pearson()

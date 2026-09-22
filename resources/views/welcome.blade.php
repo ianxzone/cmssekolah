@@ -838,15 +838,233 @@
             .testi-card { flex: 0 0 88%; min-width: 260px; padding: 28px 20px 24px; }
         }
         
-        .facilities { background: var(--white); }
-        .fac-ekskul-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
-        .feature-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .feature-item { display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 500; padding: 10px; background: var(--bg-light); border-radius: 8px;}
-        .feature-item i { color: var(--primary); width: 20px; }
-        .ekskul-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .ekskul-card { background: var(--bg-light); padding: 15px; border-radius: var(--radius-md); text-align: center; font-weight: 600; font-size: 0.9rem; color: var(--text-main); border: 1px solid #e2e8f0; display:flex; align-items:center; justify-content:center;}
-        .ekskul-special { background: var(--primary-light); color: var(--white); border: none; flex-direction: column; gap: 5px;}
-        .ekskul-special span { background: var(--secondary); color:#fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;}
+        /* Facilities & Ekskul Showcase */
+        .facilities { background: #f8fafc; padding: 80px 0; border-top: 1px solid #f1f5f9; }
+        .facilities-highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .fac-mini-card {
+            background: var(--white);
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .fac-mini-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.08);
+            border-color: var(--secondary);
+        }
+        .fac-mini-media {
+            height: 145px;
+            position: relative;
+            background: #064e3b;
+            overflow: hidden;
+        }
+        .fac-mini-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .fac-mini-card:hover .fac-mini-media img {
+            transform: scale(1.08);
+        }
+        .fac-mini-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(6, 95, 70, 0.9);
+            backdrop-filter: blur(6px);
+            color: var(--secondary);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border-radius: 50px;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+        .fac-mini-body {
+            padding: 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .fac-mini-body h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
+            line-height: 1.35;
+        }
+        .fac-mini-body p {
+            font-size: 0.84rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        /* 4-Pill Categories */
+        .fac-categories-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            background: var(--white);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .fac-cat-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .fac-cat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .fac-cat-info h5 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 3px;
+        }
+        .fac-cat-info span {
+            font-size: 0.8rem;
+            color: #64748b;
+            line-height: 1.45;
+            display: block;
+        }
+
+        /* Ekstrakurikuler Carousel */
+        .ekskul-section-wrapper {
+            margin-top: 60px;
+            padding-top: 60px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .ekskul-header-flex {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .ekskul-slider-container {
+            position: relative;
+            overflow: hidden;
+            margin: 0 -6px;
+            padding: 8px 6px 18px;
+        }
+        .ekskul-slider-track {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 6px;
+        }
+        .ekskul-slider-track::-webkit-scrollbar {
+            display: none;
+        }
+        .ekskul-slider-item {
+            flex: 0 0 calc((100% - 80px) / 6);
+            min-width: 160px;
+            scroll-snap-align: start;
+        }
+        .ekskul-card-mini {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 22px 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            text-decoration: none;
+        }
+        .ekskul-card-mini:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.07);
+        }
+        .ekskul-icon-wrapper {
+            width: 52px;
+            height: 52px;
+            background: #f0fdf4;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        .ekskul-card-mini:hover .ekskul-icon-wrapper {
+            background: var(--primary);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+        .ekskul-card-mini h4 {
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        .ekskul-card-mini .ekskul-cat-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #059669;
+            background: #ecfdf5;
+            padding: 2px 8px;
+            border-radius: 20px;
+            border: 1px solid #a7f3d0;
+        }
+        .slider-nav-btns {
+            display: flex;
+            gap: 8px;
+        }
+        .slider-nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            background: var(--white);
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .slider-nav-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
         
         footer { background: #0f172a; color: #cbd5e1; padding: 80px 0 20px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; margin-bottom: 50px; }
@@ -870,7 +1088,9 @@
             .program-grid { grid-template-columns: repeat(2, 1fr); }
             .teacher-grid { grid-template-columns: repeat(2, 1fr); }
             .news-grid { grid-template-columns: repeat(2, 1fr); }
-            .fac-ekskul-grid { grid-template-columns: 1fr; gap: 40px; }
+            .facilities-highlight-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .fac-categories-strip { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .ekskul-slider-item { flex: 0 0 calc((100% - 48px) / 4); min-width: 150px; }
             .footer-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 768px) {
@@ -900,9 +1120,12 @@
             .agenda-grid { grid-template-columns: 1fr; }
             .teacher-grid { grid-template-columns: 1fr; }
             .news-grid { grid-template-columns: 1fr; }
+            .facilities-highlight-grid { grid-template-columns: 1fr; gap: 16px; }
+            .fac-categories-strip { grid-template-columns: 1fr; gap: 12px; padding: 18px 16px; }
+            .ekskul-slider-item { flex: 0 0 calc((100% - 16px) / 2); min-width: 140px; }
+            .ekskul-header-flex { flex-direction: column; align-items: flex-start; gap: 14px; }
+            .ekskul-section-wrapper { margin-top: 40px; padding-top: 40px; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
-            .feature-list { grid-template-columns: 1fr; }
-            .ekskul-grid { grid-template-columns: 1fr 1fr; }
             section { padding: 50px 0; }
             .section-header { margin-bottom: 30px; }
             .section-header h2 { font-size: 2rem; }
@@ -1832,58 +2055,157 @@
     </section>
     @endif
 
-    <!-- 14. FACILITIES -->
+    <!-- 14. FACILITIES & EKSTRAKURIKULER SHOWCASE -->
     @if(($settings['home_show_facilities'] ?? '1') == '1')
-    <section class="facilities">
+    <section class="facilities" id="programs">
         <div class="container">
-            <div class="fac-ekskul-grid">
-                <div>
-                    <div class="section-header" style="text-align: left; margin-bottom: 30px;">
-                        <span>Modern Campus</span>
-                        <h2>Fasilitas Sekolah</h2>
+            <!-- Part A: Fasilitas Sekolah -->
+            <div class="section-header" style="max-width: 820px; margin: 0 auto 36px; text-align: center;">
+                <span>Modern Campus Ecosystem</span>
+                <h2>Fasilitas Lengkap & Lingkungan Terpadu</h2>
+                <p style="color: #64748b; font-size: 1rem; margin-top: 8px;">Kampus terpadu LPP Al Irsyad Karawang dilengkapi 26+ sarana prasarana modern berstandar tinggi untuk menunjang kenyamanan, kesehatan, dan pembinaan karakter islami santri.</p>
+            </div>
+
+            <!-- 4 Featured Visual Cards -->
+            <div class="facilities-highlight-grid">
+                <div class="fac-mini-card">
+                    <div class="fac-mini-media">
+                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600" alt="Masjid Jami Al Irsyad" loading="lazy">
+                        <span class="fac-mini-badge">Episentrum Ibadah</span>
                     </div>
-                    <ul class="feature-list">
-                        @php
-                            $facilities = json_decode($settings['facilities_list'] ?? '[]', true);
-                            if (empty($facilities)) {
-                                $facilities = [
-                                    ['name' => 'Masjid Jami Al Irsyad'], ['name' => 'Lab Komputer (iMac)'],
-                                    ['name' => 'Perpustakaan Digital'], ['name' => 'Laboratorium IPA'],
-                                    ['name' => 'Lapangan Olahraga luas'], ['name' => 'Kelas AC & Smart TV']
-                                ];
-                            }
-                        @endphp
-                        @foreach($facilities as $f)
-                        <li class="feature-item"><i data-feather="check-circle"></i> {{ $f['name'] }}</li>
-                        @endforeach
-                    </ul>
+                    <div class="fac-mini-body">
+                        <h4>Masjid Jami Al Irsyad</h4>
+                        <p>Pusat sholat fardhu & dhuha berjamaah, halaqah tahfidz bersanad, dan kajian adab nabawiyah santri.</p>
+                    </div>
                 </div>
-                <div>
-                    <div class="section-header" style="text-align: left; margin-bottom: 30px;">
-                        <span>Student Activities</span>
-                        <h2>Ekstrakurikuler</h2>
+
+                <div class="fac-mini-card">
+                    <div class="fac-mini-media">
+                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=600" alt="Lab Komputer iMac & Robotik" loading="lazy">
+                        <span class="fac-mini-badge">iMac & STEM Lab</span>
                     </div>
-                    <div class="ekskul-grid">
-                        @php
-                            $eskuls = json_decode($settings['extracurriculars_list'] ?? '[]', true);
-                            if (empty($eskuls)) {
-                                $eskuls = [
-                                    ['name' => 'Coding & Dev', 'highlight' => '1'],
-                                    ['name' => 'Design Grafis', 'highlight' => '1'],
-                                    ['name' => 'Basket', 'highlight' => '0'],
-                                    ['name' => 'Pramuka', 'highlight' => '0']
-                                ];
-                            }
-                        @endphp
-                        @foreach($eskuls as $e)
-                        <div class="ekskul-card {{ (isset($e['highlight']) && $e['highlight'] == '1') ? 'ekskul-special' : '' }}">
-                            {{ $e['name'] }}
-                            @if(isset($e['highlight']) && $e['highlight'] == '1')
-                                <span>Unggulan</span>
-                            @endif
+                    <div class="fac-mini-body">
+                        <h4>Lab Komputer & Robotik</h4>
+                        <p>Workstation iMac mutakhir, lab sains terstandar, dan studio robotik untuk inovasi teknologi digital.</p>
+                    </div>
+                </div>
+
+                <div class="fac-mini-card">
+                    <div class="fac-mini-media">
+                        <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&q=80&w=600" alt="Irsyadin Water Pool & Sporthall" loading="lazy">
+                        <span class="fac-mini-badge">Renang & Olahraga</span>
+                    </div>
+                    <div class="fac-mini-body">
+                        <h4>Water Pool & Sporthall</h4>
+                        <p>Kolam renang privat syar'i terpisah ikhwan/akhwat, arena futsal, basket, dan panahan sunnah.</p>
+                    </div>
+                </div>
+
+                <div class="fac-mini-card">
+                    <div class="fac-mini-media">
+                        <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&q=80&w=600" alt="Kelas Smart AC & Montessori" loading="lazy">
+                        <span class="fac-mini-badge">Smart AC & Daycare</span>
+                    </div>
+                    <div class="fac-mini-body">
+                        <h4>Kelas Smart AC & Montessori</h4>
+                        <p>Ruang kelas sejuk dengan Interactive TV serta sentra Montessori ramah anak sejak usia bayi/balita.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4-Pill Overview Strip -->
+            <div class="fac-categories-strip">
+                <div class="fac-cat-box">
+                    <div class="fac-cat-icon"><i data-feather="book-open"></i></div>
+                    <div class="fac-cat-info">
+                        <h5>Akademik & Riset</h5>
+                        <span>Lab Komputer, Fisika, Bio-Kimia, Bahasa, & Perpustakaan Digital</span>
+                    </div>
+                </div>
+                <div class="fac-cat-box">
+                    <div class="fac-cat-icon"><i data-feather="sun"></i></div>
+                    <div class="fac-cat-info">
+                        <h5>Ibadah & Karakter</h5>
+                        <span>Masjid Jami, Aula 1.000 Santri, & Ruang Halaqah Tahfidz</span>
+                    </div>
+                </div>
+                <div class="fac-cat-box">
+                    <div class="fac-cat-icon"><i data-feather="activity"></i></div>
+                    <div class="fac-cat-info">
+                        <h5>Olahraga & Bermain</h5>
+                        <span>Irsyadin Water Pool, Sporthall, Lapangan Futsal, & Playground</span>
+                    </div>
+                </div>
+                <div class="fac-cat-box">
+                    <div class="fac-cat-icon"><i data-feather="shield"></i></div>
+                    <div class="fac-cat-info">
+                        <h5>Layanan & Keamanan</h5>
+                        <span>CCTV 24 Jam, Smart Card Presensi, Armada Jemputan, & UKS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action CTA Button for Facilities -->
+            <div style="text-align: center; margin-bottom: 10px;">
+                <a href="{{ route('fasilitas.index') }}" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary); font-weight: 700;">
+                    Jelajahi Seluruh 26+ Fasilitas Kampus & Galeri <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+                </a>
+            </div>
+
+            <!-- Part B: Ekstrakurikuler Carousel (Touch & Auto-Slide) -->
+            <div class="ekskul-section-wrapper">
+                <div class="ekskul-header-flex">
+                    <div>
+                        <span style="color: var(--secondary); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; display: block; margin-bottom: 4px;">Talent & Character Building</span>
+                        <h2 style="font-size: 1.95rem; font-weight: 800; color: #1e293b; margin: 0;">Ekstrakurikuler & Pembinaan Bakat</h2>
+                    </div>
+                    <div class="slider-nav-btns">
+                        <button type="button" id="ekskulPrevBtn" class="slider-nav-btn" aria-label="Previous Ekskul">
+                            <i data-feather="chevron-left" style="width: 18px; height: 18px;"></i>
+                        </button>
+                        <button type="button" id="ekskulNextBtn" class="slider-nav-btn" aria-label="Next Ekskul">
+                            <i data-feather="chevron-right" style="width: 18px; height: 18px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @php
+                    $homeEkskuls = [
+                        ['name' => 'Tahfidz Bersanad', 'cat' => 'Qur\'ani', 'icon' => 'book-open'],
+                        ['name' => 'Robotik & IoT', 'cat' => 'Sains & IT', 'icon' => 'cpu'],
+                        ['name' => 'Coding & Game', 'cat' => 'Sains & IT', 'icon' => 'code'],
+                        ['name' => 'Panahan Sunnah', 'cat' => 'Olahraga', 'icon' => 'target'],
+                        ['name' => 'Tapak Suci Silat', 'cat' => 'Beladiri', 'icon' => 'shield'],
+                        ['name' => 'Renang Water Pool', 'cat' => 'Olahraga', 'icon' => 'droplet'],
+                        ['name' => 'Taekwondo', 'cat' => 'Beladiri', 'icon' => 'zap'],
+                        ['name' => 'Futsal & Soccer', 'cat' => 'Olahraga', 'icon' => 'circle'],
+                        ['name' => 'Pramuka SIT', 'cat' => 'Kepanduan', 'icon' => 'compass'],
+                        ['name' => 'English Club', 'cat' => 'Bahasa', 'icon' => 'globe'],
+                        ['name' => 'Nadi Al-Lughah', 'cat' => 'Bahasa Arab', 'icon' => 'message-square'],
+                        ['name' => 'Desain & Media', 'cat' => 'Kreatif', 'icon' => 'image']
+                    ];
+                @endphp
+
+                <div class="ekskul-slider-container">
+                    <div class="ekskul-slider-track" id="ekskulSliderTrack">
+                        @foreach($homeEkskuls as $item)
+                        <div class="ekskul-slider-item">
+                            <a href="{{ route('ekskul.index') }}" class="ekskul-card-mini">
+                                <div class="ekskul-icon-wrapper">
+                                    <i data-feather="{{ $item['icon'] }}"></i>
+                                </div>
+                                <h4>{{ $item['name'] }}</h4>
+                                <span class="ekskul-cat-tag">{{ $item['cat'] }}</span>
+                            </a>
                         </div>
                         @endforeach
                     </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <a href="{{ route('ekskul.index') }}" class="btn btn-primary" style="font-weight: 700;">
+                        Lihat Seluruh Katalog 18+ Ekstrakurikuler & Prestasi <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1915,7 +2237,9 @@
                         <li><a href="/">Beranda</a></li>
                         <li><a href="#welcome">Ketua LPP</a></li>
                         <li><a href="#unit-pendidikan">Unit Pendidikan</a></li>
-                        <li><a href="#kurikulum-khas">Kurikulum Khas</a></li>
+                        <li><a href="{{ route('kurikulum.index') }}">Kurikulum Khas</a></li>
+                        <li><a href="{{ route('fasilitas.index') }}">Fasilitas Kampus</a></li>
+                        <li><a href="{{ route('ekskul.index') }}">Ekstrakurikuler</a></li>
                         <li><a href="{{ route('posts.index') }}">Berita & Artikel</a></li>
                         <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}">SPMB Online</a></li>
                     </ul>
@@ -2211,6 +2535,61 @@
                     }
                 });
             }
+        })();
+
+        // Ekstrakurikuler Carousel Auto-Slide & Touch Navigation
+        (function initEkskulSlider() {
+            const track = document.getElementById('ekskulSliderTrack');
+            const prevBtn = document.getElementById('ekskulPrevBtn');
+            const nextBtn = document.getElementById('ekskulNextBtn');
+            if (!track) return;
+
+            function getStep() {
+                const firstCard = track.querySelector('.ekskul-slider-item');
+                return firstCard ? (firstCard.offsetWidth + 16) : 220;
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 15) {
+                        track.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        track.scrollBy({ left: getStep(), behavior: 'smooth' });
+                    }
+                });
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (track.scrollLeft <= 10) {
+                        track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+                    } else {
+                        track.scrollBy({ left: -getStep(), behavior: 'smooth' });
+                    }
+                });
+            }
+
+            // Auto-slide every 3.5s unless hovered/focused
+            let autoSlideTimer = setInterval(() => {
+                if (track.matches(':hover')) return;
+                if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 15) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    track.scrollBy({ left: getStep(), behavior: 'smooth' });
+                }
+            }, 3500);
+
+            track.addEventListener('mouseenter', () => clearInterval(autoSlideTimer));
+            track.addEventListener('mouseleave', () => {
+                autoSlideTimer = setInterval(() => {
+                    if (track.matches(':hover')) return;
+                    if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 15) {
+                        track.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        track.scrollBy({ left: getStep(), behavior: 'smooth' });
+                    }
+                }, 3500);
+            });
         })();
 
         (function() {

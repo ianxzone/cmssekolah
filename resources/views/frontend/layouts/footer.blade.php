@@ -23,7 +23,9 @@
                     <li><a href="/">Beranda</a></li>
                     <li><a href="/#welcome">Ketua LPP</a></li>
                     <li><a href="/#unit-pendidikan">Unit Pendidikan</a></li>
-                    <li><a href="/#kurikulum-khas">Kurikulum Khas</a></li>
+                    <li><a href="{{ route('kurikulum.index') }}">Kurikulum Khas</a></li>
+                    <li><a href="{{ route('fasilitas.index') }}">Fasilitas Kampus</a></li>
+                    <li><a href="{{ route('ekskul.index') }}">Ekstrakurikuler</a></li>
                     <li><a href="{{ route('posts.index') }}">Berita & Artikel</a></li>
                     <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}">SPMB Online</a></li>
                 </ul>

@@ -100,6 +100,7 @@ Route::get('/agenda/{event}', [FrontendController::class, 'showEvent'])->name('e
 Route::get('/testimoni', [FrontendController::class, 'testimonials'])->name('testimonials.index');
 Route::get('/kurikulum-khas', [FrontendController::class, 'kurikulum'])->name('kurikulum.index');
 Route::get('/fasilitas', [FrontendController::class, 'fasilitas'])->name('fasilitas.index');
+Route::get('/ekstrakurikuler', [FrontendController::class, 'ekskul'])->name('ekskul.index');
 Route::get('/pearson-icp', [FrontendController::class, 'pearson'])->name('pearson.index');
 Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->name('categories.show');
 
