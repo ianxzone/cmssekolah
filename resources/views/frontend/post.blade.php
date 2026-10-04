@@ -8,6 +8,7 @@
 @section('meta_type', 'article')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
     <style>
         /* Breadcrumb */
         .breadcrumb {
@@ -184,7 +185,7 @@
             display: grid;
             grid-template-columns: 1fr 340px;
             gap: 2.5rem;
-            align-items: start;
+            align-items: stretch;
             margin-bottom: 3.5rem;
         }
 
@@ -199,8 +200,9 @@
 
         .article-thumbnail {
             width: 100%;
-            max-height: 460px;
+            aspect-ratio: 16 / 9;
             object-fit: cover;
+            object-position: center;
             display: block;
         }
 
@@ -579,6 +581,16 @@
             box-shadow: var(--shadow-sm);
         }
 
+        .sidebar-widget:last-child {
+            position: sticky;
+            top: 100px;
+        }
+
+        .spmb-banner-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(6, 95, 70, 0.2) !important;
+        }
+
         .widget-title {
             font-size: 1.1rem;
             font-weight: 800;
@@ -878,7 +890,9 @@
         <div>
             <article class="article-card">
                 @if($post->image)
-                    <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="article-thumbnail">
+                    <a href="{{ $post->image_url }}" class="glightbox" data-gallery="post-gallery" data-title="{{ $post->title }}" data-description="{{ $post->subtitle ?? '' }}">
+                        <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="article-thumbnail">
+                    </a>
                 @endif
 
                 <div class="article-body">
@@ -967,6 +981,20 @@
                     </div>
                 </div>
             </article>
+
+            {{-- SPMB Banner (In-Content CTA) --}}
+            <div class="spmb-inline-banner" style="margin-top: 2.5rem;">
+                <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="spmb-banner-link" style="display: block; position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition);">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 2.5rem 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;">
+                        <span style="background: var(--secondary); color: var(--primary-dark); font-weight: 800; font-size: 0.8rem; padding: 6px 14px; border-radius: 50px; letter-spacing: 1px;">SMART SPMB</span>
+                        <h3 style="font-size: 1.6rem; font-weight: 800; line-height: 1.3; margin: 0;">Pendaftaran Santri Baru Dibuka!</h3>
+                        <p style="font-size: 1rem; opacity: 0.9; margin: 0 0 10px; max-width: 600px;">Daftar sekarang dan jadilah bagian dari Generasi JUARA Al Irsyad Al Islamiyyah Karawang.</p>
+                        <div style="background: white; color: var(--primary-dark); font-weight: 800; padding: 12px 28px; border-radius: 50px; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px;">
+                            Daftar Online Sekarang <i data-feather="arrow-right" style="width: 18px; height: 18px;"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
 
             {{-- Comments Section --}}
             <section class="comments-container">
@@ -1076,6 +1104,15 @@
 
         {{-- Right Column: Sidebar --}}
         <aside class="sidebar">
+            {{-- Search Widget --}}
+            <div class="sidebar-widget">
+                <form action="{{ route('posts.index') }}" method="GET" class="search-form" style="display: flex; position: relative;">
+                    <i data-feather="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px;"></i>
+                    <input type="text" name="search" placeholder="Cari berita..." value="{{ request('search') }}" style="width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; font-family: inherit; outline: none;">
+                    <button type="submit" style="display: none;">Cari</button>
+                </form>
+            </div>
+
             {{-- Recent Posts --}}
             @if(isset($recentPosts) && $recentPosts->count() > 0)
             <div class="sidebar-widget">
@@ -1160,7 +1197,38 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const articleContent = document.querySelector('.article-content');
+            if (articleContent) {
+                const images = articleContent.querySelectorAll('img');
+                images.forEach(img => {
+                    const src = img.getAttribute('src');
+                    if (src) {
+                        const wrapper = document.createElement('a');
+                        wrapper.href = src;
+                        wrapper.className = 'glightbox';
+                        wrapper.setAttribute('data-gallery', 'post-gallery');
+                        
+                        // Set caption if alt text is available
+                        const altText = img.getAttribute('alt');
+                        if (altText) {
+                            wrapper.setAttribute('data-title', altText);
+                        }
+
+                        img.parentNode.insertBefore(wrapper, img);
+                        wrapper.appendChild(img);
+                    }
+                });
+            }
+            GLightbox({
+                selector: '.glightbox',
+                touchNavigation: true,
+                loop: true,
+            });
+        });
+
         function copyLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 const toast = document.getElementById('copyToast');

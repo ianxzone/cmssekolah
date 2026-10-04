@@ -51,6 +51,11 @@
 
     @include('partials.analytics')
 
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/png" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="shortcut icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

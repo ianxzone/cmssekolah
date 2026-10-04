@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $settings->title ?? 'Portal Buku Tamu' }} - Al Irsyad</title>
     
-    <!-- Favicon -->
-    <link rel="icon" href="{{ $settings->logo_path ? asset('storage/' . $settings->logo_path) : 'https://www.alirsyad.sch.id/wp-content/uploads/2025/03/cropped-logo-al-irsyad.png' }}" type="image/png">
+    <!-- Dynamic Favicon -->
+    <link rel="icon" type="image/png" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="shortcut icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ \App\Models\Setting::faviconUrl() }}">
 
     @include('partials.analytics')
 

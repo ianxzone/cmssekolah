@@ -570,9 +570,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Pilih Berkas CSV / JSON <span style="color: #ef4444;">*</span></label>
-                        <input type="file" name="import_file" required accept=".csv,.json,.txt" class="form-control-custom">
-                        <div class="form-help">Mendukung format ekspor standar Rank Math SEO (.csv atau .json). Maksimal 20MB.</div>
+                        <label class="form-label">Pilih Berkas CSV / JSON / .htaccess <span style="color: #ef4444;">*</span></label>
+                        <input type="file" name="import_file" required accept=".csv,.json,.txt,.htaccess,text/plain" class="form-control-custom">
+                        <div class="form-help">Mendukung format standar Rank Math (.csv atau .json). Jika tidak ada CSV, silakan upload file <strong>.htaccess</strong> (atau .txt) dari menu Ekspor Rank Math.</div>
                     </div>
                 </div>
                 <div class="modal-footer">

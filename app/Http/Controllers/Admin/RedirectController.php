@@ -144,9 +144,10 @@ class RedirectController extends Controller
 
         $file = $request->file('import_file');
         $ext = strtolower($file->getClientOriginalExtension());
+        $originalName = strtolower($file->getClientOriginalName());
 
-        if (!in_array($ext, ['csv', 'json', 'txt'])) {
-            return back()->with('error', 'Format file tidak didukung. Harap upload file CSV atau JSON dari Rank Math.');
+        if (!in_array($ext, ['csv', 'json', 'txt', 'htaccess']) && !str_ends_with($originalName, '.htaccess')) {
+            return back()->with('error', 'Format file tidak didukung. Harap upload file CSV, JSON, atau .htaccess dari Rank Math.');
         }
 
         $imported = 0;
@@ -165,43 +166,79 @@ class RedirectController extends Controller
                 $items = isset($data['redirections']) ? $data['redirections'] : $data;
 
                 foreach ($items as $item) {
-                    $source = $item['url_to_redirect'] ?? $item['source_url'] ?? $item['source'] ?? null;
                     $target = $item['redirect_to'] ?? $item['target_url'] ?? $item['destination'] ?? null;
+                    $code = intval($item['header_code'] ?? $item['status_code'] ?? 301);
+                    $hits = intval($item['hits'] ?? 0);
 
-                    if (!$source || !$target) {
+                    // Normalize status: handle 'active'/'inactive', 1/0, true/false, 'on'/'off'
+                    $rawStatus = $item['status'] ?? $item['is_active'] ?? 'active';
+                    $isActive = !in_array($rawStatus, ['inactive', '0', 0, false, 'false', 'off'], true);
+
+                    // Rank Math may use a nested `sources` array with pattern + comparison
+                    $sourceEntries = [];
+                    if (!empty($item['sources']) && is_array($item['sources'])) {
+                        foreach ($item['sources'] as $src) {
+                            $pattern = $src['pattern'] ?? null;
+                            $comparison = strtolower($src['comparison'] ?? 'exact');
+
+                            // Map Rank Math comparison types to our match types
+                            if (in_array($comparison, ['start', 'contains', 'prefix'])) {
+                                $comparison = 'prefix';
+                            } elseif ($comparison === 'regex') {
+                                $comparison = 'regex';
+                            } else {
+                                $comparison = 'exact';
+                            }
+
+                            if ($pattern) {
+                                $sourceEntries[] = ['source' => $pattern, 'match_type' => $comparison];
+                            }
+                        }
+                    }
+
+                    // Fallback: use flat source URL if no sources array
+                    if (empty($sourceEntries)) {
+                        $source = $item['url_to_redirect'] ?? $item['source_url'] ?? $item['source'] ?? null;
+                        if (!$source || !$target) {
+                            continue;
+                        }
+                        $matchingType = strtolower($item['matching_type'] ?? $item['match_type'] ?? 'exact');
+                        if (!in_array($matchingType, ['exact', 'prefix', 'regex'])) {
+                            $matchingType = 'exact';
+                        }
+                        $sourceEntries[] = ['source' => $source, 'match_type' => $matchingType];
+                    }
+
+                    if (!$target) {
                         continue;
                     }
 
-                    $code = intval($item['header_code'] ?? $item['status_code'] ?? 301);
-                    $matchingType = strtolower($item['matching_type'] ?? $item['match_type'] ?? 'exact');
-                    if (!in_array($matchingType, ['exact', 'prefix', 'regex'])) {
-                        $matchingType = 'exact';
-                    }
+                    // Create a redirect for each source entry
+                    foreach ($sourceEntries as $entry) {
+                        $normalizedSource = $entry['match_type'] !== 'regex'
+                            ? Redirect::normalizePath($entry['source'])
+                            : trim($entry['source']);
 
-                    $hits = intval($item['hits'] ?? 0);
-                    $isActive = ($item['status'] ?? 'active') !== 'inactive';
+                        $redirect = Redirect::updateOrCreate(
+                            ['source_url' => $normalizedSource],
+                            [
+                                'target_url' => trim($target),
+                                'match_type' => $entry['match_type'],
+                                'status_code' => in_array($code, [301, 302, 307, 410]) ? $code : 301,
+                                'hits' => $hits,
+                                'is_active' => $isActive,
+                                'notes' => 'Diimpor dari Rank Math JSON',
+                            ]
+                        );
 
-                    $normalizedSource = $matchingType !== 'regex' ? Redirect::normalizePath($source) : trim($source);
-
-                    $redirect = Redirect::updateOrCreate(
-                        ['source_url' => $normalizedSource],
-                        [
-                            'target_url' => trim($target),
-                            'match_type' => $matchingType,
-                            'status_code' => in_array($code, [301, 302, 307, 410]) ? $code : 301,
-                            'hits' => $hits,
-                            'is_active' => $isActive,
-                            'notes' => 'Diimpor dari Rank Math JSON',
-                        ]
-                    );
-
-                    if ($redirect->wasRecentlyCreated) {
-                        $imported++;
-                    } else {
-                        $updated++;
+                        if ($redirect->wasRecentlyCreated) {
+                            $imported++;
+                        } else {
+                            $updated++;
+                        }
                     }
                 }
-            } else {
+            } elseif ($ext === 'csv') {
                 // CSV Parsing
                 $handle = fopen($file->getRealPath(), 'r');
                 if (!$handle) {
@@ -213,7 +250,6 @@ class RedirectController extends Controller
                     fclose($handle);
                     return back()->with('error', 'File CSV kosong.');
                 }
-
                 // Clean BOM and lowercase header keys
                 $cleanHeaders = array_map(function ($h) {
                     return strtolower(trim(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $h)));
@@ -303,6 +339,87 @@ class RedirectController extends Controller
                 }
 
                 fclose($handle);
+            } else {
+                // Text / .htaccess / Nginx Parsing
+                $content = file_get_contents($file->getRealPath());
+                $lines = explode("\n", $content);
+                
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line) || str_starts_with($line, '#')) continue;
+                    
+                    $source = null;
+                    $target = null;
+                    $code = 301;
+                    $matchType = 'exact';
+                    
+                    // .htaccess format: Redirect 301 /old https://new
+                    if (preg_match('/^Redirect\s+([0-9]+)\s+([^\s]+)\s+([^\s]+)$/i', $line, $matches)) {
+                        $code = intval($matches[1]);
+                        $source = $matches[2];
+                        $target = $matches[3];
+                    } 
+                    // .htaccess format: RedirectMatch 301 ^/old/?$ https://new
+                    elseif (preg_match('/^RedirectMatch\s+([0-9]+)\s+([^\s]+)\s+([^\s]+)$/i', $line, $matches)) {
+                        $code = intval($matches[1]);
+                        $source = $matches[2];
+                        $target = $matches[3];
+                        $matchType = 'regex';
+                    }
+                    // .htaccess format: RewriteRule ^old$ /new [R=301,L]
+                    elseif (preg_match('/^RewriteRule\s+([^\s]+)\s+([^\s]+)/i', $line, $matches)) {
+                        $source = $matches[1];
+                        $target = $matches[2];
+                        $code = 301;
+                        if (preg_match('/R=([0-9]+)/i', $line, $codeMatches)) {
+                            $code = intval($codeMatches[1]);
+                        }
+                        $matchType = 'regex';
+                    }
+                    // Nginx format: rewrite ^/old/?$ https://new permanent;
+                    elseif (preg_match('/^rewrite\s+([^\s]+)\s+([^\s]+)\s+(permanent|redirect);$/i', $line, $matches)) {
+                        $source = $matches[1];
+                        $target = $matches[2];
+                        $code = strtolower($matches[3]) === 'permanent' ? 301 : 302;
+                        $matchType = 'regex';
+                    }
+
+                    if ($source && $target) {
+                        // Clean Rank Math's basic RewriteRule regex (e.g. ^path/?$) to exact match
+                        if ($matchType === 'regex') {
+                            $cleanSource = str_replace(['^', '$', '/?'], '', $source);
+                            $cleanSource = trim($cleanSource, '/');
+                            
+                            // If it doesn't contain other regex characters, treat as exact
+                            if (!preg_match('/[\(\)\.\*\+\[\]\|]/', $cleanSource)) {
+                                $matchType = 'exact';
+                                $source = $cleanSource;
+                            }
+                        }
+
+                        $normalizedSource = $matchType !== 'regex'
+                            ? Redirect::normalizePath($source)
+                            : trim($source);
+
+                        $redirect = Redirect::updateOrCreate(
+                            ['source_url' => $normalizedSource],
+                            [
+                                'target_url' => trim($target),
+                                'match_type' => $matchType,
+                                'status_code' => in_array($code, [301, 302, 307, 410]) ? $code : 301,
+                                'hits' => 0,
+                                'is_active' => true,
+                                'notes' => 'Diimpor dari file Text/Server Config',
+                            ]
+                        );
+
+                        if ($redirect->wasRecentlyCreated) {
+                            $imported++;
+                        } else {
+                            $updated++;
+                        }
+                    }
+                }
             }
 
             return redirect()->route('admin.redirects.index')

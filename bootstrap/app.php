@@ -12,7 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Http\Middleware\InstallMiddleware::class);
+        $middleware->append(\App\Http\Middleware\SecurityFirewallMiddleware::class);
+        $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
         $middleware->append(\App\Http\Middleware\CheckRedirects::class);
+
+        $middleware->redirectTo(
+            guests: '/admin/login',
+            users: '/admin'
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

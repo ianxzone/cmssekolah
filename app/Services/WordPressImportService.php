@@ -317,7 +317,7 @@ class WordPressImportService
     {
         foreach ($posts as $postData) {
             try {
-                $slug = $postData['post_name'] ?: Str::slug($postData['title']);
+                $slug = $this->extractSlug($postData);
                 
                 $existing = Post::where('slug', $slug)->first();
                 if ($existing) {
@@ -375,6 +375,19 @@ class WordPressImportService
                 $content = $this->cleanContent($postData['content']);
                 $excerpt = $postData['excerpt'] ?: Str::limit(strip_tags($content), 160);
 
+                // Extract SEO metadata from Rank Math → Yoast → fallback to title/excerpt
+                $meta = $postData['meta'] ?? [];
+                $seoTitle = $meta['rank_math_title']
+                    ?? $meta['_yoast_wpseo_title']
+                    ?? $postData['title'];
+                $seoDescription = $meta['rank_math_description']
+                    ?? $meta['_yoast_wpseo_metadesc']
+                    ?? Str::limit($excerpt, 160, '');
+
+                // Replace Rank Math / Yoast template variables
+                $seoTitle = $this->replaceTemplateVariables($seoTitle, $postData['title']);
+                $seoDescription = $this->replaceTemplateVariables($seoDescription, $postData['title']);
+
                 $post = Post::create([
                     'title' => $postData['title'],
                     'slug' => $slug,
@@ -383,8 +396,8 @@ class WordPressImportService
                     'image' => $imageUrl,
                     'published_at' => $publishedAt,
                     'category_id' => $categoryId,
-                    'seo_title' => $postData['title'],
-                    'seo_description' => Str::limit($excerpt, 160, ''),
+                    'seo_title' => $seoTitle,
+                    'seo_description' => Str::limit($seoDescription, 160, ''),
                 ]);
 
                 // Sync Tags
@@ -414,7 +427,7 @@ class WordPressImportService
     {
         foreach ($pages as $pageData) {
             try {
-                $slug = $pageData['post_name'] ?: Str::slug($pageData['title']);
+                $slug = $this->extractSlug($pageData);
                 
                 $existing = Page::where('slug', $slug)->first();
                 if ($existing) {
@@ -465,6 +478,19 @@ class WordPressImportService
 
                 $content = $this->cleanContent($pageData['content']);
 
+                // Extract SEO metadata from Rank Math → Yoast → fallback to title
+                $meta = $pageData['meta'] ?? [];
+                $seoTitle = $meta['rank_math_title']
+                    ?? $meta['_yoast_wpseo_title']
+                    ?? $pageData['title'];
+                $seoDescription = $meta['rank_math_description']
+                    ?? $meta['_yoast_wpseo_metadesc']
+                    ?? Str::limit(strip_tags($content), 160, '');
+
+                // Replace Rank Math / Yoast template variables
+                $seoTitle = $this->replaceTemplateVariables($seoTitle, $pageData['title']);
+                $seoDescription = $this->replaceTemplateVariables($seoDescription, $pageData['title']);
+
                 Page::create([
                     'title' => $pageData['title'],
                     'slug' => $slug,
@@ -472,6 +498,8 @@ class WordPressImportService
                     'image' => $imageUrl,
                     'status' => $status,
                     'published_at' => $publishedAt,
+                    'seo_title' => $seoTitle,
+                    'seo_description' => Str::limit($seoDescription, 160, ''),
                 ]);
 
                 $this->log['summary']['pages_imported']++;
@@ -552,6 +580,33 @@ class WordPressImportService
         }
     }
 
+    /**
+     * Extract the canonical public slug from WordPress permalink (<link>) or fallback to post_name.
+     */
+    protected function extractSlug(array $itemData): string
+    {
+        // 1. Try to extract exact public slug from permalink (<link>)
+        if (!empty($itemData['link'])) {
+            $path = parse_url($itemData['link'], PHP_URL_PATH);
+            $trimmed = trim((string)$path, '/');
+            if ($trimmed !== '') {
+                $segments = explode('/', $trimmed);
+                $linkSlug = end($segments);
+                if (!empty($linkSlug)) {
+                    return $linkSlug;
+                }
+            }
+        }
+
+        // 2. Fallback to wp:post_name
+        if (!empty($itemData['post_name'])) {
+            return $itemData['post_name'];
+        }
+
+        // 3. Fallback to title slug
+        return Str::slug($itemData['title'] ?? 'post');
+    }
+
     protected function cleanContent(string $content): string
     {
         if (empty($content)) {
@@ -595,6 +650,39 @@ class WordPressImportService
         $content = preg_replace('/class="\s*"/is', '', $content);
 
         return $content;
+    }
+
+    /**
+     * Replace Rank Math / Yoast SEO template variables with actual values.
+     *
+     * Supported variables: %title%, %sep%, %sitename%, %sitedesc%, %excerpt%, %term%
+     */
+    protected function replaceTemplateVariables(string $template, string $title = ''): string
+    {
+        if (empty($template)) {
+            return $template;
+        }
+
+        $siteName = \App\Models\Setting::get('site_name', config('app.name', 'SDIT'));
+        $siteDesc = \App\Models\Setting::get('site_tagline', '');
+        $separator = \App\Models\Setting::get('seo_title_separator', '-');
+
+        $replacements = [
+            '%title%'    => $title,
+            '%sep%'      => $separator,
+            '%sitename%' => $siteName,
+            '%sitedesc%' => $siteDesc,
+            '%excerpt%'  => '',
+            '%term%'     => '',
+            '%%sep%%'    => $separator,  // double-percent variant
+        ];
+
+        $result = str_replace(array_keys($replacements), array_values($replacements), $template);
+
+        // Clean up any remaining unrecognized %variables%
+        $result = preg_replace('/%[a-z_]+%/i', '', $result);
+
+        return trim(preg_replace('/\s+/', ' ', $result));
     }
 
     public function getLog(): array

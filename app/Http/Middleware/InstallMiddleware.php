@@ -17,6 +17,19 @@ class InstallMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $isInstalled = File::exists(storage_path('installed'));
+
+        // Secondary check: if users table already has an admin user, lock install permanently
+        if (!$isInstalled) {
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::where('role', 'admin')->exists()) {
+                    File::put(storage_path('installed'), now()->toDateTimeString());
+                    $isInstalled = true;
+                }
+            } catch (\Throwable $e) {
+                // Database not ready yet
+            }
+        }
+
         $isInstallPath = $request->is('install*');
 
         if (!$isInstalled && !$isInstallPath) {

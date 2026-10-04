@@ -20,7 +20,7 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:2048', // 2MB max
+            'file' => 'required|file|mimes:jpeg,png,jpg,webp,gif,pdf|max:5120', // Safe MIME types, max 5MB
             'alt_text' => 'nullable|string|max:255',
             'title' => 'nullable|string|max:255',
             'caption' => 'nullable|string',
@@ -45,6 +45,8 @@ class MediaController extends Controller
             'caption' => $request->input('caption'),
             'description' => $request->input('description'),
         ]);
+
+        \App\Services\SecurityService::logAudit('created', 'media', "Mengupload media: {$originalName}", (string)$media->id);
 
         if ($request->header('Accept') === 'application/json' || $request->ajax()) {
             return response()->json([

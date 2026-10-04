@@ -117,6 +117,7 @@ class FrontendController extends Controller
             ->take(2)
             ->get();
 
+        $post->content = $this->parseShortcodes($post->content);
         return view('frontend.post', compact('post', 'recentPosts', 'categories', 'upcomingEvents'));
     }
 
@@ -129,6 +130,13 @@ class FrontendController extends Controller
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->firstOrFail();
+
+        // CAPTCHA & Honeypot Verification
+        $captchaResult = \App\Services\CaptchaService::verify($request->all(), 'comments');
+        if (!$captchaResult['success']) {
+            \App\Services\SecurityService::logThreat('spam_bot', 'low', "Spam bot tertangkap pada Komentar: " . $captchaResult['message']);
+            return back()->withInput()->withErrors(['captcha' => $captchaResult['message']]);
+        }
 
         $validated = $request->validate([
             'name' => 'required|string|max:100',
@@ -161,11 +169,11 @@ class FrontendController extends Controller
     }
 
     /**
-     * Resolve a slug — try Post first, then Page.
+     * Resolve a slug — try Post first, then Page, with smart fallback for legacy WordPress ID permalinks.
      */
     public function showSlug($slug)
     {
-        // Try post first
+        // 1. Try exact post match first
         $post = Post::with('category')
             ->where('slug', $slug)
             ->whereNotNull('published_at')
@@ -176,13 +184,46 @@ class FrontendController extends Controller
             return $this->showPost($slug);
         }
 
-        // Fallback to page
-        $page = \App\Models\Page::where('slug', $slug)->firstOrFail();
-        if (!$page->is_published && !auth()->check()) {
-            abort(404);
+        // 2. Smart Match: If visitor requested a URL ending with -{id} (e.g. legacy WP permalinks like /judul-post-36007),
+        // but database has the base slug /judul-post (without ID)
+        if (preg_match('/^(.*?)-(\d+)$/', $slug, $matches)) {
+            $baseSlug = $matches[1];
+            $postByBase = Post::where('slug', $baseSlug)
+                ->whereNotNull('published_at')
+                ->where('published_at', '<=', now())
+                ->first();
+
+            if ($postByBase) {
+                return redirect()->to(url('/' . $postByBase->slug), 301);
+            }
         }
-        $isPreview = !$page->is_published && auth()->check();
-        return view('pages.show', compact('page', 'isPreview'));
+
+        // 3. Smart Match: If database has the slug WITH ID (e.g. /judul-post-36007),
+        // but visitor requested the base slug without ID /judul-post
+        $candidate = Post::where('slug', 'like', $slug . '-%')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->get()
+            ->first(function ($p) use ($slug) {
+                return preg_match('/^' . preg_quote($slug, '/') . '-\d+$/', $p->slug);
+            });
+
+        if ($candidate) {
+            return redirect()->to(url('/' . $candidate->slug), 301);
+        }
+
+        // Fallback to page
+        $page = \App\Models\Page::where('slug', $slug)->first();
+        if ($page) {
+            if (!$page->is_published && !auth()->check()) {
+                abort(404);
+            }
+            $isPreview = !$page->is_published && auth()->check();
+            $page->content = $this->parseShortcodes($page->content);
+            return view('pages.show', compact('page', 'isPreview'));
+        }
+
+        abort(404);
     }
 
     /**
@@ -246,7 +287,7 @@ class FrontendController extends Controller
                 } elseif ($field['type'] === 'date') {
                     $rule[] = 'date';
                 } elseif ($field['type'] === 'file') {
-                    $rule[] = 'file|max:2048'; // 2MB limit
+                    $rule[] = 'file|mimes:jpg,jpeg,png,webp,pdf,doc,docx|max:2048'; // 2MB limit with safe MIME whitelist
                     $fileFields[] = $inputName;
                 } elseif ($field['type'] === 'checkbox') {
                     $rule[] = 'array';
@@ -254,6 +295,13 @@ class FrontendController extends Controller
 
                 $rules[$inputName] = implode('|', $rule);
             }
+        }
+
+        // CAPTCHA & Honeypot Verification
+        $captchaResult = \App\Services\CaptchaService::verify($request->all(), 'forms');
+        if (!$captchaResult['success']) {
+            \App\Services\SecurityService::logThreat('spam_bot', 'low', "Spam bot tertangkap pada Formulir Dinamis: " . $captchaResult['message']);
+            return back()->withInput()->withErrors(['captcha' => $captchaResult['message']]);
         }
 
         $validatedData = $request->validate($rules);
@@ -357,5 +405,24 @@ class FrontendController extends Controller
         $content .= "Sitemap: " . url('sitemap.xml') . "\n";
 
         return response($content, 200)->header('Content-Type', 'text/plain');
+    }
+
+    /**
+     * Parse Shortcodes in content
+     */
+    protected function parseShortcodes($content)
+    {
+        if (empty($content)) return $content;
+
+        return preg_replace_callback('/\[form:([a-zA-Z0-9-]+)\]/', function ($matches) {
+            $slug = $matches[1];
+            $form = \App\Models\Form::where('slug', $slug)->where('is_active', true)->first();
+            
+            if (!$form) {
+                return "<div style='padding:1rem;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:8px;'>[Formulir tidak ditemukan: {$slug}]</div>";
+            }
+
+            return view('frontend.partials.form-embed', compact('form'))->render();
+        }, $content);
     }
 }

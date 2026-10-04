@@ -18,10 +18,38 @@ class SettingController extends Controller
     {
         $request->validate([
             'home_headmaster_image' => 'nullable|image|max:2048',
-            'seo_default_image' => 'nullable|image|max:2048',
+            'seo_default_image'     => 'nullable|image|max:2048',
+            'site_logo_file'        => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:4096',
+            'site_favicon_file'     => 'nullable|file|mimes:ico,png,svg,jpg,jpeg|max:2048',
+            'site_icon_file'        => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:3072',
         ]);
 
         $data = $request->except('_token');
+
+        // Handle Branding Assets (Logo, Favicon, Icon)
+        if ($request->hasFile('site_logo_file')) {
+            $path = $request->file('site_logo_file')->store('settings', 'public');
+            \App\Models\Setting::set('site_logo', $path, 'image');
+        } elseif ($request->filled('site_logo_url')) {
+            \App\Models\Setting::set('site_logo', trim($request->input('site_logo_url')), 'string');
+        }
+        unset($data['site_logo_file'], $data['site_logo_url']);
+
+        if ($request->hasFile('site_favicon_file')) {
+            $path = $request->file('site_favicon_file')->store('settings', 'public');
+            \App\Models\Setting::set('site_favicon', $path, 'image');
+        } elseif ($request->filled('site_favicon_url')) {
+            \App\Models\Setting::set('site_favicon', trim($request->input('site_favicon_url')), 'string');
+        }
+        unset($data['site_favicon_file'], $data['site_favicon_url']);
+
+        if ($request->hasFile('site_icon_file')) {
+            $path = $request->file('site_icon_file')->store('settings', 'public');
+            \App\Models\Setting::set('site_icon', $path, 'image');
+        } elseif ($request->filled('site_icon_url')) {
+            \App\Models\Setting::set('site_icon', trim($request->input('site_icon_url')), 'string');
+        }
+        unset($data['site_icon_file'], $data['site_icon_url']);
 
         // Handle file uploads (e.g., headmaster_image, seo_default_image)
         if ($request->hasFile('home_headmaster_image')) {
@@ -49,7 +77,11 @@ class SettingController extends Controller
             'home_show_units',
             'home_show_curriculum',
             'home_show_pearson',
-            'matomo_disable_cookies'
+            'matomo_disable_cookies',
+            // SEO Booleans
+            'seo_nofollow_external_links',
+            'seo_new_window_external_links',
+            'seo_breadcrumbs_enabled'
         ];
 
         foreach ($booleanKeys as $key) {
@@ -69,7 +101,8 @@ class SettingController extends Controller
             'facilities_list',
             'extracurriculars_list',
             'units_data',
-            'curriculum_pillars'
+            'curriculum_pillars',
+            'seo_robots_global' // Rank Math Robots Array
         ];
 
         foreach ($arrayKeys as $key) {
@@ -94,6 +127,8 @@ class SettingController extends Controller
         foreach ($data as $key => $value) {
             \App\Models\Setting::set($key, $value, 'text');
         }
+
+        \App\Services\SecurityService::logAudit('updated', 'settings', 'Memperbarui pengaturan sistem dan identitas branding website');
 
         return redirect()->route('admin.settings.index')->with('success', 'System Settings updated successfully.');
     }

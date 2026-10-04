@@ -7,8 +7,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="{{ asset('pwa-192x192.png') }}">
-    <title>{{ $title ?? 'LPP Al Irsyad Al Islamiyyah Karawang - Lajnah Pendidikan & Pengajaran' }}</title>
+    <link rel="icon" type="image/png" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="shortcut icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <title>{{ $title ?? (\App\Models\Setting::siteName() . ' - ' . \App\Models\Setting::siteTagline()) }}</title>
 
     @if(\App\Models\Setting::get('seo_google_site_verification'))
     <meta name="google-site-verification" content="{{ \App\Models\Setting::get('seo_google_site_verification') }}" />
@@ -1189,13 +1191,23 @@
     <!-- 2. NAVBAR -->
     <nav class="navbar" id="mainNavbar">
         <div class="container">
+            @php
+                $siteLogo = \App\Models\Setting::logoUrl();
+                $siteName = \App\Models\Setting::siteName();
+                $siteTagline = \App\Models\Setting::siteTagline();
+                $siteIconText = \App\Models\Setting::siteIconText();
+            @endphp
             <a href="/" class="logo">
-                <div class="logo-emblem">
-                    <span>LPP</span>
-                </div>
+                @if(!empty($siteLogo))
+                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" style="max-height: 48px; width: auto; object-fit: contain;">
+                @else
+                    <div class="logo-emblem">
+                        <span>{{ $siteIconText }}</span>
+                    </div>
+                @endif
                 <div class="logo-text">
-                    <h1>LPP AL IRSYAD</h1>
-                    <p>LAJNAH PENDIDIKAN & PENGAJARAN</p>
+                    <h1>{{ $siteName }}</h1>
+                    <p>{{ $siteTagline }}</p>
                 </div>
             </a>
             <ul class="nav-menu" id="navMenu">
@@ -1204,17 +1216,22 @@
                     if (empty($navLinks)) {
                         $navLinks = [
                             ['label' => 'Beranda', 'url' => '/'],
-                            ['label' => 'Ketua LPP', 'url' => '#welcome'],
                             ['label' => 'Unit Pendidikan', 'url' => '#unit-pendidikan'],
                             ['label' => 'Kurikulum Khas', 'url' => '#kurikulum-khas'],
                             ['label' => 'Fasilitas', 'url' => '#programs'],
                             ['label' => 'Berita', 'url' => route('posts.index')]
                         ];
                     }
+                    // Filter out any lingering 'Ketua LPP' items
+                    $navLinks = array_filter($navLinks, function($l) {
+                        $lbl = strtolower($l['label'] ?? '');
+                        return !str_contains($lbl, 'ketua') && ($l['url'] ?? '') !== '#welcome';
+                    });
                 @endphp
                 @foreach($navLinks as $link)
                     <li><a href="{{ $link['url'] }}" class="nav-link">{{ $link['label'] }}</a></li>
                 @endforeach
+                <li><a href="{{ route('alumni.index') }}" class="nav-link">Alumni</a></li>
                 <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="nav-spmb">SPMB Online</a></li>
             </ul>
             <div class="mobile-toggle" onclick="toggleMenu()">
@@ -2218,10 +2235,14 @@
             <div class="footer-grid">
                 <div class="footer-logo">
                     <h3 style="display: flex; align-items: center; gap: 10px;">
-                        <div class="logo-emblem" style="width: 38px; height: 38px;">
-                            <span style="font-size: 0.78rem;">LPP</span>
-                        </div>
-                        LPP AL IRSYAD
+                        @if(!empty($siteLogo))
+                            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" style="max-height: 38px; width: auto; object-fit: contain;">
+                        @else
+                            <div class="logo-emblem" style="width: 38px; height: 38px;">
+                                <span style="font-size: 0.78rem;">{{ $siteIconText }}</span>
+                            </div>
+                        @endif
+                        {{ $siteName }}
                     </h3>
                     <p style="color: #94a3b8; font-size: 0.9rem;">{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (Daycare, KB-TK Montessori, SDIT, SMPIT, SMAIT) yang berlandaskan Al-Qur\'an, As-Sunnah, dan keunggulan sains-teknologi global.' }}</p>
                     <div class="social-links">
@@ -2235,7 +2256,6 @@
                     <h4>Tautan Cepat</h4>
                     <ul class="footer-links">
                         <li><a href="/">Beranda</a></li>
-                        <li><a href="#welcome">Ketua LPP</a></li>
                         <li><a href="#unit-pendidikan">Unit Pendidikan</a></li>
                         <li><a href="{{ route('kurikulum.index') }}">Kurikulum Khas</a></li>
                         <li><a href="{{ route('fasilitas.index') }}">Fasilitas Kampus</a></li>

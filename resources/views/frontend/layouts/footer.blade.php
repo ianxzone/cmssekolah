@@ -1,13 +1,22 @@
 <!-- FOOTER -->
 <footer>
     <div class="container">
+        @php
+            $siteLogo = \App\Models\Setting::logoUrl();
+            $siteName = \App\Models\Setting::siteName();
+            $siteIconText = \App\Models\Setting::siteIconText();
+        @endphp
         <div class="footer-grid">
             <div class="footer-logo">
                 <h3 style="display: flex; align-items: center; gap: 10px;">
-                    <div class="logo-emblem" style="width: 38px; height: 38px;">
-                        <span style="font-size: 0.78rem;">LPP</span>
-                    </div>
-                    LPP AL IRSYAD
+                    @if(!empty($siteLogo))
+                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" style="max-height: 38px; width: auto; object-fit: contain;">
+                    @else
+                        <div class="logo-emblem" style="width: 38px; height: 38px;">
+                            <span style="font-size: 0.78rem;">{{ $siteIconText }}</span>
+                        </div>
+                    @endif
+                    {{ $siteName }}
                 </h3>
                 <p style="color: #94a3b8; font-size: 0.9rem;">{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (Daycare, KB-TK Montessori, SDIT, SMPIT, SMAIT) yang berlandaskan Al-Qur\'an, As-Sunnah, dan keunggulan sains-teknologi global.' }}</p>
                 <div class="social-links">
@@ -21,7 +30,6 @@
                 <h4>Tautan Cepat</h4>
                 <ul class="footer-links">
                     <li><a href="/">Beranda</a></li>
-                    <li><a href="/#welcome">Ketua LPP</a></li>
                     <li><a href="/#unit-pendidikan">Unit Pendidikan</a></li>
                     <li><a href="{{ route('kurikulum.index') }}">Kurikulum Khas</a></li>
                     <li><a href="{{ route('fasilitas.index') }}">Fasilitas Kampus</a></li>
@@ -51,7 +59,7 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; {{ date('Y') }} LPP Al Irsyad Al Islamiyyah Karawang. All rights reserved.</p>
-            <span id="credit-link">Developed by <a href="https://www.murniabadi.co.id" target="_blank" style="color: var(--secondary); font-weight: 700;">MATEK</a></span>
+            <span id="credit-link">Developed by <a href="#" style="color: var(--secondary); font-weight: 700;">berawan</a></span>
         </div>
     </div>
 </footer>
@@ -104,16 +112,4 @@
             }
         });
     });
-
-    (function() {
-        function checkCredit() {
-            const credit = document.getElementById('credit-link');
-            const link = credit ? credit.querySelector('a') : null;
-            if (!credit || !link || link.getAttribute('href') !== 'https://www.murniabadi.co.id' || link.innerText.trim() !== 'MATEK') {
-                document.body.innerHTML = '<div style="background: #000; color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; font-family: sans-serif; padding: 20px;"><div><h1>System Dependency Error</h1><p>This template requires original attribution to function. Please restore the footer credit to MATEK.</p></div></div>';
-            }
-        }
-        setInterval(checkCredit, 3000);
-        window.addEventListener('load', checkCredit);
-    })();
 </script>

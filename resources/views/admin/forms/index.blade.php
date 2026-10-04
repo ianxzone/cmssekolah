@@ -27,7 +27,13 @@
                             <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.15s ease;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'">
                                 <td style="padding: 1rem;">
                                     <div style="font-weight: 500;">{{ $form->title }}</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">/formulir/{{ $form->slug }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; display: flex; align-items: center; gap: 8px;">
+                                        <span>/form/{{ $form->slug }}</span>
+                                        <span style="color: #cbd5e1;">|</span>
+                                        <code style="font-size: 0.7rem; background: #f8fafc; padding: 2px 6px; border-radius: 4px; color: var(--primary-color); cursor: pointer; border: 1px dashed #cbd5e1;" onclick="copyShortcode('[form:{{ $form->slug }}]', this)" title="Klik untuk menyalin shortcode">
+                                            [form:{{ $form->slug }}]
+                                        </code>
+                                    </div>
                                 </td>
                                 <td style="padding: 1rem;">
                                     @if($form->is_active)
@@ -83,3 +89,24 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function copyShortcode(text, el) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = el.innerText;
+            el.innerText = 'Disalin!';
+            el.style.backgroundColor = '#ecfdf5';
+            el.style.color = '#10b981';
+            el.style.borderColor = '#10b981';
+            
+            setTimeout(() => {
+                el.innerText = originalText;
+                el.style.backgroundColor = '#f8fafc';
+                el.style.color = 'var(--primary-color)';
+                el.style.borderColor = '#cbd5e1';
+            }, 2000);
+        });
+    }
+</script>
+@endpush

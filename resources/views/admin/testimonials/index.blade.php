@@ -29,12 +29,16 @@
                                     onmouseout="this.style.backgroundColor='transparent'">
                                     <td style="padding: 1rem;">
                                         <div style="display: flex; align-items: center; gap: 1rem;">
-                                            @if($testimonial->image)
-                                                <img src="{{ \Illuminate\Support\Facades\Storage::url($testimonial->image) }}" alt="Image"
-                                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);">
+                                            @if($testimonial->image_url)
+                                                <img src="{{ $testimonial->image_url }}" alt="{{ $testimonial->name }}"
+                                                    onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
+                                                <div style="display: none; width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-body); align-items: center; justify-content: center; color: var(--text-secondary); border: 1px solid var(--border-color); flex-shrink: 0;">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                                </div>
                                             @else
-                                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-body); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
-                                                    <i data-feather="user"></i>
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-body); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); border: 1px solid var(--border-color); flex-shrink: 0;">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                                 </div>
                                             @endif
                                             <div>

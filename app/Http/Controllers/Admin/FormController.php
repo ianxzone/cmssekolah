@@ -63,6 +63,76 @@ class FormController extends Controller
     }
 
     /**
+     * Export the specified resource (Submissions) to CSV.
+     */
+    public function export(Form $form)
+    {
+        $submissions = $form->submissions()->oldest()->get();
+        
+        $filename = 'submissions_' . $form->slug . '_' . date('Ymd_His') . '.csv';
+        
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        // Gather all unique keys from all submissions to form the CSV header
+        $allKeys = [];
+        foreach ($submissions as $sub) {
+            if (is_array($sub->data)) {
+                foreach (array_keys($sub->data) as $key) {
+                    if (!in_array($key, $allKeys)) {
+                        $allKeys[] = $key;
+                    }
+                }
+            }
+        }
+
+        // Format header text
+        $formattedKeys = array_map(function($key) {
+            return ucwords(str_replace('_', ' ', $key));
+        }, $allKeys);
+
+        $columns = array_merge(['ID', 'Tanggal', 'IP Address'], $formattedKeys);
+
+        $callback = function () use ($submissions, $columns, $allKeys) {
+            $file = fopen('php://output', 'w');
+            // Adding BOM for UTF-8 Excel compatibility
+            fputs($file, "\xEF\xBB\xBF");
+            fputcsv($file, $columns);
+
+            foreach ($submissions as $sub) {
+                $row = [
+                    $sub->id,
+                    $sub->created_at->format('Y-m-d H:i:s'),
+                    $sub->ip_address ?? '',
+                ];
+                
+                $data = is_array($sub->data) ? $sub->data : [];
+                foreach ($allKeys as $key) {
+                    $val = $data[$key] ?? '';
+                    if (is_array($val)) {
+                        $val = implode(', ', $val);
+                    }
+                    // Prevent excel formula injection
+                    if (is_string($val) && preg_match('/^[=\+\-@]/', $val)) {
+                        $val = "'" . $val;
+                    }
+                    $row[] = $val;
+                }
+
+                fputcsv($file, $row);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Form $form)

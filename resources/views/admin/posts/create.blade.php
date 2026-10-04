@@ -157,6 +157,38 @@
                                         </svg>
                                         <span>Tambah Media</span>
                                     </button>
+
+                                    <!-- Insert Form Dropdown -->
+                                    <div class="dropdown" style="display: inline-block; position: relative;">
+                                        <button type="button" class="btn-wp-add-media" style="margin-left: 4px;" onclick="var d = this.nextElementSibling.style; d.display = d.display === 'none' ? 'block' : 'none';">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                            </svg>
+                                            <span>Sisipkan Form</span>
+                                        </button>
+                                        <div class="dropdown-menu" style="position: absolute; left: 0; top: 100%; z-index: 1000; background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; min-width: 250px; padding: 0; margin-top: 5px; max-height: 300px; overflow-y: auto;">
+                                            <div style="padding: 0.5rem; border-bottom: 1px solid #f1f5f9; position: sticky; top: 0; background: white; z-index: 10;">
+                                                <input type="text" placeholder="Cari form..." style="width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; padding: 0.4rem 0.6rem; font-size: 0.8rem; outline: none; box-sizing: border-box;" onkeyup="filterForms(this)" onclick="event.stopPropagation()">
+                                            </div>
+                                            @php
+                                                $activeForms = \App\Models\Form::where('is_active', true)->get();
+                                            @endphp
+                                            @foreach($activeForms as $f)
+                                                <a href="javascript:void(0)" class="form-insert-link" onclick="insertFormToEditor('{{ $f->slug }}')" style="display: block; padding: 0.65rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                                    <div style="font-weight: 600;">{{ $f->title }}</div>
+                                                    <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 2px;">[form:{{ $f->slug }}]</div>
+                                                </a>
+                                            @endforeach
+                                            @if($activeForms->isEmpty())
+                                                <span style="display: block; padding: 1rem; color: #94a3b8; font-size: 0.85rem; text-align: center;">Belum ada form aktif</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <!-- End Insert Form -->
                                 </div>
                                 <span id="content-word-count" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">0
                                     words</span>
@@ -341,12 +373,19 @@
 
         function updateWordCount(inputId, displayId, isTrix = false) {
             const display = document.getElementById(displayId);
+            const inputElement = document.getElementById(inputId);
+            
+            if (!display) return;
+            if (!isTrix && !inputElement) return;
+
             let text = "";
             if (isTrix) {
                 const editor = document.querySelector("trix-editor");
-                text = editor.editor.getDocument().toString();
+                if (editor && editor.editor) {
+                    text = editor.editor.getDocument().toString();
+                }
             } else {
-                text = document.getElementById(inputId).value;
+                text = inputElement.value;
             }
             const count = countWords(text);
             display.innerText = `${count} word${count !== 1 ? 's' : ''}`;
@@ -666,5 +705,37 @@
             // Trix takes a moment to initialize
             setTimeout(() => updateWordCount('content', 'content-word-count', true), 500);
         };
+
+        // Form Shortcode Inserter
+        function filterForms(input) {
+            const filter = input.value.toLowerCase();
+            const links = input.closest('.dropdown-menu').querySelectorAll('a.form-insert-link');
+            links.forEach(link => {
+                const text = link.innerText.toLowerCase();
+                if (text.indexOf(filter) > -1) {
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+        }
+
+        function insertFormToEditor(slug) {
+            const editorEl = document.querySelector("trix-editor");
+            if (editorEl && editorEl.editor) {
+                // Insert as plain text or simple HTML so it formats correctly
+                editorEl.editor.insertHTML(`<br><p><strong>[form:${slug}]</strong></p><br>`);
+            }
+            
+            // Hide dropdown
+            document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.remove('show'));
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.remove('show'));
+            }
+        });
     </script>
 @endpush

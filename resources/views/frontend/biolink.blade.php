@@ -21,7 +21,9 @@
     @endif
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ $profile->avatar_url }}">
+    <link rel="icon" type="image/png" href="{{ $profile->avatar_url ?: \App\Models\Setting::faviconUrl() }}">
+    <link rel="shortcut icon" href="{{ $profile->avatar_url ?: \App\Models\Setting::faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ $profile->avatar_url ?: \App\Models\Setting::faviconUrl() }}">
 
     @include('partials.analytics')
     

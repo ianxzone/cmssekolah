@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testimoni Orang Tua & Alumni | LPP Al Irsyad Karawang</title>
-    <meta name="description" content="Kumpulan testimoni dan cerita pengalaman nyata dari orang tua santri, alumni, dan siswa LPP Al Irsyad Al Islamiyyah Karawang.">
+    <title>Testimoni Orang Tua & Alumni | {{ \App\Models\Setting::siteName() }}</title>
+    <meta name="description" content="Kumpulan testimoni dan cerita pengalaman nyata dari orang tua santri, alumni, dan siswa {{ \App\Models\Setting::siteName() }}.">
+    
+    <!-- Dynamic Favicon -->
+    <link rel="icon" type="image/png" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="shortcut icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ \App\Models\Setting::faviconUrl() }}">
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -284,17 +289,20 @@
     <nav class="navbar" id="mainNavbar">
         <div class="container">
             <a href="/" class="logo">
-                <div class="logo-emblem">
-                    <span>LPP</span>
-                </div>
+                @if(\App\Models\Setting::logoUrl())
+                    <img src="{{ \App\Models\Setting::logoUrl() }}" alt="{{ \App\Models\Setting::siteName() }}" style="height: 48px; width: auto; object-fit: contain;">
+                @else
+                    <div class="logo-emblem">
+                        <span>{{ \App\Models\Setting::siteIconText() }}</span>
+                    </div>
+                @endif
                 <div class="logo-text">
-                    <h1>LPP AL IRSYAD</h1>
-                    <p>LAJNAH PENDIDIKAN & PENGAJARAN</p>
+                    <h1>{{ \App\Models\Setting::siteName() }}</h1>
+                    <p>{{ \App\Models\Setting::siteTagline() }}</p>
                 </div>
             </a>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="/" class="nav-link">Beranda</a></li>
-                <li><a href="/#welcome" class="nav-link">Ketua LPP</a></li>
                 <li><a href="/#unit-pendidikan" class="nav-link">Unit Pendidikan</a></li>
                 <li><a href="/#kurikulum-khas" class="nav-link">Kurikulum Khas</a></li>
                 <li><a href="{{ route('posts.index') }}" class="nav-link">Berita</a></li>
@@ -403,10 +411,14 @@
             <div class="footer-grid">
                 <div class="footer-logo">
                     <h3 style="display: flex; align-items: center; gap: 10px;">
-                        <div class="logo-emblem" style="width: 36px; height: 36px; font-size: 0.8rem;">
-                            <span>LPP</span>
-                        </div>
-                        LPP AL IRSYAD
+                        @if(\App\Models\Setting::logoUrl())
+                            <img src="{{ \App\Models\Setting::logoUrl() }}" alt="{{ \App\Models\Setting::siteName() }}" style="height: 38px; width: auto; object-fit: contain;">
+                        @else
+                            <div class="logo-emblem" style="width: 36px; height: 36px; font-size: 0.8rem;">
+                                <span>{{ \App\Models\Setting::siteIconText() }}</span>
+                            </div>
+                        @endif
+                        {{ \App\Models\Setting::siteName() }}
                     </h3>
                     <p>{{ $settings['footer_desc'] ?? 'LPP (Lajnah Pendidikan dan Pengajaran) Al Irsyad Al Islamiyyah Karawang menaungi dan mengelola seluruh unit pendidikan Islam terpadu (Daycare, KB-TK Montessori, SDIT, SMPIT, SMAIT).' }}</p>
                     <div class="social-links">
@@ -419,7 +431,6 @@
                     <h4>Tautan Cepat</h4>
                     <ul class="footer-links">
                         <li><a href="/">Beranda</a></li>
-                        <li><a href="/#welcome">Ketua LPP</a></li>
                         <li><a href="/#unit-pendidikan">Unit Pendidikan</a></li>
                         <li><a href="{{ route('posts.index') }}">Berita & Artikel</a></li>
                         <li><a href="{{ route('events.index') }}">Agenda</a></li>

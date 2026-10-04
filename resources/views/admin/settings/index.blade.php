@@ -33,7 +33,7 @@
 
         .form-control {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.85rem 1rem; /* Lebih lega */
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.875rem;
@@ -44,13 +44,14 @@
         .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); /* Focus state lebih jelas */
         }
 
         .form-text {
             font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
+            color: #6b7280; /* Warna lebih lembut */
+            font-weight: 400;
+            margin-top: 0.35rem;
             display: block;
         }
 
@@ -65,13 +66,14 @@
         }
 
         .toggle-label {
-            font-weight: 500;
+            font-weight: 600; /* Sedikit lebih tegas untuk bedakan dgn desc */
             color: var(--text-primary);
         }
 
         .toggle-desc {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: #6b7280; /* Warna lebih lembut */
+            font-weight: 400;
             display: block;
             margin-top: 0.25rem;
         }
@@ -127,6 +129,7 @@
             background: #fff;
             border-radius: 8px;
             border-color: var(--border-color);
+            padding: 1rem;
         }
 
         /* Tabs Styling */
@@ -135,8 +138,7 @@
             gap: 0.5rem;
             border-bottom: 2px solid var(--border-color);
             margin-bottom: 2rem;
-            overflow-x: auto;
-            scrollbar-width: thin;
+            flex-wrap: wrap; /* Hilangkan scroll horizontal */
         }
 
         .tab-btn {
@@ -151,15 +153,19 @@
             margin-bottom: -2px;
             white-space: nowrap;
             transition: all 0.2s;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
         }
 
         .tab-btn:hover {
             color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.03);
         }
 
         .tab-btn.active {
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.08); /* Indikator aktif lebih jelas */
         }
 
         /* Dynamic Row Styling */
@@ -234,6 +240,99 @@
 
                 <!-- TAB 1: IDENTITAS & KONTAK -->
                 <div x-show="activeTab === 'identity'" style="display: none;" x-transition>
+                    <!-- BRANDING: LOGO, FAVICON & IDENTITAS LEMBAGA -->
+                    <div class="setting-section" style="border: 2px solid var(--border-color); background: #ffffff; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary-color); display: flex; align-items: center; gap: 8px;">
+                            <i data-feather="image"></i> Branding, Logo & Favicon Website
+                        </h3>
+                        <p class="form-text" style="margin-bottom: 1.5rem;">
+                            Atur logo utama sekolah, favicon tab browser, dan identitas nama lembaga yang tampil pada header dan footer website.
+                        </p>
+
+                        <!-- Nama & Tagline Lembaga -->
+                        <div style="display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label class="form-label">Nama Lembaga / Sekolah <span style="color:red;">*</span></label>
+                                <input type="text" name="site_name" class="form-control" value="{{ $settings['site_name'] ?? 'LPP AL IRSYAD' }}" required placeholder="Contoh: LPP AL IRSYAD">
+                                <span class="form-text">Nama utama lembaga pada header, navbar, dan judul halaman.</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Slogan / Tagline Lembaga</label>
+                                <input type="text" name="site_tagline" class="form-control" value="{{ $settings['site_tagline'] ?? 'LAJNAH PENDIDIKAN & PENGAJARAN' }}" placeholder="Contoh: LAJNAH PENDIDIKAN & PENGAJARAN">
+                                <span class="form-text">Sub-judul / teks pelengkap di bawah nama lembaga.</span>
+                            </div>
+                        </div>
+
+                        <!-- Logo, Favicon & Icon Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; background: var(--bg-body); padding: 1.25rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                            <!-- 1. Logo Utama -->
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                    <i data-feather="layout" style="width: 16px; height: 16px;"></i> Logo Utama Website
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                                    <div style="width: 60px; height: 60px; border-radius: 10px; border: 1px dashed var(--border-color); background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 4px; overflow: hidden; flex-shrink: 0;">
+                                        @if(!empty($settings['site_logo']))
+                                            <img src="{{ \App\Models\Setting::logoUrl() }}" alt="Logo Preview" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                        @else
+                                            <span style="font-size: 0.75rem; color: #94a3b8;">No Logo</span>
+                                        @endif
+                                    </div>
+                                    <div style="flex-grow: 1;">
+                                        <input type="file" name="site_logo_file" class="form-control" accept="image/png,image/jpeg,image/svg+xml,image/webp" style="font-size: 0.8rem; padding: 6px 10px;">
+                                        <span class="form-text" style="margin-top: 2px;">Upload file logo (PNG transparan/SVG). Max 4MB.</span>
+                                    </div>
+                                </div>
+                                <input type="text" name="site_logo_url" class="form-control" value="{{ \Illuminate\Support\Str::startsWith($settings['site_logo'] ?? '', ['http://', 'https://']) ? $settings['site_logo'] : '' }}" placeholder="Atau ketik URL gambar (https://...)" style="font-size: 0.8rem;">
+                            </div>
+
+                            <!-- 2. Favicon Browser -->
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                    <i data-feather="globe" style="width: 16px; height: 16px;"></i> Favicon Tab Browser
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                                    <div style="width: 48px; height: 48px; border-radius: 10px; border: 1px dashed var(--border-color); background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 4px; overflow: hidden; flex-shrink: 0;">
+                                        @if(!empty($settings['site_favicon']))
+                                            <img src="{{ \App\Models\Setting::faviconUrl() }}" alt="Favicon Preview" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                        @else
+                                            <span style="font-size: 0.7rem; color: #94a3b8;">No Icon</span>
+                                        @endif
+                                    </div>
+                                    <div style="flex-grow: 1;">
+                                        <input type="file" name="site_favicon_file" class="form-control" accept="image/x-icon,image/png,image/svg+xml,image/jpeg" style="font-size: 0.8rem; padding: 6px 10px;">
+                                        <span class="form-text" style="margin-top: 2px;">Upload file favicon (ICO/PNG/SVG). 32x32px.</span>
+                                    </div>
+                                </div>
+                                <input type="text" name="site_favicon_url" class="form-control" value="{{ \Illuminate\Support\Str::startsWith($settings['site_favicon'] ?? '', ['http://', 'https://']) ? $settings['site_favicon'] : '' }}" placeholder="Atau ketik URL icon (https://...)" style="font-size: 0.8rem;">
+                            </div>
+
+                            <!-- 3. Icon / Emblem Brand -->
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                    <i data-feather="bookmark" style="width: 16px; height: 16px;"></i> Icon / Emblem Website
+                                </label>
+                                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
+                                    <div style="width: 48px; height: 48px; border-radius: 10px; background: linear-gradient(135deg, var(--primary-color) 0%, #064e3b 100%); display: flex; align-items: center; justify-content: center; color: #fbbf24; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; border: 1px solid var(--border-color); overflow: hidden;">
+                                        @if(!empty($settings['site_icon']))
+                                            <img src="{{ \App\Models\Setting::urlFor('site_icon', '') }}" alt="Icon Preview" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                        @else
+                                            <span>{{ $settings['site_icon_text'] ?? 'LPP' }}</span>
+                                        @endif
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <input type="file" name="site_icon_file" class="form-control" accept="image/*" style="font-size: 0.8rem; padding: 6px 10px;">
+                                        <span class="form-text" style="margin-top: 2px;">Upload file icon kotak/badge (PNG/SVG, 1:1).</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" name="site_icon_text" class="form-control" value="{{ $settings['site_icon_text'] ?? 'LPP' }}" placeholder="Singkatan (mis: LPP)" title="Singkatan Emblem Teks" style="font-weight: 800; letter-spacing: 1px; font-size: 0.8rem; max-width: 140px;">
+                                    <input type="text" name="site_icon_url" class="form-control" value="{{ \Illuminate\Support\Str::startsWith($settings['site_icon'] ?? '', ['http://', 'https://']) ? $settings['site_icon'] : '' }}" placeholder="Atau ketik URL icon (https://...)" style="font-size: 0.8rem; flex: 1;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="setting-section">
                         <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
                             Informasi Kontak (Top Bar, Footer & Chat)
@@ -305,7 +404,7 @@
                 <!-- TAB 2: NAVIGASI & HERO -->
                 <div x-show="activeTab === 'nav'" style="display: none;" x-transition>
                     <div class="setting-section"
-                        x-data="dynamicList({{ $settings['navbar_links'] ?? "[{'label':'Beranda', 'url':'/'}, {'label':'Ketua LPP', 'url':'#welcome'}, {'label':'Unit Pendidikan', 'url':'#unit-pendidikan'}, {'label':'Kurikulum Khas', 'url':'#kurikulum-khas'}, {'label':'Fasilitas', 'url':'#programs'}, {'label':'Berita', 'url':'/berita'}]" }})">
+                        x-data="dynamicList({{ $settings['navbar_links'] ?? "[{'label':'Beranda', 'url':'/'}, {'label':'Unit Pendidikan', 'url':'#unit-pendidikan'}, {'label':'Kurikulum Khas', 'url':'#kurikulum-khas'}, {'label':'Fasilitas', 'url':'#programs'}, {'label':'Berita', 'url':'/berita'}]" }})">
                         <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-color);">
                             Menu Navigasi Website
                         </h3>
@@ -617,7 +716,7 @@
                 <!-- TAB 6: KURIKULUM & PROGRAM -->
                 <div x-show="activeTab === 'curriculum'" style="display: none;" x-transition>
                     <!-- Pearson Partnership Hero Slide Configuration -->
-                    <div class="setting-section" style="border-left: 4px solid #f59e0b;">
+                    <div class="setting-section" style="border-left: 4px solid #f59e0b; padding-left: 1.5rem;">
                         <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-color); display: flex; align-items: center; gap: 8px;">
                             <i data-feather="globe" style="color: #f59e0b;"></i> Slide Kerjasama Kurikulum Pearson (Hero Slider)
                         </h3>
@@ -925,29 +1024,126 @@
                 <!-- Sticky Submit Button -->
                 <!-- SEO & ANALYTICS TAB -->
                 <div x-show="activeTab === 'seo'" style="display: none;" x-transition>
+                    
                     <div class="setting-section">
                         <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
-                            <i data-feather="search" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Pengaturan SEO Global
+                            <i data-feather="search" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Meta & Judul (Title & Meta)
                         </h3>
                         
                         <div class="form-group">
-                            <label class="form-label" for="seo_default_title_format">Title Format</label>
-                            <input type="text" id="seo_default_title_format" name="seo_default_title_format" class="form-control"
-                                value="{{ old('seo_default_title_format', $settings['seo_default_title_format'] ?? '%title% - SDIT Al Irsyad') }}">
-                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Gunakan <code>%title%</code> sebagai variabel untuk judul halaman.</small>
+                            <label class="form-label" for="seo_homepage_title">Judul Beranda (Homepage Title)</label>
+                            <input type="text" id="seo_homepage_title" name="seo_homepage_title" class="form-control"
+                                value="{{ old('seo_homepage_title', $settings['seo_homepage_title'] ?? '') }}" placeholder="Contoh: SDIT Al Irsyad - Cerdas, Sholeh, Berprestasi">
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Kosongkan jika ingin mengikuti format default situs.</small>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="seo_default_title_format">Format Judul Default (Title Format)</label>
+                                <input type="text" id="seo_default_title_format" name="seo_default_title_format" class="form-control"
+                                    value="{{ old('seo_default_title_format', $settings['seo_default_title_format'] ?? '%title% - SDIT Al Irsyad') }}">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Variabel didukung: <code>%title%</code></small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="seo_title_separator">Pemisah Judul</label>
+                                <input type="text" id="seo_title_separator" name="seo_title_separator" class="form-control"
+                                    value="{{ old('seo_title_separator', $settings['seo_title_separator'] ?? '-') }}" placeholder="-" style="text-align: center;">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="seo_default_description">Default Meta Description</label>
                             <textarea id="seo_default_description" name="seo_default_description" class="form-control" rows="3">{{ old('seo_default_description', $settings['seo_default_description'] ?? '') }}</textarea>
-                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Deskripsi ini akan digunakan jika halaman atau berita tidak memiliki deskripsi SEO khusus.</small>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Digunakan sebagai cadangan jika berita/halaman tidak punya deskripsi tersendiri.</small>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="seo_default_keywords">Default Meta Keywords</label>
                             <input type="text" id="seo_default_keywords" name="seo_default_keywords" class="form-control"
-                                value="{{ old('seo_default_keywords', $settings['seo_default_keywords'] ?? '') }}" placeholder="sekolah, islam, karawang, sdit">
-                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Pisahkan dengan tanda koma.</small>
+                                value="{{ old('seo_default_keywords', $settings['seo_default_keywords'] ?? '') }}" placeholder="sekolah, islam, sdit">
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Pisahkan dengan koma.</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            <i data-feather="cpu" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Pengaturan Robot (Crawler Meta)
+                        </h3>
+                        
+                        @php 
+                            $globalRobots = json_decode($settings['seo_robots_global'] ?? '["index"]', true);
+                            if (!is_array($globalRobots)) $globalRobots = ['index'];
+                        @endphp
+                        <div class="form-group">
+                            <label class="form-label">Global Robots Meta</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="index" {{ in_array('index', $globalRobots) ? 'checked' : '' }}> Index
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="noindex" {{ in_array('noindex', $globalRobots) ? 'checked' : '' }}> No Index
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="follow" {{ in_array('follow', $globalRobots) ? 'checked' : '' }}> Follow
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="nofollow" {{ in_array('nofollow', $globalRobots) ? 'checked' : '' }}> No Follow
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="noarchive" {{ in_array('noarchive', $globalRobots) ? 'checked' : '' }}> No Archive
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="noimageindex" {{ in_array('noimageindex', $globalRobots) ? 'checked' : '' }}> No Image Index
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" name="seo_robots_global[]" value="nosnippet" {{ in_array('nosnippet', $globalRobots) ? 'checked' : '' }}> No Snippet
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            <i data-feather="link" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Breadcrumbs & Link Eksternal
+                        </h3>
+
+                        <div class="toggle-wrap" style="margin-bottom: 1rem;">
+                            <div>
+                                <span class="toggle-label">Aktifkan Breadcrumbs (Navigasi Berjejak)</span>
+                                <span class="toggle-desc">Menampilkan jalur navigasi halaman saat ini (ex: Beranda &raquo; Berita &raquo; Prestasi).</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="seo_breadcrumbs_enabled" value="1" {{ ($settings['seo_breadcrumbs_enabled'] ?? '0') == '1' ? 'checked' : '' }}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label class="form-label" for="seo_breadcrumbs_separator">Pemisah Breadcrumbs</label>
+                            <input type="text" id="seo_breadcrumbs_separator" name="seo_breadcrumbs_separator" class="form-control" style="width: 150px; text-align: center;"
+                                value="{{ old('seo_breadcrumbs_separator', $settings['seo_breadcrumbs_separator'] ?? '-') }}">
+                        </div>
+
+                        <div class="toggle-wrap" style="margin-bottom: 1rem;">
+                            <div>
+                                <span class="toggle-label">Nofollow Link Eksternal</span>
+                                <span class="toggle-desc">Menambahkan rel="nofollow" secara otomatis ke tautan yang mengarah ke luar website.</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="seo_nofollow_external_links" value="1" {{ ($settings['seo_nofollow_external_links'] ?? '0') == '1' ? 'checked' : '' }}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-wrap">
+                            <div>
+                                <span class="toggle-label">Buka Tautan Eksternal di Tab Baru</span>
+                                <span class="toggle-desc">Menambahkan target="_blank" secara otomatis pada tautan eksternal.</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="seo_new_window_external_links" value="1" {{ ($settings['seo_new_window_external_links'] ?? '0') == '1' ? 'checked' : '' }}>
+                                <span class="slider"></span>
+                            </label>
                         </div>
                     </div>
 
@@ -955,36 +1151,47 @@
                         <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
                             <i data-feather="share-2" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Open Graph (Sosial Media)
                         </h3>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Gambar default yang akan muncul saat link website dibagikan ke WhatsApp, Facebook, dll.</p>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">Gambar default yang akan muncul saat link dibagikan (WhatsApp, FB) jika halaman tidak punya gambar.</p>
 
                         <div class="form-group">
                             @if(!empty($settings['seo_default_image']))
                                 <div style="margin-bottom: 1rem;">
-                                    <img src="{{ Storage::url($settings['seo_default_image']) }}" alt="Default OG Image" style="max-width: 300px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                    <img src="{{ Str::startsWith($settings['seo_default_image'], 'http') ? $settings['seo_default_image'] : Storage::url($settings['seo_default_image']) }}" alt="Default OG Image" style="max-width: 300px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                </div>
+                            @elseif(!empty($settings['seo_default_og_image_url']))
+                                <div style="margin-bottom: 1rem;">
+                                    <img src="{{ $settings['seo_default_og_image_url'] }}" alt="Default OG Image (Rank Math)" style="max-width: 300px; border-radius: 8px; border: 1px solid var(--border-color);">
                                 </div>
                             @endif
                             <input type="file" name="seo_default_image" class="form-control" accept="image/*">
-                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Disarankan ukuran 1200x630 pixels (Rasio 1.91:1).</small>
+                            <input type="hidden" name="seo_default_og_image_url" value="{{ $settings['seo_default_og_image_url'] ?? '' }}">
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Disarankan ukuran 1200x630 pixels.</small>
                         </div>
                     </div>
 
                     <div class="setting-section">
                         <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
-                            <i data-feather="bar-chart-2" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Google Search Console & Google Analytics 4 (GA4)
+                            <i data-feather="bar-chart-2" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Webmaster Tools & Analytics
                         </h3>
                         
-                        <div class="form-group">
-                            <label class="form-label" for="seo_google_site_verification">Google Site Verification Code (Search Console)</label>
-                            <input type="text" id="seo_google_site_verification" name="seo_google_site_verification" class="form-control"
-                                value="{{ old('seo_google_site_verification', $settings['seo_google_site_verification'] ?? '') }}" placeholder="Ketik kode verifikasi di sini (misal: google-site-verification=...)">
-                            <span class="form-text">Digunakan untuk verifikasi kepemilikan website di Google Search Console.</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="seo_google_site_verification">Google Site Verification Code</label>
+                                <input type="text" id="seo_google_site_verification" name="seo_google_site_verification" class="form-control"
+                                    value="{{ old('seo_google_site_verification', $settings['seo_google_site_verification'] ?? '') }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="seo_bing_site_verification">Bing Site Verification Code</label>
+                                <input type="text" id="seo_bing_site_verification" name="seo_bing_site_verification" class="form-control"
+                                    value="{{ old('seo_bing_site_verification', $settings['seo_bing_site_verification'] ?? '') }}">
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="seo_google_analytics">Google Analytics 4 Measurement ID (GA4)</label>
+                            <label class="form-label" for="seo_google_analytics">Google Analytics 4 Measurement ID</label>
                             <input type="text" id="seo_google_analytics" name="seo_google_analytics" class="form-control"
                                 value="{{ old('seo_google_analytics', $settings['seo_google_analytics'] ?? '') }}" placeholder="Contoh: G-XXXXXXXXXX">
-                            <span class="form-text">Masukkan Measurement ID dari Google Analytics 4 (diawali huruf G-). Kosongkan jika tidak menggunakan GA4.</span>
                         </div>
                     </div>
 
@@ -1055,9 +1262,9 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); position: sticky; bottom: 0; background: var(--bg-card); padding-bottom: 20px; z-index: 50;">
-                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem; font-size: 1.1rem; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); display: flex; align-items: center; gap: 8px;">
-                        <i data-feather="save"></i> SIMPAN SEMUA PENGATURAN
+                <div style="margin-top: 2rem; padding: 1.25rem; border-top: 1px solid var(--border-color); position: sticky; bottom: 0; background: var(--bg-body, #ffffff); border-radius: 0 0 12px 12px; z-index: 50; display: flex; justify-content: flex-end; box-shadow: 0 -10px 30px rgba(0,0,0,0.03);">
+                    <button type="submit" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1rem; font-weight: 600; border-radius: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); display: flex; align-items: center; gap: 8px;">
+                        <i data-feather="save"></i> Simpan Semua Pengaturan
                     </button>
                 </div>
             </form>

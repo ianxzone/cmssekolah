@@ -104,9 +104,9 @@
                     <label class="form-label" for="image">Photo (Optional)</label>
                     <input type="file" id="image" name="image" class="form-control" accept="image/*"
                         onchange="previewImage(this)">
-                    <div id="imagePreview" style="margin-top: 1rem; display: {{ $testimonial->image ? 'block' : 'none' }};">
+                    <div id="imagePreview" style="margin-top: 1rem; display: {{ $testimonial->image_url ? 'block' : 'none' }};">
                         <img id="preview"
-                            src="{{ $testimonial->image ? \Illuminate\Support\Facades\Storage::url($testimonial->image) : '#' }}"
+                            src="{{ $testimonial->image_url ?: '#' }}"
                             alt="Preview"
                             style="max-width: 150px; border-radius: 8px; border: 1px solid var(--border-color);">
                     </div>

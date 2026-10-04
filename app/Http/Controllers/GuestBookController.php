@@ -40,6 +40,16 @@ class GuestBookController extends Controller
      */
     public function store(Request $request)
     {
+        // CAPTCHA & Honeypot Verification
+        $captchaResult = \App\Services\CaptchaService::verify($request->all(), 'guestbook');
+        if (!$captchaResult['success']) {
+            \App\Services\SecurityService::logThreat('spam_bot', 'low', "Spam bot tertangkap di Buku Tamu: " . $captchaResult['message']);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $captchaResult['message']], 422);
+            }
+            return back()->withInput()->withErrors(['captcha' => $captchaResult['message']]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',

@@ -4,7 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Admin Dashboard') - {{ config('app.name', 'Laravel') }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin Dashboard') - {{ \App\Models\Setting::siteName() }}</title>
+
+    <!-- Dynamic Favicon -->
+    <link rel="icon" type="image/png" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="shortcut icon" href="{{ \App\Models\Setting::faviconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ \App\Models\Setting::faviconUrl() }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,21 +32,28 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="brand">
-                    <i data-feather="hexagon" class="brand-icon"></i>
-                    <span class="brand-text">Admin Panel</span>
-                </div>
-                <button class="menu-toggle" id="menu-toggle-btn">
-                    <i data-feather="menu"></i>
+                <a href="{{ route('admin.dashboard') }}" class="brand" title="{{ \App\Models\Setting::siteName() }}">
+                    @if(\App\Models\Setting::logoUrl())
+                        <img src="{{ \App\Models\Setting::logoUrl() }}" alt="Logo" class="brand-logo">
+                    @else
+                        <i data-feather="hexagon" class="brand-icon"></i>
+                    @endif
+                    <div class="brand-text">
+                        <span class="brand-title">{{ \App\Models\Setting::siteName() }}</span>
+                        <span class="brand-subtitle">Admin Console</span>
+                    </div>
+                </a>
+                <button class="menu-toggle" id="menu-toggle-btn" aria-label="Tutup Menu">
+                    <i data-feather="x"></i>
                 </button>
-                <button class="collapse-toggle" id="sidebar-collapse-btn" title="Collapse Sidebar">
+                <button class="collapse-toggle" id="sidebar-collapse-btn" title="Collapse Sidebar" aria-label="Collapse Sidebar">
                     <i data-feather="chevron-left"></i>
                 </button>
             </div>
 
             <nav class="sidebar-nav">
                 <a href="{{ route('admin.dashboard') }}"
-                    class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" title="Dashboard">
                     <i data-feather="grid"></i>
                     <span>Dashboard</span>
                 </a>
@@ -48,77 +61,81 @@
                 <div class="nav-section">CONTENT MANAGEMENT</div>
 
                 <a href="{{ route('admin.pages.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" title="Pages">
                     <i data-feather="file-text"></i>
                     <span>Pages</span>
                 </a>
 
                 <a href="{{ route('admin.biolink.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.biolink.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.biolink.*') ? 'active' : '' }}" title="Biolink Manager">
                     <i data-feather="share-2"></i>
                     <span>Biolink Manager</span>
                 </a>
 
                 <a href="{{ route('admin.posts.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}" title="Posts">
                     <i data-feather="edit-3"></i>
                     <span>Posts</span>
                 </a>
                 <a href="{{ route('admin.comments.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <i data-feather="message-circle"></i>
-                        <span>Komentar</span>
-                    </div>
+                    class="nav-item {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" title="Komentar">
+                    <i data-feather="message-circle"></i>
+                    <span>Komentar</span>
                     @php
                         $pendingCommentsCount = \App\Models\PostComment::where('status', 'pending')->count();
                     @endphp
                     @if($pendingCommentsCount > 0)
-                        <span style="background: #f59e0b; color: #ffffff; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 50px;">
+                        <span class="badge-count">
                             {{ $pendingCommentsCount }}
                         </span>
                     @endif
                 </a>
                 <a href="{{ route('admin.categories.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" title="Categories">
                     <i data-feather="folder"></i>
                     <span>Categories</span>
                 </a>
 
                 <a href="{{ route('admin.media.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.media.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.media.*') ? 'active' : '' }}" title="Media Manager">
                     <i data-feather="image"></i>
                     <span>Media Manager</span>
                 </a>
 
                 <a href="{{ route('admin.events.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.events.*') ? 'active' : '' }}" title="Events">
                     <i data-feather="calendar"></i>
                     <span>Events</span>
                 </a>
 
                 <a href="{{ route('admin.teachers.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}" title="Data SDM & Pimpinan">
                     <i data-feather="users"></i>
                     <span>Data SDM & Pimpinan</span>
+                </a>
+
+                <a href="{{ route('admin.alumni.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.alumni.*') ? 'active' : '' }}" title="Alumni">
+                    <i data-feather="award"></i>
+                    <span>Alumni</span>
                 </a>
 
                 <div class="nav-section">DATA COLLECTION</div>
 
                 <a href="{{ route('admin.guestbook.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.guestbook.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.guestbook.*') ? 'active' : '' }}" title="Buku Tamu">
                     <i data-feather="book-open"></i>
                     <span>Buku Tamu</span>
                 </a>
 
                 <a href="{{ route('admin.forms.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.forms.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.forms.*') ? 'active' : '' }}" title="Forms">
                     <i data-feather="inbox"></i>
                     <span>Forms</span>
                 </a>
 
                 <a href="{{ route('admin.testimonials.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}" title="Testimonials">
                     <i data-feather="message-square"></i>
                     <span>Testimonials</span>
                 </a>
@@ -126,28 +143,40 @@
                 <div class="nav-section">SYSTEM</div>
 
                 <a href="{{ route('admin.wordpress-import.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.wordpress-import.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.wordpress-import.*') ? 'active' : '' }}" title="Import WordPress">
                     <i data-feather="download-cloud"></i>
                     <span>Import WordPress</span>
                 </a>
 
+                <a href="{{ route('admin.rankmath-import.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.rankmath-import.*') ? 'active' : '' }}" title="Import Rank Math">
+                    <i data-feather="zap"></i>
+                    <span>Import Rank Math</span>
+                </a>
+
                 <a href="{{ route('admin.redirects.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.redirects.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.redirects.*') ? 'active' : '' }}" title="Redirections (SEO)">
                     <i data-feather="corner-up-right"></i>
                     <span>Redirections (SEO)</span>
                 </a>
 
                 <a href="{{ route('admin.settings.index') }}"
-                    class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" title="Settings">
                     <i data-feather="settings"></i>
                     <span>Settings</span>
+                </a>
+
+                <a href="{{ route('admin.security.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.security.*') ? 'active' : '' }}" title="Security Center">
+                    <i data-feather="shield"></i>
+                    <span>Security Center</span>
                 </a>
             </nav>
 
             <div class="sidebar-footer">
-                <form method="POST" action="{{ url('/logout') }}">
+                <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf
-                    <button type="submit" class="logout-btn">
+                    <button type="submit" class="logout-btn" title="Logout">
                         <i data-feather="log-out"></i>
                         <span>Logout</span>
                     </button>
@@ -160,6 +189,9 @@
             <!-- Topbar Custom -->
             <header class="topbar">
                 <div class="topbar-left">
+                    <button type="button" class="topbar-menu-toggle" id="topbar-menu-toggle-btn" title="Buka Navigasi" aria-label="Buka Menu">
+                        <i data-feather="menu"></i>
+                    </button>
                     <h1 class="page-title">@yield('title', 'Dashboard')</h1>
                 </div>
                 <div class="topbar-right">
@@ -248,8 +280,16 @@
             }
         });
 
-        toggleBtn.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', toggleSidebar);
+        }
+        const topbarToggleBtn = document.getElementById('topbar-menu-toggle-btn');
+        if (topbarToggleBtn) {
+            topbarToggleBtn.addEventListener('click', toggleSidebar);
+        }
+        if (overlay) {
+            overlay.addEventListener('click', toggleSidebar);
+        }
 
         // Auto-close Alerts after 3 seconds for Joyful UI
         document.addEventListener('DOMContentLoaded', () => {
