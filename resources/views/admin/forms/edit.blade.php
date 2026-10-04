@@ -198,6 +198,11 @@
                     <label for="is_active" style="font-weight: 500;">Publish this form</label>
                 </div>
 
+                <div class="checkbox-group" style="margin-top: 1rem;">
+                    <input type="checkbox" id="use_captcha" name="use_captcha" value="1" {{ old('use_captcha', $form->use_captcha) ? 'checked' : '' }}>
+                    <label for="use_captcha" style="font-weight: 500;">Gunakan Keamanan CAPTCHA (Anti-Spam)</label>
+                </div>
+
                 <div style="margin-top: 2.5rem; display: flex; gap: 1rem;">
                     <button type="submit" class="btn btn-primary">
                         <i data-feather="save"></i> Update Form

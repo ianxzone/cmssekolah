@@ -37,6 +37,7 @@ class FormController extends Controller
             'slug' => 'nullable|string|max:255|unique:forms,slug',
             'description' => 'nullable|string',
             'is_active' => 'boolean',
+            'use_captcha' => 'boolean',
             'fields' => 'required|string', // We will accept JSON string from frontend
         ]);
 
@@ -45,6 +46,7 @@ class FormController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['use_captcha'] = $request->has('use_captcha');
         $validated['fields'] = json_decode($validated['fields'], true);
 
         Form::create($validated);
@@ -150,10 +152,12 @@ class FormController extends Controller
             'slug' => 'required|string|max:255|unique:forms,slug,' . $form->id,
             'description' => 'nullable|string',
             'is_active' => 'boolean',
+            'use_captcha' => 'boolean',
             'fields' => 'required|string',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['use_captcha'] = $request->has('use_captcha');
         $validated['fields'] = json_decode($validated['fields'], true);
 
         $form->update($validated);

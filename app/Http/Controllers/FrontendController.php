@@ -298,10 +298,12 @@ class FrontendController extends Controller
         }
 
         // CAPTCHA & Honeypot Verification
-        $captchaResult = \App\Services\CaptchaService::verify($request->all(), 'forms');
-        if (!$captchaResult['success']) {
-            \App\Services\SecurityService::logThreat('spam_bot', 'low', "Spam bot tertangkap pada Formulir Dinamis: " . $captchaResult['message']);
-            return back()->withInput()->withErrors(['captcha' => $captchaResult['message']]);
+        if ($form->use_captcha) {
+            $captchaResult = \App\Services\CaptchaService::verify($request->all(), 'forms');
+            if (!$captchaResult['success']) {
+                \App\Services\SecurityService::logThreat('spam_bot', 'low', "Spam bot tertangkap pada Formulir Dinamis: " . $captchaResult['message']);
+                return back()->withInput()->withErrors(['captcha' => $captchaResult['message']]);
+            }
         }
 
         $validatedData = $request->validate($rules);

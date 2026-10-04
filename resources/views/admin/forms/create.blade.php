@@ -330,6 +330,18 @@
                 </label>
             </div>
 
+            <!-- Captcha Settings -->
+            <div class="modern-toggle-wrap" style="margin-top: 1.5rem;">
+                <div>
+                    <strong style="display: block; color: #0f172a;">Gunakan Keamanan CAPTCHA?</strong>
+                    <span style="font-size: 0.85rem; color: #64748b;">Aktifkan proteksi anti-spam untuk formulir ini (Pengaturan global di Keamanan juga harus aktif).</span>
+                </div>
+                <label class="modern-switch">
+                    <input type="checkbox" id="use_captcha" name="use_captcha" value="1" checked>
+                    <span class="modern-slider"></span>
+                </label>
+            </div>
+
             <!-- Action Buttons -->
             <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; display: flex; gap: 1rem; justify-content: flex-end; position: sticky; bottom: 20px; background: #ffffff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 10;">
                 <a href="{{ route('admin.forms.index') }}" class="btn" style="background: #f1f5f9; color: #475569; padding: 0.85rem 1.5rem; font-weight: 600; border-radius: 8px; text-decoration: none;">

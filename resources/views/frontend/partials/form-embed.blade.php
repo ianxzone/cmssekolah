@@ -295,7 +295,7 @@
             @endif
 
             {{-- Security Captcha & Honeypot Section --}}
-            @if(\App\Services\CaptchaService::isEnabledFor('forms'))
+            @if($form->use_captcha && \App\Services\CaptchaService::isEnabledFor('forms'))
                 @php
                     $captcha = \App\Services\CaptchaService::generateMathCaptcha();
                 @endphp
