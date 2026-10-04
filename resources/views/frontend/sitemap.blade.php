@@ -8,9 +8,9 @@
         <priority>1.0</priority>
     </url>
 
-    <!-- Pages Index (if any specific index exist, e.g. /berita, /agenda) -->
+    <!-- Pages Index (if any specific index exist, e.g. /blog, /agenda) -->
     <url>
-        <loc>{{ url('/berita') }}</loc>
+        <loc>{{ url('/blog') }}</loc>
         <lastmod>{{ now()->tz('UTC')->toAtomString() }}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>

@@ -40,7 +40,7 @@
                         ['label' => 'Unit Pendidikan', 'url' => '/#unit-pendidikan'],
                         ['label' => 'Kurikulum Khas', 'url' => '/#kurikulum-khas'],
                         ['label' => 'Fasilitas', 'url' => '/#programs'],
-                        ['label' => 'Berita', 'url' => route('posts.index')]
+                        ['label' => 'Blog', 'url' => route('posts.index')]
                     ];
                 }
                 // Filter out any lingering 'Ketua LPP' items

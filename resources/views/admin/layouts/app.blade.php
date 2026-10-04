@@ -60,6 +60,7 @@
 
                 <div class="nav-section">CONTENT MANAGEMENT</div>
 
+                @if(auth()->user()->isEditor())
                 <a href="{{ route('admin.pages.index') }}"
                     class="nav-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" title="Pages">
                     <i data-feather="file-text"></i>
@@ -71,12 +72,15 @@
                     <i data-feather="share-2"></i>
                     <span>Biolink Manager</span>
                 </a>
+                @endif
 
                 <a href="{{ route('admin.posts.index') }}"
                     class="nav-item {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}" title="Posts">
                     <i data-feather="edit-3"></i>
                     <span>Posts</span>
                 </a>
+
+                @if(auth()->user()->isEditor())
                 <a href="{{ route('admin.comments.index') }}"
                     class="nav-item {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" title="Komentar">
                     <i data-feather="message-circle"></i>
@@ -95,6 +99,7 @@
                     <i data-feather="folder"></i>
                     <span>Categories</span>
                 </a>
+                @endif
 
                 <a href="{{ route('admin.media.index') }}"
                     class="nav-item {{ request()->routeIs('admin.media.*') ? 'active' : '' }}" title="Media Manager">
@@ -102,6 +107,7 @@
                     <span>Media Manager</span>
                 </a>
 
+                @if(auth()->user()->isEditor())
                 <a href="{{ route('admin.events.index') }}"
                     class="nav-item {{ request()->routeIs('admin.events.*') ? 'active' : '' }}" title="Events">
                     <i data-feather="calendar"></i>
@@ -119,7 +125,9 @@
                     <i data-feather="award"></i>
                     <span>Alumni</span>
                 </a>
+                @endif
 
+                @if(auth()->user()->isAdmin())
                 <div class="nav-section">DATA COLLECTION</div>
 
                 <a href="{{ route('admin.guestbook.index') }}"
@@ -133,13 +141,17 @@
                     <i data-feather="inbox"></i>
                     <span>Forms</span>
                 </a>
+                @endif
 
+                @if(auth()->user()->isEditor())
                 <a href="{{ route('admin.testimonials.index') }}"
                     class="nav-item {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}" title="Testimonials">
                     <i data-feather="message-square"></i>
                     <span>Testimonials</span>
                 </a>
+                @endif
 
+                @if(auth()->user()->isAdmin())
                 <div class="nav-section">SYSTEM</div>
 
                 <a href="{{ route('admin.wordpress-import.index') }}"
@@ -171,6 +183,7 @@
                     <i data-feather="shield"></i>
                     <span>Security Center</span>
                 </a>
+                @endif
             </nav>
 
             <div class="sidebar-footer">

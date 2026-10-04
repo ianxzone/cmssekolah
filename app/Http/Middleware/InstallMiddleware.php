@@ -16,17 +16,23 @@ class InstallMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $isInstalled = File::exists(storage_path('installed'));
+        // Primary Check: .env variable APP_INSTALLED or storage/installed file
+        $isInstalled = env('APP_INSTALLED', false) || File::exists(storage_path('installed'));
 
-        // Secondary check: if users table already has an admin user, lock install permanently
+        // Secondary check: verify database if not explicitly installed.
+        // If DB throws exception, we MUST assume it might be installed but DB is down (FAIL-CLOSED)
         if (!$isInstalled) {
             try {
-                if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::where('role', 'admin')->exists()) {
+                if (\Illuminate\Support\Facades\DB::connection()->getPdo() && \Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::where('role', 'admin')->exists()) {
                     File::put(storage_path('installed'), now()->toDateTimeString());
                     $isInstalled = true;
                 }
             } catch (\Throwable $e) {
-                // Database not ready yet
+                // Database connection failed, DO NOT open the installer!
+                // We assume it's installed but broken. Opening installer allows malicious overwrite.
+                if (!env('APP_DEBUG', false)) {
+                    abort(503, 'Database connection is down. System locked for security.');
+                }
             }
         }
 

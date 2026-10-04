@@ -100,13 +100,14 @@ class CaptchaService
             default:
                 $userAnswer = trim($requestData['captcha_answer'] ?? '');
                 $expected = session('_security_captcha_answer');
+                
+                // Unconditionally clear to prevent replay and brute-force
+                session()->forget('_security_captcha_answer');
 
                 if ($userAnswer === '' || $expected === null || (int)$userAnswer !== (int)$expected) {
                     return ['success' => false, 'message' => 'Jawaban kode keamanan (CAPTCHA) tidak tepat.'];
                 }
 
-                // Clear after successful use
-                session()->forget('_security_captcha_answer');
                 return ['success' => true, 'message' => null];
         }
     }

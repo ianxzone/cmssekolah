@@ -78,7 +78,7 @@
                                                             @if(is_array($value))
                                                                 {{ implode(', ', $value) }}
                                                             @elseif(is_string($value) && str_starts_with($value, 'submissions/'))
-                                                                <a href="{{ Storage::url($value) }}" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; color: #2563eb; background: #eff6ff; padding: 4px 10px; border-radius: 6px; text-decoration: none;">
+                                                                <a href="{{ route('admin.forms.download', [$form, 'path' => $value]) }}" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; color: #2563eb; background: #eff6ff; padding: 4px 10px; border-radius: 6px; text-decoration: none;">
                                                                     <i data-feather="download" style="width: 14px; height: 14px;"></i> Unduh Berkas
                                                                 </a>
                                                             @else

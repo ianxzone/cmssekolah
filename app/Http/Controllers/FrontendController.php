@@ -311,7 +311,8 @@ class FrontendController extends Controller
         foreach ($fileFields as $fileInputName) {
             if ($request->hasFile($fileInputName)) {
                 $file = $request->file($fileInputName);
-                $path = $file->store('submissions/' . $form->slug, 'public');
+                // Save to 'local' disk instead of 'public' to prevent PII exposure
+                $path = $file->store('submissions/' . $form->slug, 'local');
                 $dataToSave[$fileInputName] = $path;
             }
         }

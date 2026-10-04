@@ -35,8 +35,8 @@
 
         .form-control:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            border-color: #10b981; /* Emerald Green */
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
         }
 
         .text-danger {
@@ -44,6 +44,24 @@
             font-size: 0.875rem;
             margin-top: 0.25rem;
             display: block;
+        }
+
+        /* Fix for asterisk inline */
+        .form-label .text-danger {
+            display: inline-block;
+            margin-top: 0;
+            margin-left: 2px;
+        }
+
+        /* Update primary buttons to green */
+        .btn-primary {
+            background-color: #059669 !important;
+            border-color: #047857 !important;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #047857 !important;
+            border-color: #065f46 !important;
         }
 
         .grid-layout {
@@ -60,11 +78,51 @@
         }
 
         .sidebar-panel {
-            background-color: #f9fafb;
+            background-color: #ffffff;
             padding: 1.5rem;
             border-radius: 12px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            position: sticky;
+            top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
+
+        .sidebar-panel .form-group {
+            margin-bottom: 0;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-panel .form-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        /* Adjust editor extra buttons to be cohesive */
+        .btn-wp-add-media {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 4px !important;
+            padding: 6px 10px !important;
+            background: #ffffff !important;
+            color: #475569 !important;
+            font-weight: 500 !important;
+            font-size: 0.8125rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            transition: all 0.2s !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+        }
+        .btn-wp-add-media:hover {
+            border-color: #94a3b8 !important;
+            background: #f8fafc !important;
+            color: #0f172a !important;
+        }
+
+
 
 
 

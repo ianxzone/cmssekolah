@@ -172,4 +172,27 @@ class FormController extends Controller
         return redirect()->route('admin.forms.index')
             ->with('success', 'Form deleted successfully.');
     }
+
+    /**
+     * Download an uploaded attachment securely.
+     */
+    public function downloadAttachment(Request $request, Form $form)
+    {
+        $path = $request->query('path');
+        
+        if (empty($path)) {
+            abort(404);
+        }
+        
+        // Ensure the path is within this form's submissions
+        if (!Str::startsWith($path, 'submissions/' . $form->slug . '/')) {
+            abort(403, 'Unauthorized access to attachment.');
+        }
+
+        if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+            abort(404, 'File not found.');
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('local')->download($path);
+    }
 }

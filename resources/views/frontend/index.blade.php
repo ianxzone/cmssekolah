@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Latest Blog Posts & Updates - ' . config('app.name'))
-@section('meta_description', 'Read the latest news, articles, and updates from our platform.')
+@section('title', 'Blog - ' . \App\Models\Setting::siteName())
+@section('meta_description', 'Kumpulan berita, artikel edukasi, dan dokumentasi kegiatan terbaru dari ' . \App\Models\Setting::siteName())
 
 @push('styles')
     <style>
@@ -122,8 +122,8 @@
 
 @section('content')
     <div class="page-header">
-        <h1>Latest Updates</h1>
-        <p>Discover our newest articles and announcements.</p>
+        <h1>Blog & Berita Terkini</h1>
+        <p>Kumpulan berita, artikel edukasi, dan dokumentasi kegiatan terbaru.</p>
     </div>
 
     @if($posts->count() > 0)
@@ -139,16 +139,16 @@
                                 <a href="{{ route('categories.show', $post->category->slug) }}"
                                     class="post-category">{{ $post->category->name }}</a>
                             @else
-                                <span>Uncategorized</span>
+                                <span>Berita</span>
                             @endif
-                            <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : '' }}</span>
+                            <span>{{ $post->published_at ? $post->published_at->format('d M Y') : '' }}</span>
                         </div>
                         <h2 class="post-title">
                             <a href="{{ route('posts.show', $post->slug) }}">{{ $post->title }}</a>
                         </h2>
 
                         <a href="{{ route('posts.show', $post->slug) }}" class="read-more">
-                            Read Article <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+                            Baca Selengkapnya <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
                         </a>
                     </div>
                 </article>

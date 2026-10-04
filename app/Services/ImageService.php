@@ -43,7 +43,7 @@ class ImageService
 
         // If not a supported image or GD is missing, store directly as-is
         if (!in_array($mime, self::OPTIMIZABLE_MIMES) || !extension_loaded('gd') || !function_exists('imagewebp')) {
-            $extension = $file->getClientOriginalExtension();
+            $extension = $file->extension();
             $fileName = $baseName . '-' . time() . '.' . $extension;
             $path = $file->storeAs($directory, $fileName, 'public');
 
@@ -84,7 +84,7 @@ class ImageService
 
             if (!$srcImage) {
                 // Cannot load image, fallback to standard store
-                $extension = $file->getClientOriginalExtension();
+                $extension = $file->extension();
                 $fileName = $baseName . '-' . time() . '.' . $extension;
                 $path = $file->storeAs($directory, $fileName, 'public');
 
@@ -191,7 +191,7 @@ class ImageService
             }
 
             // If imagewebp failed, fallback to standard store
-            $extension = $file->getClientOriginalExtension();
+            $extension = $file->extension();
             $fileName = $baseName . '-' . time() . '.' . $extension;
             $path = $file->storeAs($directory, $fileName, 'public');
 
@@ -204,7 +204,7 @@ class ImageService
             ];
         } catch (\Throwable $th) {
             // Safe fallback on unexpected failure
-            $extension = $file->getClientOriginalExtension();
+            $extension = $file->extension();
             $fileName = $baseName . '-' . time() . '.' . $extension;
             $path = $file->storeAs($directory, $fileName, 'public');
 

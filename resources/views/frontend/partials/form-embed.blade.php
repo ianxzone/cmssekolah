@@ -227,7 +227,7 @@
             @if(is_array($fields) && count($fields) > 0)
                 @foreach($fields as $field)
                     @php
-                        $inputName = str_replace(' ', '_', strtolower($field['name']));
+                        $inputName = \Illuminate\Support\Str::slug($field['name'], '_');
                         $isRequired = !empty($field['required']) ? 'required' : '';
                     @endphp
 

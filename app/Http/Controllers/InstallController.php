@@ -56,17 +56,25 @@ class InstallController extends Controller
         $envFile = base_path('.env');
         $env = file_get_contents($envFile);
 
+        $sanitizeEnv = function($val) {
+            return '"' . addslashes(str_replace(["\r", "\n"], '', $val)) . '"';
+        };
+
         $data = [
-            'APP_NAME' => '"' . $request->app_name . '"',
-            'DB_HOST' => $request->db_host,
-            'DB_PORT' => $request->db_port,
-            'DB_DATABASE' => $request->db_database,
-            'DB_USERNAME' => $request->db_username,
-            'DB_PASSWORD' => $request->db_password ?? '',
+            'APP_NAME' => $sanitizeEnv($request->app_name),
+            'DB_HOST' => $sanitizeEnv($request->db_host),
+            'DB_PORT' => intval($request->db_port),
+            'DB_DATABASE' => $sanitizeEnv($request->db_database),
+            'DB_USERNAME' => $sanitizeEnv($request->db_username),
+            'DB_PASSWORD' => $sanitizeEnv($request->db_password ?? ''),
         ];
 
         foreach ($data as $key => $value) {
-            $env = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $env);
+            if (preg_match("/^{$key}=.*/m", $env)) {
+                $env = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $env);
+            } else {
+                $env .= "\n{$key}={$value}";
+            }
         }
 
         file_put_contents($envFile, $env);
@@ -119,6 +127,16 @@ class InstallController extends Controller
     public function finish()
     {
         File::put(storage_path('installed'), date('Y-m-d H:i:s'));
+        
+        $envFile = base_path('.env');
+        if (File::exists($envFile)) {
+            $env = file_get_contents($envFile);
+            if (!preg_match("/^APP_INSTALLED=.*/m", $env)) {
+                $env .= "\nAPP_INSTALLED=true";
+                file_put_contents($envFile, $env);
+            }
+        }
+        
         return view('install.finish');
     }
 }

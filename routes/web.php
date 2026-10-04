@@ -38,83 +38,95 @@ Route::prefix('admin')->middleware(['web'])->group(function () {
 
 // Protected Admin Routes (Authenticated Only)
 Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
+    
+    // Group 1: All Authenticated Backend Users (Admin, Editor, Author, Contributor)
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::resource('pages', AdminPageController::class)->names('admin.pages');
-    Route::get('forms/{form}/export', [AdminFormController::class, 'export'])->name('admin.forms.export');
-    Route::resource('forms', AdminFormController::class)->names('admin.forms');
+    Route::resource('posts', AdminPostController::class)->names('admin.posts');
     Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
     Route::put('media/{media}', [AdminMediaController::class, 'apiUpdate'])->name('admin.media.update');
     Route::resource('media', AdminMediaController::class)->only(['index', 'store', 'destroy'])->names('admin.media');
-    Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
-    Route::resource('posts', AdminPostController::class)->names('admin.posts');
-    Route::resource('events', AdminEventController::class)->names('admin.events');
-    Route::resource('teachers', AdminTeacherController::class)->names('admin.teachers');
-    Route::resource('testimonials', AdminTestimonialController::class)->names('admin.testimonials');
 
-    // Biolink Routes
-    Route::get('biolink', [AdminBiolinkController::class, 'index'])->name('admin.biolink.index');
-    Route::post('biolink/profile', [AdminBiolinkController::class, 'updateProfile'])->name('admin.biolink.profile.update');
-    Route::post('biolink/sections', [AdminBiolinkController::class, 'storeSection'])->name('admin.biolink.sections.store');
-    Route::put('biolink/sections/{section}', [AdminBiolinkController::class, 'updateSection'])->name('admin.biolink.sections.update');
-    Route::delete('biolink/sections/{section}', [AdminBiolinkController::class, 'destroySection'])->name('admin.biolink.sections.destroy');
-    Route::post('biolink/links', [AdminBiolinkController::class, 'storeLink'])->name('admin.biolink.links.store');
-    Route::put('biolink/links/{link}', [AdminBiolinkController::class, 'updateLink'])->name('admin.biolink.links.update');
-    Route::delete('biolink/links/{link}', [AdminBiolinkController::class, 'destroyLink'])->name('admin.biolink.links.destroy');
+    // Group 2: Admin & Editor only
+    Route::middleware('role:admin,editor')->group(function () {
+        Route::resource('pages', AdminPageController::class)->names('admin.pages');
+        Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
+        Route::resource('events', AdminEventController::class)->names('admin.events');
+        Route::resource('teachers', AdminTeacherController::class)->names('admin.teachers');
+        Route::resource('testimonials', AdminTestimonialController::class)->names('admin.testimonials');
 
-    // Guest Book / Buku Tamu Routes
-    Route::get('guestbook', [AdminGuestBookController::class, 'index'])->name('admin.guestbook.index');
-    Route::post('guestbook/settings', [AdminGuestBookController::class, 'updateSettings'])->name('admin.guestbook.settings.update');
-    Route::post('guestbook/services', [AdminGuestBookController::class, 'storeService'])->name('admin.guestbook.services.store');
-    Route::put('guestbook/services/{service}', [AdminGuestBookController::class, 'updateService'])->name('admin.guestbook.services.update');
-    Route::delete('guestbook/services/{service}', [AdminGuestBookController::class, 'destroyService'])->name('admin.guestbook.services.destroy');
-    Route::patch('guestbook/entries/{entry}/status', [AdminGuestBookController::class, 'updateEntryStatus'])->name('admin.guestbook.entries.status');
-    Route::delete('guestbook/entries/{entry}', [AdminGuestBookController::class, 'destroyEntry'])->name('admin.guestbook.entries.destroy');
-    Route::get('guestbook/export', [AdminGuestBookController::class, 'exportEntries'])->name('admin.guestbook.export');
+        // Biolink Routes
+        Route::get('biolink', [AdminBiolinkController::class, 'index'])->name('admin.biolink.index');
+        Route::post('biolink/profile', [AdminBiolinkController::class, 'updateProfile'])->name('admin.biolink.profile.update');
+        Route::post('biolink/sections', [AdminBiolinkController::class, 'storeSection'])->name('admin.biolink.sections.store');
+        Route::put('biolink/sections/{section}', [AdminBiolinkController::class, 'updateSection'])->name('admin.biolink.sections.update');
+        Route::delete('biolink/sections/{section}', [AdminBiolinkController::class, 'destroySection'])->name('admin.biolink.sections.destroy');
+        Route::post('biolink/links', [AdminBiolinkController::class, 'storeLink'])->name('admin.biolink.links.store');
+        Route::put('biolink/links/{link}', [AdminBiolinkController::class, 'updateLink'])->name('admin.biolink.links.update');
+        Route::delete('biolink/links/{link}', [AdminBiolinkController::class, 'destroyLink'])->name('admin.biolink.links.destroy');
 
-    // WordPress Import
-    Route::get('wordpress-import', [WordPressImportController::class, 'index'])->name('admin.wordpress-import.index');
-    Route::post('wordpress-import/preview', [WordPressImportController::class, 'preview'])->name('admin.wordpress-import.preview');
-    Route::post('wordpress-import/import', [WordPressImportController::class, 'import'])->name('admin.wordpress-import.import');
+        // Post Comments Moderation
+        Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
+        Route::patch('comments/{comment}/status', [AdminCommentController::class, 'updateStatus'])->name('admin.comments.status');
+        Route::delete('comments/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
 
-    // Rank Math SEO Import
-    Route::get('rankmath-import', [RankMathImportController::class, 'index'])->name('admin.rankmath-import.index');
-    Route::post('rankmath-import/preview', [RankMathImportController::class, 'preview'])->name('admin.rankmath-import.preview');
-    Route::post('rankmath-import/import', [RankMathImportController::class, 'import'])->name('admin.rankmath-import.import');
+        // Alumni Management
+        Route::get('alumni', [AdminAlumniController::class, 'index'])->name('admin.alumni.index');
+        Route::post('alumni/angkatan', [AdminAlumniController::class, 'storeAngkatan'])->name('admin.alumni.angkatan.store');
+        Route::put('alumni/angkatan/{id}', [AdminAlumniController::class, 'updateAngkatan'])->name('admin.alumni.angkatan.update');
+        Route::delete('alumni/angkatan/{id}', [AdminAlumniController::class, 'destroyAngkatan'])->name('admin.alumni.angkatan.destroy');
+        Route::post('alumni/video', [AdminAlumniController::class, 'storeVideo'])->name('admin.alumni.video.store');
+        Route::put('alumni/video/{id}', [AdminAlumniController::class, 'updateVideo'])->name('admin.alumni.video.update');
+        Route::delete('alumni/video/{id}', [AdminAlumniController::class, 'destroyVideo'])->name('admin.alumni.video.destroy');
+        Route::post('alumni/settings', [AdminAlumniController::class, 'updateSettings'])->name('admin.alumni.settings.update');
+    });
 
-    // Redirects (SEO)
-    Route::get('redirects', [RedirectController::class, 'index'])->name('admin.redirects.index');
-    Route::post('redirects', [RedirectController::class, 'store'])->name('admin.redirects.store');
-    Route::get('redirects/export', [RedirectController::class, 'export'])->name('admin.redirects.export');
-    Route::post('redirects/import', [RedirectController::class, 'import'])->name('admin.redirects.import');
-    Route::patch('redirects/{redirect}/toggle', [RedirectController::class, 'toggle'])->name('admin.redirects.toggle');
-    Route::put('redirects/{redirect}', [RedirectController::class, 'update'])->name('admin.redirects.update');
-    Route::delete('redirects/{redirect}', [RedirectController::class, 'destroy'])->name('admin.redirects.destroy');
+    // Group 3: Admin only (Settings, Security, Forms, Guestbook, Redirects, Imports)
+    Route::middleware('role:admin')->group(function () {
+        // Forms & Submissions (PII data)
+        Route::get('forms/{form}/export', [AdminFormController::class, 'export'])->name('admin.forms.export');
+        Route::get('forms/{form}/download', [AdminFormController::class, 'downloadAttachment'])->name('admin.forms.download');
+        Route::resource('forms', AdminFormController::class)->names('admin.forms');
 
-    // Post Comments Moderation
-    Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
-    Route::patch('comments/{comment}/status', [AdminCommentController::class, 'updateStatus'])->name('admin.comments.status');
-    Route::delete('comments/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
+        // Guest Book / Buku Tamu Routes
+        Route::get('guestbook', [AdminGuestBookController::class, 'index'])->name('admin.guestbook.index');
+        Route::post('guestbook/settings', [AdminGuestBookController::class, 'updateSettings'])->name('admin.guestbook.settings.update');
+        Route::post('guestbook/services', [AdminGuestBookController::class, 'storeService'])->name('admin.guestbook.services.store');
+        Route::put('guestbook/services/{service}', [AdminGuestBookController::class, 'updateService'])->name('admin.guestbook.services.update');
+        Route::delete('guestbook/services/{service}', [AdminGuestBookController::class, 'destroyService'])->name('admin.guestbook.services.destroy');
+        Route::patch('guestbook/entries/{entry}/status', [AdminGuestBookController::class, 'updateEntryStatus'])->name('admin.guestbook.entries.status');
+        Route::delete('guestbook/entries/{entry}', [AdminGuestBookController::class, 'destroyEntry'])->name('admin.guestbook.entries.destroy');
+        Route::get('guestbook/export', [AdminGuestBookController::class, 'exportEntries'])->name('admin.guestbook.export');
 
-    // Configs/Settings Route
-    Route::get('settings', [AdminSettingController::class, 'index'])->name('admin.settings.index');
-    Route::post('settings', [AdminSettingController::class, 'update'])->name('admin.settings.update');
+        // WordPress Import
+        Route::get('wordpress-import', [WordPressImportController::class, 'index'])->name('admin.wordpress-import.index');
+        Route::post('wordpress-import/preview', [WordPressImportController::class, 'preview'])->name('admin.wordpress-import.preview');
+        Route::post('wordpress-import/import', [WordPressImportController::class, 'import'])->name('admin.wordpress-import.import');
 
-    // Alumni Management
-    Route::get('alumni', [AdminAlumniController::class, 'index'])->name('admin.alumni.index');
-    Route::post('alumni/angkatan', [AdminAlumniController::class, 'storeAngkatan'])->name('admin.alumni.angkatan.store');
-    Route::put('alumni/angkatan/{id}', [AdminAlumniController::class, 'updateAngkatan'])->name('admin.alumni.angkatan.update');
-    Route::delete('alumni/angkatan/{id}', [AdminAlumniController::class, 'destroyAngkatan'])->name('admin.alumni.angkatan.destroy');
-    Route::post('alumni/video', [AdminAlumniController::class, 'storeVideo'])->name('admin.alumni.video.store');
-    Route::put('alumni/video/{id}', [AdminAlumniController::class, 'updateVideo'])->name('admin.alumni.video.update');
-    Route::delete('alumni/video/{id}', [AdminAlumniController::class, 'destroyVideo'])->name('admin.alumni.video.destroy');
-    Route::post('alumni/settings', [AdminAlumniController::class, 'updateSettings'])->name('admin.alumni.settings.update');
+        // Rank Math SEO Import
+        Route::get('rankmath-import', [RankMathImportController::class, 'index'])->name('admin.rankmath-import.index');
+        Route::post('rankmath-import/preview', [RankMathImportController::class, 'preview'])->name('admin.rankmath-import.preview');
+        Route::post('rankmath-import/import', [RankMathImportController::class, 'import'])->name('admin.rankmath-import.import');
 
-    // Security Center & Monitoring Routes
-    Route::get('security', [AdminSecurityController::class, 'index'])->name('admin.security.index');
-    Route::post('security/ip', [AdminSecurityController::class, 'blockIp'])->name('admin.security.ip.store');
-    Route::delete('security/ip/{id}', [AdminSecurityController::class, 'unblockIp'])->name('admin.security.ip.destroy');
-    Route::post('security/threats/clear', [AdminSecurityController::class, 'clearThreatLogs'])->name('admin.security.threats.clear');
-    Route::post('security/settings', [AdminSecurityController::class, 'updateSettings'])->name('admin.security.settings.update');
+        // Redirects (SEO)
+        Route::get('redirects', [RedirectController::class, 'index'])->name('admin.redirects.index');
+        Route::post('redirects', [RedirectController::class, 'store'])->name('admin.redirects.store');
+        Route::get('redirects/export', [RedirectController::class, 'export'])->name('admin.redirects.export');
+        Route::post('redirects/import', [RedirectController::class, 'import'])->name('admin.redirects.import');
+        Route::patch('redirects/{redirect}/toggle', [RedirectController::class, 'toggle'])->name('admin.redirects.toggle');
+        Route::put('redirects/{redirect}', [RedirectController::class, 'update'])->name('admin.redirects.update');
+        Route::delete('redirects/{redirect}', [RedirectController::class, 'destroy'])->name('admin.redirects.destroy');
+
+        // Configs/Settings Route
+        Route::get('settings', [AdminSettingController::class, 'index'])->name('admin.settings.index');
+        Route::post('settings', [AdminSettingController::class, 'update'])->name('admin.settings.update');
+
+        // Security Center & Monitoring Routes
+        Route::get('security', [AdminSecurityController::class, 'index'])->name('admin.security.index');
+        Route::post('security/ip', [AdminSecurityController::class, 'blockIp'])->name('admin.security.ip.store');
+        Route::delete('security/ip/{id}', [AdminSecurityController::class, 'unblockIp'])->name('admin.security.ip.destroy');
+        Route::post('security/threats/clear', [AdminSecurityController::class, 'clearThreatLogs'])->name('admin.security.threats.clear');
+        Route::post('security/settings', [AdminSecurityController::class, 'updateSettings'])->name('admin.security.settings.update');
+    });
 });
 
 use App\Http\Controllers\FrontendController;
@@ -134,7 +146,11 @@ Route::prefix('install')->name('install.')->group(function () {
 });
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
-Route::get('/berita', [FrontendController::class, 'posts'])->name('posts.index');
+Route::get('/blog', [FrontendController::class, 'posts'])->name('posts.index');
+Route::redirect('/berita', '/blog', 301);
+Route::get('/blog/page/{page}', function ($page) {
+    return redirect('/blog?page=' . $page, 301);
+});
 Route::get('/agenda', [FrontendController::class, 'events'])->name('events.index');
 Route::get('/agenda/{event}', [FrontendController::class, 'showEvent'])->name('events.show');
 Route::get('/testimoni', [FrontendController::class, 'testimonials'])->name('testimonials.index');
