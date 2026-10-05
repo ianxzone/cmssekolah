@@ -239,6 +239,17 @@
                 @endif
 
                 @if (session('error'))
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <i data-feather="alert-circle"></i>
+        <ul style="margin: 0; padding-left: 20px;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
                     <div class="alert alert-danger">
                         <i data-feather="alert-circle"></i>
                         {{ session('error') }}

@@ -37,26 +37,16 @@ class ImageService
         int $maxHeight = 1920,
         int $quality = 82
     ): array {
-        $mime = $file->getMimeType();
-        $originalName = $file->getClientOriginalName();
-        $baseName = $customBaseName ?: Str::slug(pathinfo($originalName, PATHINFO_FILENAME));
-
-        // If not a supported image or GD is missing, store directly as-is
-        if (!in_array($mime, self::OPTIMIZABLE_MIMES) || !extension_loaded('gd') || !function_exists('imagewebp')) {
-            $extension = $file->extension();
-            $fileName = $baseName . '-' . time() . '.' . $extension;
-            $path = $file->storeAs($directory, $fileName, 'public');
-
-            return [
-                'path' => $path,
-                'file_name' => $fileName,
-                'mime_type' => $mime,
-                'size' => $file->getSize(),
-                'is_optimized' => false,
-            ];
-        }
-
         try {
+            $mime = $file->getMimeType();
+            $originalName = $file->getClientOriginalName();
+            $baseName = $customBaseName ?: Str::slug(pathinfo($originalName, PATHINFO_FILENAME));
+
+            // If not a supported image or GD is missing, store directly as-is
+            if (!in_array($mime, self::OPTIMIZABLE_MIMES) || !extension_loaded('gd') || !function_exists('imagewebp')) {
+                return self::fallbackStore($file, $directory, $baseName, $mime);
+            }
+
             $sourcePath = $file->getRealPath();
             $srcImage = null;
 
@@ -84,20 +74,10 @@ class ImageService
 
             if (!$srcImage) {
                 // Cannot load image, fallback to standard store
-                $extension = $file->extension();
-                $fileName = $baseName . '-' . time() . '.' . $extension;
-                $path = $file->storeAs($directory, $fileName, 'public');
-
-                return [
-                    'path' => $path,
-                    'file_name' => $fileName,
-                    'mime_type' => $mime,
-                    'size' => $file->getSize(),
-                    'is_optimized' => false,
-                ];
+                return self::fallbackStore($file, $directory, $baseName, $mime);
             }
 
-            // 2. Fix EXIF orientation (especially for smartphone cameras)
+            // 2. Fix EXIF orientation
             if (function_exists('exif_read_data') && ($mime === 'image/jpeg' || $mime === 'image/jpg')) {
                 try {
                     $exif = @exif_read_data($sourcePath);
@@ -105,30 +85,19 @@ class ImageService
                         switch ($exif['Orientation']) {
                             case 3:
                                 $rotated = @imagerotate($srcImage, 180, 0);
-                                if ($rotated !== false) {
-                                    imagedestroy($srcImage);
-                                    $srcImage = $rotated;
-                                }
+                                if ($rotated !== false) { imagedestroy($srcImage); $srcImage = $rotated; }
                                 break;
                             case 6:
                                 $rotated = @imagerotate($srcImage, -90, 0);
-                                if ($rotated !== false) {
-                                    imagedestroy($srcImage);
-                                    $srcImage = $rotated;
-                                }
+                                if ($rotated !== false) { imagedestroy($srcImage); $srcImage = $rotated; }
                                 break;
                             case 8:
                                 $rotated = @imagerotate($srcImage, 90, 0);
-                                if ($rotated !== false) {
-                                    imagedestroy($srcImage);
-                                    $srcImage = $rotated;
-                                }
+                                if ($rotated !== false) { imagedestroy($srcImage); $srcImage = $rotated; }
                                 break;
                         }
                     }
-                } catch (\Throwable $e) {
-                    // Ignore EXIF parsing issues
-                }
+                } catch (\Throwable $e) { }
             }
 
             $origWidth = imagesx($srcImage);
@@ -145,7 +114,12 @@ class ImageService
             }
 
             // 4. Create canvas and copy resampled image
-            $newImage = imagecreatetruecolor($targetWidth, $targetHeight);
+            $newImage = @imagecreatetruecolor($targetWidth, $targetHeight);
+            if (!$newImage) {
+                // Memory limit hit probably, fallback
+                imagedestroy($srcImage);
+                return self::fallbackStore($file, $directory, $baseName, $mime);
+            }
 
             // Preserve alpha transparency for PNG/WebP
             imagealphablending($newImage, false);
@@ -153,7 +127,7 @@ class ImageService
             $transparent = imagecolorallocatealpha($newImage, 255, 255, 255, 127);
             imagefilledrectangle($newImage, 0, 0, $targetWidth, $targetHeight, $transparent);
 
-            imagecopyresampled(
+            @imagecopyresampled(
                 $newImage,
                 $srcImage,
                 0, 0, 0, 0,
@@ -190,31 +164,35 @@ class ImageService
                 ];
             }
 
-            // If imagewebp failed, fallback to standard store
-            $extension = $file->extension();
-            $fileName = $baseName . '-' . time() . '.' . $extension;
-            $path = $file->storeAs($directory, $fileName, 'public');
+            // If imagewebp failed, fallback
+            return self::fallbackStore($file, $directory, $baseName, $mime);
 
-            return [
-                'path' => $path,
-                'file_name' => $fileName,
-                'mime_type' => $mime,
-                'size' => $file->getSize(),
-                'is_optimized' => false,
-            ];
         } catch (\Throwable $th) {
             // Safe fallback on unexpected failure
-            $extension = $file->extension();
-            $fileName = $baseName . '-' . time() . '.' . $extension;
-            $path = $file->storeAs($directory, $fileName, 'public');
-
-            return [
-                'path' => $path,
-                'file_name' => $fileName,
-                'mime_type' => $mime,
-                'size' => $file->getSize(),
-                'is_optimized' => false,
-            ];
+            try {
+                return self::fallbackStore($file, $directory, $customBaseName ?? 'upload', $file->getMimeType() ?? 'application/octet-stream');
+            } catch (\Throwable $fallbackEx) {
+                // If even fallback fails, throw a clean exception that doesn't expose internals if possible
+                throw new \Exception("Failed to upload image: " . $fallbackEx->getMessage());
+            }
         }
+    }
+
+    /**
+     * Helper to perform standard file store without optimization
+     */
+    protected static function fallbackStore(UploadedFile $file, string $directory, string $baseName, string $mime): array
+    {
+        $extension = $file->extension() ?: $file->getClientOriginalExtension() ?: 'png';
+        $fileName = $baseName . '-' . time() . '.' . $extension;
+        $path = $file->storeAs($directory, $fileName, 'public');
+
+        return [
+            'path' => $path,
+            'file_name' => $fileName,
+            'mime_type' => $mime,
+            'size' => $file->getSize(),
+            'is_optimized' => false,
+        ];
     }
 }

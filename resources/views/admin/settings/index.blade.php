@@ -637,7 +637,7 @@
                                     'age' => 'Kelas 1 - 6 SD',
                                     'title' => 'SDIT Al Irsyad 01 & 02',
                                     'desc' => 'Sekolah Dasar Islam Terpadu berakreditasi A (Unggul), mengintegrasikan kurikulum nasional, tahfidz intensif, dan pembelajaran sains aplikatif.',
-                                    'image' => 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600',
+                                    'image' => 'https://images.unsplash.com/photo-1719804320342-b7ebb6bc0ecb?q=80&w=600&auto=format&fit=crop',
                                     'pills' => 'Akreditasi A Unggul, Tahfidz 2-3 Juz, Kelas Internasional (ICP)',
                                     'spmb_link' => ''
                                 ],
@@ -646,7 +646,7 @@
                                     'age' => 'Kelas 7 - 9 SMP',
                                     'title' => 'SMPIT Al Irsyad Karawang',
                                     'desc' => 'Pembinaan karakter pemuda Rabbani melalui program Bina Pribadi Islami (BPI), bilingual habit aktif, bimbingan tahfidz, dan eksplorasi STEAM.',
-                                    'image' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=600',
+                                    'image' => 'https://plus.unsplash.com/premium_photo-1661331705504-7a513e8b3266?q=80&w=600&auto=format&fit=crop',
                                     'pills' => 'Bina Pribadi Islami, Bilingual Arab & Inggris, Kelas Internasional (ICP)',
                                     'spmb_link' => ''
                                 ],

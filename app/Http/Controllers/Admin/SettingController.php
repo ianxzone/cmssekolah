@@ -27,27 +27,45 @@ class SettingController extends Controller
         $data = $request->except('_token');
 
         // Handle Branding Assets (Logo, Favicon, Icon)
+        $currentLogo = \App\Models\Setting::get('site_logo');
         if ($request->hasFile('site_logo_file')) {
             $path = $request->file('site_logo_file')->store('settings', 'public');
             \App\Models\Setting::set('site_logo', $path, 'image');
-        } elseif ($request->filled('site_logo_url')) {
-            \App\Models\Setting::set('site_logo', trim($request->input('site_logo_url')), 'string');
+        } else {
+            $url = trim($request->input('site_logo_url') ?? '');
+            if (!empty($url)) {
+                \App\Models\Setting::set('site_logo', $url, 'string');
+            } elseif ($request->has('site_logo_url') && \Illuminate\Support\Str::startsWith($currentLogo ?? '', ['http://', 'https://'])) {
+                \App\Models\Setting::set('site_logo', '', 'string');
+            }
         }
         unset($data['site_logo_file'], $data['site_logo_url']);
 
+        $currentFavicon = \App\Models\Setting::get('site_favicon');
         if ($request->hasFile('site_favicon_file')) {
             $path = $request->file('site_favicon_file')->store('settings', 'public');
             \App\Models\Setting::set('site_favicon', $path, 'image');
-        } elseif ($request->filled('site_favicon_url')) {
-            \App\Models\Setting::set('site_favicon', trim($request->input('site_favicon_url')), 'string');
+        } else {
+            $url = trim($request->input('site_favicon_url') ?? '');
+            if (!empty($url)) {
+                \App\Models\Setting::set('site_favicon', $url, 'string');
+            } elseif ($request->has('site_favicon_url') && \Illuminate\Support\Str::startsWith($currentFavicon ?? '', ['http://', 'https://'])) {
+                \App\Models\Setting::set('site_favicon', '', 'string');
+            }
         }
         unset($data['site_favicon_file'], $data['site_favicon_url']);
 
+        $currentIcon = \App\Models\Setting::get('site_icon');
         if ($request->hasFile('site_icon_file')) {
             $path = $request->file('site_icon_file')->store('settings', 'public');
             \App\Models\Setting::set('site_icon', $path, 'image');
-        } elseif ($request->filled('site_icon_url')) {
-            \App\Models\Setting::set('site_icon', trim($request->input('site_icon_url')), 'string');
+        } else {
+            $url = trim($request->input('site_icon_url') ?? '');
+            if (!empty($url)) {
+                \App\Models\Setting::set('site_icon', $url, 'string');
+            } elseif ($request->has('site_icon_url') && \Illuminate\Support\Str::startsWith($currentIcon ?? '', ['http://', 'https://'])) {
+                \App\Models\Setting::set('site_icon', '', 'string');
+            }
         }
         unset($data['site_icon_file'], $data['site_icon_url']);
 
