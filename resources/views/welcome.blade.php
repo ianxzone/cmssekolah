@@ -206,36 +206,48 @@
         }
 
         /* ------------------------------------------------------------
-           PARTNERSHIP SECTION
+           PARTNERSHIP SECTION (PREMIUM TRUST BAR)
         ------------------------------------------------------------ */
         .partnership-section {
-            padding: 42px 0 46px;
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 38px 0 42px;
+            background: #f8fafc;
+            border-top: 1px solid #e9edf2;
+            border-bottom: 1px solid #e9edf2;
         }
-        .partnership-title-wrap {
+        .partnership-header {
             text-align: center;
-            margin-bottom: 26px;
+            margin-bottom: 24px;
+        }
+        .partnership-kicker {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 6px;
         }
         .partnership-title {
-            font-size: 1.45rem;
+            font-size: 1.35rem;
             font-weight: 800;
             letter-spacing: 2.5px;
             color: var(--primary-dark);
             text-transform: uppercase;
             margin: 0;
-            position: relative;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
         }
+        .partnership-title::before,
         .partnership-title::after {
             content: '';
-            display: block;
-            width: 44px;
-            height: 3px;
+            display: inline-block;
+            width: 32px;
+            height: 2px;
             background: var(--secondary);
-            margin: 8px auto 0;
             border-radius: 2px;
+            opacity: 0.85;
         }
         .partnership-grid {
             display: grid;
@@ -246,51 +258,49 @@
         .partner-item {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 18px 10px 14px;
+            border-radius: 14px;
+            padding: 16px 10px 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             text-decoration: none;
             color: inherit;
+            min-height: 104px;
         }
         .partner-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -6px rgba(0, 104, 55, 0.16);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 22px -6px rgba(0, 104, 55, 0.16);
             border-color: var(--primary);
         }
         .partner-logo-wrap {
-            width: 64px;
-            height: 64px;
+            height: 48px;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 10px;
-            padding: 6px;
-            border-radius: 12px;
-            background: #f8fafc;
-            transition: transform 0.3s ease, background 0.3s ease;
+            transition: transform 0.25s ease;
         }
         .partner-item:hover .partner-logo-wrap {
             transform: scale(1.08);
-            background: #ffffff;
         }
         .partner-logo-wrap img {
-            max-width: 100%;
-            max-height: 100%;
+            max-height: 46px;
+            max-width: 82px;
             object-fit: contain;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.04));
         }
         .partner-name {
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             font-weight: 700;
-            color: #334155;
+            color: #475569;
             letter-spacing: 0.4px;
             text-transform: uppercase;
-            transition: color 0.3s ease;
+            transition: color 0.25s ease;
             line-height: 1.25;
         }
         .partner-item:hover .partner-name {
@@ -300,24 +310,39 @@
         @media (max-width: 992px) {
             .partnership-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 14px;
+                gap: 12px;
+            }
+            .partnership-title {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
             }
         }
         @media (max-width: 576px) {
+            .partnership-section {
+                padding: 28px 0 34px;
+            }
             .partnership-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
             .partner-item {
-                padding: 14px 6px 12px;
+                padding: 12px 6px 10px;
+                min-height: 92px;
             }
             .partner-logo-wrap {
-                width: 54px;
-                height: 54px;
-                margin-bottom: 8px;
+                height: 40px;
+                margin-bottom: 6px;
+            }
+            .partner-logo-wrap img {
+                max-height: 38px;
+                max-width: 70px;
             }
             .partner-name {
-                font-size: 0.72rem;
+                font-size: 0.68rem;
+            }
+            .partnership-title::before,
+            .partnership-title::after {
+                width: 20px;
             }
         }
 
@@ -1575,9 +1600,9 @@
     @if(!empty($partners))
     <section class="partnership-section" id="partnership">
         <div class="container">
-            <div class="partnership-title-wrap">
+            <div class="partnership-header">
                 @if(!empty($partnerSubtitle))
-                    <span class="partnership-subtitle">{{ $partnerSubtitle }}</span>
+                    <span class="partnership-kicker">{{ $partnerSubtitle }}</span>
                 @endif
                 <h3 class="partnership-title">{{ $partnerTitle }}</h3>
             </div>
