@@ -1273,3 +1273,34 @@ trix-editor figure.attachment-image figcaption {
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 104, 55, 0.25);
 }
+
+/* Pagination Fixes */
+nav[role="navigation"] svg { width: 20px; height: 20px; display: inline-block; }
+nav[role="navigation"] p { margin-top: 1rem; margin-bottom: 1rem; }
+nav[role="navigation"] div.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+nav[role="navigation"] span.relative.z-0.inline-flex.rounded-md.shadow-sm { display: inline-flex; border-radius: 6px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+nav[role="navigation"] a, nav[role="navigation"] span[aria-current="page"], nav[role="navigation"] span[aria-disabled="true"] { position: relative; display: inline-flex; align-items: center; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; background: #fff; font-size: 0.875rem; color: #475569; text-decoration: none; }
+nav[role="navigation"] a:hover { background: #f8fafc; }
+nav[role="navigation"] span[aria-current="page"] { background: #059669; color: #fff; border-color: #059669; z-index: 10; }
+nav[role="navigation"] span[aria-disabled="true"] { opacity: 0.5; background: #f1f5f9; }
+
+/* Bootstrap 5 Pagination Fallback */
+.pagination { display: flex; list-style: none; padding: 0; gap: 5px; justify-content: center; }
+.page-item .page-link { padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; color: #475569; text-decoration: none; border-radius: 6px; background: #fff; transition: background 0.2s; }
+.page-item .page-link:hover { background: #f8fafc; }
+.page-item.active .page-link { background: #059669; color: white; border-color: #059669; }
+.page-item.disabled .page-link { color: #cbd5e1; background: #f8fafc; pointer-events: none; }
+
+/* Bootstrap 5 Pagination Display Utilities */
+nav .d-none { display: none !important; }
+@media (min-width: 640px) {
+  nav .d-sm-none { display: none !important; }
+  nav .d-sm-flex { display: flex !important; }
+  nav .align-items-sm-center { align-items: center !important; }
+  nav .justify-content-sm-between { justify-content: space-between !important; }
+}
+nav .d-flex { display: flex !important; }
+nav .justify-content-between { justify-content: space-between !important; }
+nav .align-items-center { align-items: center !important; }
+nav .text-muted { color: #64748b; font-size: 0.875rem; margin: 0; padding: 0.5rem 0; }
+nav p { margin: 0; }

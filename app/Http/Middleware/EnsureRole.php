@@ -31,7 +31,8 @@ class EnsureRole
         // Using the models method or direct check
         $userRole = $user->role ?? \App\Models\User::ROLE_ADMIN;
 
-        if (!in_array($userRole, $roles)) {
+        // Superadmin bypasses all role checks
+        if ($userRole !== \App\Models\User::ROLE_SUPERADMIN && !in_array($userRole, $roles)) {
             \App\Services\SecurityService::logAudit('unauthorized_access', 'security', "Akses ditolak ke {$request->path()} karena role {$userRole} tidak memiliki izin.", (string)$user->id);
             abort(403, 'Akses Ditolak: Anda tidak memiliki izin (role) yang diperlukan untuk mengakses halaman ini.');
         }

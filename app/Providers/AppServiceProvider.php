@@ -19,6 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Pagination\Paginator::useBootstrapFive();
+
+        if (config('app.env') !== 'local' || request()->secure()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
                 $settings = \App\Models\Setting::pluck('value', 'key')->toArray();

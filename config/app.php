@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Path
+    |--------------------------------------------------------------------------
+    |
+    | Defines the prefix for all admin routes. 
+    | Defaults to 'admin' if not set in .env.
+    |
+    */
+    'admin_path' => env('ADMIN_PATH', 'admin'),
+
 ];

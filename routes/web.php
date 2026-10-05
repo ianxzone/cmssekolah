@@ -29,18 +29,31 @@ use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\SecurityController as AdminSecurityController;
 
+$adminPath = config('app.admin_path', 'admin');
+try {
+    if (\Illuminate\Support\Facades\DB::connection()->getPdo() && \Illuminate\Support\Facades\Schema::hasTable('settings')) {
+        $dbAdminPath = \Illuminate\Support\Facades\DB::table('settings')->where('key', 'admin_path')->value('value');
+        if (!empty($dbAdminPath)) {
+            $adminPath = $dbAdminPath;
+        }
+    }
+} catch (\Throwable $e) {
+    // Fallback to config if DB is not ready
+}
+
 // Public Admin Auth Routes
-Route::prefix('admin')->middleware(['web'])->group(function () {
+Route::prefix($adminPath)->middleware(['web'])->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminAuthController::class, 'login'])->middleware('throttle:10,1')->name('admin.login.submit');
     Route::post('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
 
 // Protected Admin Routes (Authenticated Only)
-Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
+Route::prefix($adminPath)->middleware(['web', 'auth'])->group(function () {
     
     // Group 1: All Authenticated Backend Users (Admin, Editor, Author, Contributor)
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/about', [DashboardController::class, 'about'])->name('admin.about');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');
     Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
     Route::put('media/{media}', [AdminMediaController::class, 'apiUpdate'])->name('admin.media.update');
@@ -80,8 +93,10 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::post('alumni/settings', [AdminAlumniController::class, 'updateSettings'])->name('admin.alumni.settings.update');
     });
 
-    // Group 3: Admin only (Settings, Security, Forms, Guestbook, Redirects, Imports)
+    // Group 3: Admin only (Settings, Security, Forms, Guestbook, Redirects, Imports, Users)
     Route::middleware('role:admin')->group(function () {
+        // Users Management
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->names('admin.users');
         // Forms & Submissions (PII data)
         Route::get('forms/{form}/export', [AdminFormController::class, 'export'])->name('admin.forms.export');
         Route::get('forms/{form}/download', [AdminFormController::class, 'downloadAttachment'])->name('admin.forms.download');
@@ -97,6 +112,10 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::delete('guestbook/entries/{entry}', [AdminGuestBookController::class, 'destroyEntry'])->name('admin.guestbook.entries.destroy');
         Route::get('guestbook/export', [AdminGuestBookController::class, 'exportEntries'])->name('admin.guestbook.export');
 
+    });
+
+    // Group 4: Superadmin only (Imports)
+    Route::middleware('role:superadmin')->group(function () {
         // WordPress Import
         Route::get('wordpress-import', [WordPressImportController::class, 'index'])->name('admin.wordpress-import.index');
         Route::post('wordpress-import/preview', [WordPressImportController::class, 'preview'])->name('admin.wordpress-import.preview');
@@ -178,7 +197,12 @@ Route::get('/buku-tamu/click/{id}', [GuestBookController::class, 'click'])->midd
 Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
 
 // SEO Routes
-Route::get('/sitemap.xml', [FrontendController::class, 'sitemap'])->name('sitemap');
+Route::redirect('/sitemap.xml', '/sitemap_index.xml', 301);
+Route::get('/sitemap_index.xml', [FrontendController::class, 'sitemapIndex'])->name('sitemap.index');
+Route::get('/post-sitemap.xml', [FrontendController::class, 'sitemapPosts'])->name('sitemap.posts');
+Route::get('/page-sitemap.xml', [FrontendController::class, 'sitemapPages'])->name('sitemap.pages');
+Route::get('/category-sitemap.xml', [FrontendController::class, 'sitemapCategories'])->name('sitemap.categories');
+Route::get('/agenda-sitemap.xml', [FrontendController::class, 'sitemapEvents'])->name('sitemap.events');
 Route::get('/robots.txt', [FrontendController::class, 'robots'])->name('robots');
 
 // Post Comment Submission

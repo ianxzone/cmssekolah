@@ -118,7 +118,7 @@ class InstallController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin', // Ensure role field exists or matches your schema
+            'role' => User::ROLE_SUPERADMIN, // User pertama yang diinstall otomatis jadi superadmin (Dewa)
         ]);
 
         return redirect()->route('install.finish');

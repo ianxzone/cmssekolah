@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -13,8 +14,20 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Local scope to exclude superadmin for non-superadmin users.
+     */
+    public function scopeExcludeSuperAdmin(Builder $query)
+    {
+        if (!auth()->check() || auth()->user()->role !== self::ROLE_SUPERADMIN) {
+            return $query->where('role', '!=', self::ROLE_SUPERADMIN);
+        }
+        return $query;
+    }
+
+    /**
      * User Roles Constants
      */
+    public const ROLE_SUPERADMIN = 'superadmin';
     public const ROLE_ADMIN = 'admin';
     public const ROLE_EDITOR = 'editor';
     public const ROLE_AUTHOR = 'author';
@@ -61,6 +74,11 @@ class User extends Authenticatable
     public static function getRolesList(): array
     {
         return [
+            self::ROLE_SUPERADMIN => [
+                'name' => 'Super Administrator',
+                'description' => 'Akses dewa. Disembunyikan dari daftar user biasa.',
+                'badge_color' => '#000000',
+            ],
             self::ROLE_ADMIN => [
                 'name' => 'Administrator',
                 'description' => 'Akses penuh ke semua menu, pengaturan sistem, dan dapat mengganti author artikel apapun.',
@@ -85,11 +103,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is Superadmin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPERADMIN;
+    }
+
+    /**
      * Check if user is an Administrator.
      */
     public function isAdmin(): bool
     {
-        return ($this->role ?? self::ROLE_ADMIN) === self::ROLE_ADMIN;
+        return in_array($this->role ?? self::ROLE_ADMIN, [self::ROLE_SUPERADMIN, self::ROLE_ADMIN]);
     }
 
     /**
@@ -97,7 +123,7 @@ class User extends Authenticatable
      */
     public function isEditor(): bool
     {
-        return in_array($this->role ?? self::ROLE_ADMIN, [self::ROLE_ADMIN, self::ROLE_EDITOR]);
+        return in_array($this->role ?? self::ROLE_ADMIN, [self::ROLE_SUPERADMIN, self::ROLE_ADMIN, self::ROLE_EDITOR]);
     }
 
     /**
@@ -106,6 +132,7 @@ class User extends Authenticatable
     public function isAuthor(): bool
     {
         return in_array($this->role ?? self::ROLE_ADMIN, [
+            self::ROLE_SUPERADMIN,
             self::ROLE_ADMIN,
             self::ROLE_EDITOR,
             self::ROLE_AUTHOR,

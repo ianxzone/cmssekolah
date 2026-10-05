@@ -399,6 +399,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="setting-section">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            Pengaturan Keamanan & Sistem
+                        </h3>
+                        <div class="form-group" style="background: #fff3cd; padding: 1.5rem; border-radius: 8px; border: 1px solid #ffeeba;">
+                            <label class="form-label" style="color: #856404; font-weight: 700;">URL Login Admin (Custom Path)</label>
+                            <input type="text" name="admin_path" class="form-control" value="{{ $settings['admin_path'] ?? env('ADMIN_PATH', 'admin') }}" placeholder="Contoh: panel-rahasia" style="border-color: #ffeeba; max-width: 400px;">
+                            <span class="form-text" style="color: #856404;">
+                                <strong>PERHATIAN:</strong> Mengubah URL ini akan langsung mengganti URL halaman login dan dashboard Anda (contoh default: <code>admin</code>). Harap ingat URL baru yang Anda masukkan di sini agar tidak terkunci dari sistem.
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- TAB 2: NAVIGASI & HERO -->

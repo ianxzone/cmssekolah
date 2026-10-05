@@ -327,6 +327,18 @@
                         <span>Rename slug (tambah suffix -1, -2, dst)</span>
                     </label>
                 </div>
+
+                <label class="section-label" style="margin-top: 1rem; display:block;">Penulis (Author)</label>
+                <div style="margin-bottom: 1.5rem;">
+                    <select name="author_id" class="form-control" style="width: 100%; max-width: 400px; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;">
+                        <option value="">-- Pilih Penulis untuk Konten Import --</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ auth()->id() == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }} ({{ $user->email }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
         </div>
 

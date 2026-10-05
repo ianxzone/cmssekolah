@@ -389,6 +389,7 @@ class WordPressImportService
                 $seoDescription = $this->replaceTemplateVariables($seoDescription, $postData['title']);
 
                 $post = Post::create([
+                    'user_id' => $options['author_id'] ?? auth()->id(),
                     'title' => $postData['title'],
                     'slug' => $slug,
                     'content' => $content,

@@ -50,7 +50,9 @@ class WordPressImportController extends Controller
             session(['wp_import_file' => $path]);
             session(['wp_import_data' => $data]);
 
-            return view('admin.wordpress-import.preview', compact('data'));
+            $users = \App\Models\User::all();
+
+            return view('admin.wordpress-import.preview', compact('data', 'users'));
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat memproses file: ' . $e->getMessage());
@@ -69,6 +71,7 @@ class WordPressImportController extends Controller
             'import_pages' => 'nullable|boolean',
             'download_images' => 'nullable|boolean',
             'duplicate_handling' => 'nullable|in:skip,rename',
+            'author_id' => 'nullable|exists:users,id',
         ]);
 
         $data = session('wp_import_data');
@@ -88,7 +91,8 @@ class WordPressImportController extends Controller
                 'import_posts' => $request->boolean('import_posts'),
                 'import_pages' => $request->boolean('import_pages'),
                 'download_images' => $request->boolean('download_images'),
-                'duplicate_handling' => $request->input('duplicate_handling', 'skip')
+                'duplicate_handling' => $request->input('duplicate_handling', 'skip'),
+                'author_id' => $request->input('author_id')
             ];
 
             $service = new WordPressImportService();

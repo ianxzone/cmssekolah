@@ -154,6 +154,13 @@
                 @if(auth()->user()->isAdmin())
                 <div class="nav-section">SYSTEM</div>
 
+                <a href="{{ route('admin.users.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" title="Kelola Pengguna">
+                    <i data-feather="users"></i>
+                    <span>Kelola Pengguna</span>
+                </a>
+
+                @if(auth()->user()->isSuperAdmin())
                 <a href="{{ route('admin.wordpress-import.index') }}"
                     class="nav-item {{ request()->routeIs('admin.wordpress-import.*') ? 'active' : '' }}" title="Import WordPress">
                     <i data-feather="download-cloud"></i>
@@ -165,6 +172,7 @@
                     <i data-feather="zap"></i>
                     <span>Import Rank Math</span>
                 </a>
+                @endif
 
                 <a href="{{ route('admin.redirects.index') }}"
                     class="nav-item {{ request()->routeIs('admin.redirects.*') ? 'active' : '' }}" title="Redirections (SEO)">
@@ -187,6 +195,10 @@
             </nav>
 
             <div class="sidebar-footer">
+                <a href="{{ route('admin.about') }}" class="logout-btn" style="text-decoration: none; margin-bottom: 8px; justify-content: flex-start; text-align: left; width: 100%; border: none; cursor: pointer; color: #94a3b8; background: transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.color='#f8fafc'; this.style.background='rgba(255,255,255,0.05)';" onmouseout="this.style.color='#94a3b8'; this.style.background='transparent';">
+                    <i data-feather="info"></i>
+                    <span>Tentang CMS</span>
+                </a>
                 <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf
                     <button type="submit" class="logout-btn" title="Logout">
@@ -319,6 +331,8 @@
     </script>
     {{-- WordPress-Style Link Insert & Edit Modal for Trix Editors --}}
     @include('admin.partials.link-modal')
+
+
 
     @stack('scripts')
 </body>

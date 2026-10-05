@@ -40,7 +40,7 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $authors = User::orderBy('name')->get();
+        $authors = User::excludeSuperAdmin()->orderBy('name')->get();
         return view('admin.posts.create', compact('categories', 'authors'));
     }
 
@@ -96,7 +96,7 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        $authors = User::orderBy('name')->get();
+        $authors = User::excludeSuperAdmin()->orderBy('name')->get();
         return view('admin.posts.edit', compact('post', 'categories', 'authors'));
     }
 

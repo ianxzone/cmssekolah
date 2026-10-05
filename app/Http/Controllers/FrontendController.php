@@ -383,16 +383,39 @@ class FrontendController extends Controller
     }
 
     /**
-     * Generate dynamic sitemap.xml
+     * Generate dynamic sitemap_index.xml
      */
-    public function sitemap()
+    public function sitemapIndex()
     {
-        $posts = Post::whereNotNull('published_at')->where('published_at', '<=', now())->orderBy('updated_at', 'desc')->get();
-        $pages = \App\Models\Page::where('status', 'published')->orderBy('updated_at', 'desc')->get();
-        $categories = Category::orderBy('updated_at', 'desc')->get();
-        $events = \App\Models\Event::orderBy('updated_at', 'desc')->get();
+        return response()->view('frontend.sitemap.index')
+            ->header('Content-Type', 'text/xml');
+    }
 
-        return response()->view('frontend.sitemap', compact('posts', 'pages', 'categories', 'events'))
+    public function sitemapPosts()
+    {
+        $items = Post::whereNotNull('published_at')->where('published_at', '<=', now())->orderBy('updated_at', 'desc')->get();
+        return response()->view('frontend.sitemap.items', ['items' => $items, 'type' => 'post'])
+            ->header('Content-Type', 'text/xml');
+    }
+
+    public function sitemapPages()
+    {
+        $items = \App\Models\Page::where('status', 'published')->orderBy('updated_at', 'desc')->get();
+        return response()->view('frontend.sitemap.items', ['items' => $items, 'type' => 'page'])
+            ->header('Content-Type', 'text/xml');
+    }
+
+    public function sitemapCategories()
+    {
+        $items = Category::orderBy('updated_at', 'desc')->get();
+        return response()->view('frontend.sitemap.items', ['items' => $items, 'type' => 'category'])
+            ->header('Content-Type', 'text/xml');
+    }
+
+    public function sitemapEvents()
+    {
+        $items = \App\Models\Event::orderBy('updated_at', 'desc')->get();
+        return response()->view('frontend.sitemap.items', ['items' => $items, 'type' => 'event'])
             ->header('Content-Type', 'text/xml');
     }
 
@@ -405,7 +428,7 @@ class FrontendController extends Controller
         $content .= "Allow: /\n";
         $content .= "Disallow: /admin/\n";
         $content .= "Disallow: /install/\n\n";
-        $content .= "Sitemap: " . url('sitemap.xml') . "\n";
+        $content .= "Sitemap: " . url('sitemap_index.xml') . "\n";
 
         return response($content, 200)->header('Content-Type', 'text/plain');
     }
