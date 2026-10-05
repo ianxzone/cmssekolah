@@ -80,6 +80,8 @@ class BiolinkSeeder extends Seeder
         );
 
         // Clear existing sections & links for clean seeding
+        $existingSectionIds = BiolinkSection::where('profile_id', $profile->id)->pluck('id');
+        BiolinkLink::whereIn('section_id', $existingSectionIds)->delete();
         BiolinkSection::where('profile_id', $profile->id)->delete();
 
         // 1. Seksi Pendaftaran (PPDB)

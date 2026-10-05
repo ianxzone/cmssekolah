@@ -1,10 +1,10 @@
 @php
     $ga4Id = \App\Models\Setting::get('seo_google_analytics');
     
-    $matomoSelfUrl = rtrim(\App\Models\Setting::get('matomo_self_hosted_url', ''), '/');
+    $matomoSelfUrl = rtrim((string) \App\Models\Setting::get('matomo_self_hosted_url', ''), '/');
     $matomoSelfSiteId = \App\Models\Setting::get('matomo_self_hosted_site_id');
     
-    $matomoCloudUrl = rtrim(\App\Models\Setting::get('matomo_cloud_url', ''), '/');
+    $matomoCloudUrl = rtrim((string) \App\Models\Setting::get('matomo_cloud_url', ''), '/');
     $matomoCloudSiteId = \App\Models\Setting::get('matomo_cloud_site_id');
     
     $matomoDisableCookies = \App\Models\Setting::get('matomo_disable_cookies', '0') == '1';
