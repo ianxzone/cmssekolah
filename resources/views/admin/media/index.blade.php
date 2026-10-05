@@ -64,7 +64,7 @@
         .media-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1.25rem;
+            gap: 20px; grid-gap: 20px;
         }
 
         .media-card {
@@ -324,7 +324,7 @@
             background: #f8fafc;
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 20px; grid-gap: 20px;
         }
 
         .attachment-img-frame {
@@ -425,7 +425,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1.25rem;
+            gap: 20px; grid-gap: 20px;
         }
 
         .seo-form-group {
