@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             TeacherSeeder::class,
             PostSeeder::class,
             BiolinkSeeder::class,
+            PartnershipSeeder::class,
         ]);
     }
 }
