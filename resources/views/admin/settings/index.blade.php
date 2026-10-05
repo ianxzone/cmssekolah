@@ -970,6 +970,59 @@
                             @endforeach
                         </div>
                     </div>
+
+                    <!-- PARTNERSHIP SETTINGS -->
+                    <div class="setting-section" x-data="dynamicList({{ json_encode(\App\Models\Setting::getPartners()) }})">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-color);">
+                            <i data-feather="link" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i>
+                            Kemitraan & Mitra Resmi (Partnership)
+                        </h3>
+                        <span class="form-text" style="margin-bottom: 1.5rem;">
+                            Kelola logo mitra, nama lembaga, dan tautan kerjasama yang tampil pada seksi Partnership di beranda.
+                        </span>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">Judul Seksi Partnership</label>
+                                <input type="text" name="partnership_title" class="form-control" value="{{ $settings['partnership_title'] ?? 'PARTNERSHIP' }}" placeholder="PARTNERSHIP">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">Sub-Judul / Label Atas</label>
+                                <input type="text" name="partnership_subtitle" class="form-control" value="{{ $settings['partnership_subtitle'] ?? 'Jaringan Kemitraan Strategis' }}" placeholder="Jaringan Kemitraan Strategis">
+                            </div>
+                        </div>
+
+                        <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-color);">Daftar Mitra / Logo Partner</h4>
+                        <span class="form-text" style="margin-bottom: 1rem;">Logo dapat berupa path lokal (contoh: <code>images/partners/gse.png</code>) atau link gambar URL lengkap.</span>
+
+                        <template x-for="(item, index) in items" :key="index">
+                            <div class="dynamic-row" style="background: var(--bg-body, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                                <div class="dynamic-row-content" style="display: grid; grid-template-columns: 2fr 3fr 3fr 1fr; gap: 12px; align-items: flex-end;">
+                                    <div>
+                                        <label style="font-size: 0.78rem; color: #475569; font-weight: 600; display: block; margin-bottom: 4px;">Nama Mitra</label>
+                                        <input type="text" x-model="item.name" :name="`partners_list[${index}][name]`" class="form-control" placeholder="Nama (ex: GSE, Pearson)">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.78rem; color: #475569; font-weight: 600; display: block; margin-bottom: 4px;">Path / URL Logo</label>
+                                        <input type="text" x-model="item.logo" :name="`partners_list[${index}][logo]`" class="form-control" placeholder="images/partners/... atau https://...">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.78rem; color: #475569; font-weight: 600; display: block; margin-bottom: 4px;">Tautan Tujuan (URL)</label>
+                                        <input type="text" x-model="item.url" :name="`partners_list[${index}][url]`" class="form-control" placeholder="/pearson-icp atau https://...">
+                                    </div>
+                                    <div>
+                                        <button type="button" @click="removeItem(index)" class="btn btn-danger" title="Hapus Mitra" style="padding: 0.65rem 0.85rem; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                                            <i data-feather="trash-2" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <button type="button" @click="addItem({name: '', logo: '', url: '', desc: ''})" class="btn" style="background: var(--bg-body, #f8fafc); border: 1px dashed var(--border-color, #cbd5e1); width: 100%; padding: 12px; font-weight: 600; color: var(--primary-color);">
+                            <i data-feather="plus" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;"></i> Tambah Mitra / Logo Baru
+                        </button>
+                    </div>
                 </div>
 
                 <!-- TAB 8: FASILITAS & EKSKUL -->

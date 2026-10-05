@@ -507,5 +507,80 @@ class Setting extends Model
 
         return array_slice($all, 0, 12);
     }
+
+    /**
+     * Get configured partner list or fallback to the 6 official Al Irsyad partners
+     */
+    public static function getPartners(): array
+    {
+        $raw = self::get('partners_list');
+        if (!empty($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded) && !empty($decoded)) {
+                return $decoded;
+            }
+        }
+
+        // Default 6 partners as in lama.alirsyad.sch.id
+        return [
+            [
+                'name' => 'GSE',
+                'logo' => 'images/partners/gse.png',
+                'url'  => 'https://lama.alirsyad.sch.id/partnership/global-school-of-english-gse',
+                'desc' => 'Global Scale of English'
+            ],
+            [
+                'name' => 'PEARSON EDEXCEL',
+                'logo' => 'images/partners/pearson.png',
+                'url'  => '/pearson-icp',
+                'desc' => 'Kurikulum Internasional Pearson Edexcel'
+            ],
+            [
+                'name' => 'MUSTAQILI',
+                'logo' => 'images/partners/mustaqili.png',
+                'url'  => 'https://lama.alirsyad.sch.id/mustaqili',
+                'desc' => 'Metode Belajar Bahasa Arab Mustaqili'
+            ],
+            [
+                'name' => 'KOMITE',
+                'logo' => 'images/partners/komite.png',
+                'url'  => 'https://lama.alirsyad.sch.id/komite',
+                'desc' => 'Komite Sekolah Al Irsyad'
+            ],
+            [
+                'name' => 'CODE ORG',
+                'logo' => 'images/partners/codeorg.jpg',
+                'url'  => 'https://lama.alirsyad.sch.id/code-org',
+                'desc' => 'Kurikulum Ilmu Komputer & Pemrograman'
+            ],
+            [
+                'name' => 'PERPUNAS',
+                'logo' => 'images/partners/perpusnas.png',
+                'url'  => 'https://lama.alirsyad.sch.id/partnership/perpunas',
+                'desc' => 'Perpustakaan Nasional RI'
+            ],
+        ];
+    }
+
+    /**
+     * Resolve partner logo to a valid web URL
+     */
+    public static function resolvePartnerLogo(?string $logo): string
+    {
+        $logo = trim($logo ?? '');
+        if (empty($logo)) {
+            return asset('images/logo-al-irsyad.png');
+        }
+        if (\Illuminate\Support\Str::startsWith($logo, ['http://', 'https://', '//'])) {
+            return $logo;
+        }
+        if (file_exists(public_path($logo))) {
+            return asset($logo);
+        }
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($logo)) {
+            return \Illuminate\Support\Facades\Storage::url($logo);
+        }
+        return asset($logo);
+    }
 }
 

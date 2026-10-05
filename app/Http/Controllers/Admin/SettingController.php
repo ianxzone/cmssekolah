@@ -95,6 +95,7 @@ class SettingController extends Controller
             'home_show_units',
             'home_show_curriculum',
             'home_show_pearson',
+            'home_show_partnership',
             'matomo_disable_cookies',
             // SEO Booleans
             'seo_nofollow_external_links',
@@ -120,6 +121,7 @@ class SettingController extends Controller
             'extracurriculars_list',
             'units_data',
             'curriculum_pillars',
+            'partners_list',
             'seo_robots_global' // Rank Math Robots Array
         ];
 

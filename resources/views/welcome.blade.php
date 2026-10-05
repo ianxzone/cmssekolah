@@ -1567,63 +1567,44 @@
 
     <!-- 4.1 PARTNERSHIP SECTION -->
     @if(($settings['home_show_partnership'] ?? '1') == '1')
+    @php
+        $partners = \App\Models\Setting::getPartners();
+        $partnerTitle = $settings['partnership_title'] ?? 'PARTNERSHIP';
+        $partnerSubtitle = $settings['partnership_subtitle'] ?? 'Jaringan Kemitraan Strategis';
+    @endphp
+    @if(!empty($partners))
     <section class="partnership-section" id="partnership">
         <div class="container">
             <div class="partnership-title-wrap">
-                <h3 class="partnership-title">PARTNERSHIP</h3>
+                @if(!empty($partnerSubtitle))
+                    <span class="partnership-subtitle">{{ $partnerSubtitle }}</span>
+                @endif
+                <h3 class="partnership-title">{{ $partnerTitle }}</h3>
             </div>
             
             <div class="partnership-grid">
-                <!-- 1. GSE -->
-                <a href="https://lama.alirsyad.sch.id/partnership/global-school-of-english-gse" target="_blank" rel="noopener noreferrer" class="partner-item" title="Global Scale of English (GSE)">
-                    <div class="partner-logo-wrap">
-                        <img src="{{ asset('images/partners/gse.png') }}" alt="GSE" loading="lazy">
-                    </div>
-                    <span class="partner-name">GSE</span>
-                </a>
-
-                <!-- 2. PEARSON EDEXCEL -->
-                <a href="{{ route('pearson.index') }}" class="partner-item" title="Pearson Edexcel International Curriculum">
-                    <div class="partner-logo-wrap">
-                        <img src="{{ asset('images/partners/pearson.png') }}" alt="PEARSON EDEXCEL" loading="lazy">
-                    </div>
-                    <span class="partner-name">PEARSON EDEXCEL</span>
-                </a>
-
-                <!-- 3. MUSTAQILI -->
-                <a href="https://lama.alirsyad.sch.id/mustaqili" target="_blank" rel="noopener noreferrer" class="partner-item" title="Metode Mustaqili Bahasa Arab">
-                    <div class="partner-logo-wrap">
-                        <img src="{{ asset('images/partners/mustaqili.png') }}" alt="MUSTAQILI" loading="lazy">
-                    </div>
-                    <span class="partner-name">MUSTAQILI</span>
-                </a>
-
-                <!-- 4. KOMITE -->
-                <a href="https://lama.alirsyad.sch.id/komite" target="_blank" rel="noopener noreferrer" class="partner-item" title="Komite Sekolah Al Irsyad">
-                    <div class="partner-logo-wrap">
-                        <img src="{{ asset('images/partners/komite.png') }}" alt="KOMITE" loading="lazy">
-                    </div>
-                    <span class="partner-name">KOMITE</span>
-                </a>
-
-                <!-- 5. CODE ORG -->
-                <a href="https://lama.alirsyad.sch.id/code-org" target="_blank" rel="noopener noreferrer" class="partner-item" title="Code.org Computer Science">
-                    <div class="partner-logo-wrap">
-                        <img src="{{ asset('images/partners/codeorg.jpg') }}" alt="CODE ORG" loading="lazy">
-                    </div>
-                    <span class="partner-name">CODE ORG</span>
-                </a>
-
-                <!-- 6. PERPUNAS -->
-                <a href="https://lama.alirsyad.sch.id/partnership/perpunas" target="_blank" rel="noopener noreferrer" class="partner-item" title="Perpustakaan Nasional RI">
-                    <div class="partner-logo-wrap">
-                        <img src="{{ asset('images/partners/perpusnas.png') }}" alt="PERPUNAS" loading="lazy">
-                    </div>
-                    <span class="partner-name">PERPUNAS</span>
-                </a>
+                @foreach($partners as $partner)
+                    @php
+                        $pName = $partner['name'] ?? '';
+                        $pLogo = \App\Models\Setting::resolvePartnerLogo($partner['logo'] ?? '');
+                        $pUrl = !empty($partner['url']) ? $partner['url'] : '#';
+                        $pDesc = $partner['desc'] ?? $pName;
+                        $isExternal = \Illuminate\Support\Str::startsWith($pUrl, ['http://', 'https://']);
+                    @endphp
+                    <a href="{{ $pUrl }}" 
+                       @if($isExternal) target="_blank" rel="noopener noreferrer" @endif
+                       class="partner-item" 
+                       title="{{ $pDesc }}">
+                        <div class="partner-logo-wrap">
+                            <img src="{{ $pLogo }}" alt="{{ $pName }}" loading="lazy">
+                        </div>
+                        <span class="partner-name">{{ $pName }}</span>
+                    </a>
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
     @endif
 
     <!-- 5. STATS -->
