@@ -18,13 +18,13 @@
 
     @include('partials.analytics')
 
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
         html { scroll-behavior: smooth; scroll-padding-top: 90px; }
         :root { --primary: #065f46; --primary-dark: #064e3b; --primary-light: #10b981; --secondary: #fbbf24; --text-main: #1f2937; --text-muted: #6b7280; --bg-light: #f9fafb; --white: #ffffff; --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1); --radius-md: 12px; --radius-lg: 24px; --container-max: 1200px; --transition: all 0.3s ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Outfit', sans-serif; color: var(--text-main); background-color: var(--white); line-height: 1.6; overflow-x: hidden; }
+        body { font-family: 'Roboto', sans-serif; color: var(--text-main); background-color: var(--white); line-height: 1.6; overflow-x: hidden; }
         a { text-decoration: none; color: inherit; transition: var(--transition); }
         ul { list-style: none; }
         img { max-width: 100%; height: auto; display: block; }
@@ -670,7 +670,7 @@
             font-weight: 800;
             color: #fbbf24;
             letter-spacing: 1px;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         .teacher-fallback-pattern {
             color: rgba(255, 255, 255, 0.7);
