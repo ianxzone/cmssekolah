@@ -1388,7 +1388,7 @@
                                 <span>Akreditasi A (Unggul)</span>
                             </div>
                             <div class="hero-visual-img-wrapper">
-                                <img src="{{ asset('images/hero-students.png') }}" alt="Santri & Siswa LPP Al Irsyad Karawang" onerror="this.src='https://images.unsplash.com/photo-1719804320342-b7ebb6bc0ecb?q=80&w=800&auto=format&fit=crop'">
+                                <img src="{{ !empty($settings['hero_side_image']) ? $settings['hero_side_image'] : asset('images/hero-students.png') }}" alt="Santri & Siswa LPP Al Irsyad Karawang" onerror="this.src='https://images.unsplash.com/photo-1719804320342-b7ebb6bc0ecb?q=80&w=800&auto=format&fit=crop'">
                             </div>
                             <div class="hero-float-badge bottom-left">
                                 <i data-feather="check-circle"></i>
