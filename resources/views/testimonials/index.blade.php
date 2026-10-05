@@ -274,46 +274,7 @@
 </head>
 <body>
 
-    <!-- Topbar -->
-    <div class="topbar">
-        <div class="container">
-            <div class="topbar-info">
-                <div><i data-feather="phone" style="width: 14px;"></i> {{ $settings['contact_phone'] ?? '(0267) 1234-567' }}</div>
-                <div><i data-feather="mail" style="width: 14px;"></i> {{ $settings['contact_email'] ?? 'info@alirsyadkarawang.sch.id' }}</div>
-            </div>
-            <div>Jam Operasional: {{ $settings['contact_hours'] ?? 'Senin - Jumat (07:00 - 15:30)' }}</div>
-        </div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="navbar" id="mainNavbar">
-        <div class="container">
-            <a href="/" class="logo">
-                @if(\App\Models\Setting::logoUrl())
-                    <img src="{{ \App\Models\Setting::logoUrl() }}" alt="{{ \App\Models\Setting::siteName() }}" style="height: 48px; width: auto; object-fit: contain;">
-                @else
-                    <div class="logo-emblem">
-                        <span>{{ \App\Models\Setting::siteIconText() }}</span>
-                    </div>
-                @endif
-                <div class="logo-text">
-                    <h1>{{ \App\Models\Setting::siteName() }}</h1>
-                    <p>{{ \App\Models\Setting::siteTagline() }}</p>
-                </div>
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="/" class="nav-link">Beranda</a></li>
-                <li><a href="/#unit-pendidikan" class="nav-link">Unit Pendidikan</a></li>
-                <li><a href="/#kurikulum-khas" class="nav-link">Kurikulum Khas</a></li>
-                <li><a href="{{ route('posts.index') }}" class="nav-link">Berita</a></li>
-                <li><a href="{{ route('testimonials.index') }}" class="nav-link active" style="color: var(--primary);">Testimoni</a></li>
-                <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="nav-spmb">SPMB Online</a></li>
-            </ul>
-            <div class="mobile-toggle" onclick="toggleMenu()">
-                <i data-feather="menu"></i>
-            </div>
-        </div>
-    </nav>
+    @include('frontend.layouts.navbar')
 
     <!-- Page Hero -->
     <section class="page-hero">

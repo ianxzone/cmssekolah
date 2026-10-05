@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
+        html { scroll-behavior: smooth; scroll-padding-top: 90px; }
         :root { --primary: #065f46; --primary-dark: #064e3b; --primary-light: #10b981; --secondary: #fbbf24; --text-main: #1f2937; --text-muted: #6b7280; --bg-light: #f9fafb; --white: #ffffff; --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1); --radius-md: 12px; --radius-lg: 24px; --container-max: 1200px; --transition: all 0.3s ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Outfit', sans-serif; color: var(--text-main); background-color: var(--white); line-height: 1.6; overflow-x: hidden; }
@@ -1009,6 +1010,16 @@
             border-color: var(--secondary);
             box-shadow: 0 12px 24px rgba(0,0,0,0.07);
         }
+        .ekskul-card-mini.is-highlighted {
+            border: 2px solid var(--secondary);
+            background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+        }
+        .ekskul-card-mini.is-highlighted .ekskul-cat-tag {
+            background: #fef3c7;
+            color: #b45309;
+            font-weight: 700;
+        }
         .ekskul-icon-wrapper {
             width: 52px;
             height: 52px;
@@ -1176,69 +1187,14 @@
     </style>
 </head>
 <body>
+    @php
+        $siteLogo = \App\Models\Setting::logoUrl();
+        $siteName = \App\Models\Setting::siteName();
+        $siteTagline = \App\Models\Setting::siteTagline();
+        $siteIconText = \App\Models\Setting::siteIconText();
+    @endphp
 
-    <!-- 1. TOPBAR -->
-    <div class="topbar">
-        <div class="container">
-            <div class="topbar-info">
-                <div><i data-feather="phone" style="width: 14px;"></i> {{ $settings['contact_phone'] ?? '(0267) 1234-567' }}</div>
-                <div><i data-feather="mail" style="width: 14px;"></i> {{ $settings['contact_email'] ?? 'info@alirsyadkarawang.sch.id' }}</div>
-            </div>
-            <div>Jam Operasional: {{ $settings['contact_hours'] ?? 'Senin - Jumat (07:00 - 15:30)' }}</div>
-        </div>
-    </div>
-
-    <!-- 2. NAVBAR -->
-    <nav class="navbar" id="mainNavbar">
-        <div class="container">
-            @php
-                $siteLogo = \App\Models\Setting::logoUrl();
-                $siteName = \App\Models\Setting::siteName();
-                $siteTagline = \App\Models\Setting::siteTagline();
-                $siteIconText = \App\Models\Setting::siteIconText();
-            @endphp
-            <a href="/" class="logo">
-                @if(!empty($siteLogo))
-                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" style="max-height: 48px; width: auto; object-fit: contain;">
-                @else
-                    <div class="logo-emblem">
-                        <span>{{ $siteIconText }}</span>
-                    </div>
-                @endif
-                <div class="logo-text">
-                    <h1>{{ $siteName }}</h1>
-                    <p>{{ $siteTagline }}</p>
-                </div>
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                @php
-                    $navLinks = json_decode($settings['navbar_links'] ?? '[]', true);
-                    if (empty($navLinks)) {
-                        $navLinks = [
-                            ['label' => 'Beranda', 'url' => '/'],
-                            ['label' => 'Unit Pendidikan', 'url' => '#unit-pendidikan'],
-                            ['label' => 'Kurikulum Khas', 'url' => '#kurikulum-khas'],
-                            ['label' => 'Fasilitas', 'url' => '#programs'],
-                            ['label' => 'Berita', 'url' => route('posts.index')]
-                        ];
-                    }
-                    // Filter out any lingering 'Ketua LPP' items
-                    $navLinks = array_filter($navLinks, function($l) {
-                        $lbl = strtolower($l['label'] ?? '');
-                        return !str_contains($lbl, 'ketua') && ($l['url'] ?? '') !== '#welcome';
-                    });
-                @endphp
-                @foreach($navLinks as $link)
-                    <li><a href="{{ $link['url'] }}" class="nav-link">{{ $link['label'] }}</a></li>
-                @endforeach
-                <li><a href="{{ route('alumni.index') }}" class="nav-link">Alumni</a></li>
-                <li><a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="nav-spmb">SPMB Online</a></li>
-            </ul>
-            <div class="mobile-toggle" onclick="toggleMenu()">
-                <i data-feather="menu"></i>
-            </div>
-        </div>
-    </nav>
+    @include('frontend.layouts.navbar')
 
     <!-- 3. HERO SECTION -->
     @php
@@ -2074,6 +2030,7 @@
 
     <!-- 14. FACILITIES & EKSTRAKURIKULER SHOWCASE -->
     @if(($settings['home_show_facilities'] ?? '1') == '1')
+    <span id="fasilitas" style="display:block; position:relative; top:-90px; visibility:hidden;"></span>
     <section class="facilities" id="programs">
         <div class="container">
             <!-- Part A: Fasilitas Sekolah -->
@@ -2187,32 +2144,20 @@
                 </div>
 
                 @php
-                    $homeEkskuls = [
-                        ['name' => 'Tahfidz Bersanad', 'cat' => 'Qur\'ani', 'icon' => 'book-open'],
-                        ['name' => 'Robotik & IoT', 'cat' => 'Sains & IT', 'icon' => 'cpu'],
-                        ['name' => 'Coding & Game', 'cat' => 'Sains & IT', 'icon' => 'code'],
-                        ['name' => 'Panahan Sunnah', 'cat' => 'Olahraga', 'icon' => 'target'],
-                        ['name' => 'Tapak Suci Silat', 'cat' => 'Beladiri', 'icon' => 'shield'],
-                        ['name' => 'Renang Water Pool', 'cat' => 'Olahraga', 'icon' => 'droplet'],
-                        ['name' => 'Taekwondo', 'cat' => 'Beladiri', 'icon' => 'zap'],
-                        ['name' => 'Futsal & Soccer', 'cat' => 'Olahraga', 'icon' => 'circle'],
-                        ['name' => 'Pramuka SIT', 'cat' => 'Kepanduan', 'icon' => 'compass'],
-                        ['name' => 'English Club', 'cat' => 'Bahasa', 'icon' => 'globe'],
-                        ['name' => 'Nadi Al-Lughah', 'cat' => 'Bahasa Arab', 'icon' => 'message-square'],
-                        ['name' => 'Desain & Media', 'cat' => 'Kreatif', 'icon' => 'image']
-                    ];
+                    $homeEkskuls = \App\Models\Setting::getHomeExtracurriculars();
+                    $totalCatalogEkskuls = count(\App\Models\Setting::getExtracurriculars());
                 @endphp
 
                 <div class="ekskul-slider-container">
                     <div class="ekskul-slider-track" id="ekskulSliderTrack">
                         @foreach($homeEkskuls as $item)
                         <div class="ekskul-slider-item">
-                            <a href="{{ route('ekskul.index') }}" class="ekskul-card-mini">
+                            <a href="{{ route('ekskul.index') }}" class="ekskul-card-mini {{ !empty($item['highlight']) && $item['highlight'] == '1' ? 'is-highlighted' : '' }}">
                                 <div class="ekskul-icon-wrapper">
-                                    <i data-feather="{{ $item['icon'] }}"></i>
+                                    <i data-feather="{{ $item['icon'] ?? 'award' }}"></i>
                                 </div>
-                                <h4>{{ $item['name'] }}</h4>
-                                <span class="ekskul-cat-tag">{{ $item['cat'] }}</span>
+                                <h4>{{ $item['name'] ?? $item['title'] }}</h4>
+                                <span class="ekskul-cat-tag">{{ $item['cat'] ?? ($item['cat_label'] ?? 'Ekstrakurikuler') }}</span>
                             </a>
                         </div>
                         @endforeach
@@ -2221,7 +2166,7 @@
 
                 <div style="text-align: center; margin-top: 25px;">
                     <a href="{{ route('ekskul.index') }}" class="btn btn-primary" style="font-weight: 700;">
-                        Lihat Seluruh Katalog 18+ Ekstrakurikuler & Prestasi <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+                        Lihat Seluruh Katalog {{ $totalCatalogEkskuls }}+ Ekstrakurikuler & Prestasi <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
                     </a>
                 </div>
             </div>

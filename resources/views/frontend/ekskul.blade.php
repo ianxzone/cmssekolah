@@ -353,10 +353,14 @@
 </section>
 
 <div class="ekskul-container">
+    @php
+        $ekskuls = \App\Models\Setting::getExtracurriculars();
+    @endphp
+
     <!-- Category Filter Tabs -->
     <div class="filter-tabs-wrapper">
         <button class="filter-tab-btn active" data-filter="all">
-            <i data-feather="grid" style="width: 16px; height: 16px;"></i> Semua Ekskul (18)
+            <i data-feather="grid" style="width: 16px; height: 16px;"></i> Semua Ekskul ({{ count($ekskuls) }})
         </button>
         <button class="filter-tab-btn" data-filter="quran">
             <i data-feather="book-open" style="width: 16px; height: 16px;"></i> Qur'ani & Keislaman
@@ -372,234 +376,6 @@
         </button>
     </div>
 
-    @php
-        $ekskuls = [
-            // Qur'ani & Keislaman
-            [
-                'title' => 'Tahfidz & Tahsin Bersanad',
-                'category' => 'quran',
-                'cat_label' => 'Qur\'ani & Keagamaan',
-                'icon' => 'book',
-                'image' => 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Bimbingan intensif hafalan Al-Qur\'an dengan metode talaqqi dan sanad tajwid oleh Asatidz bersanad, tasmi\' akbar rutin, serta mutaba\'ah harian.',
-                'schedule' => 'Senin – Kamis Ba\'da Ashar',
-                'coach' => 'Ustadz Bersanad Qira\'ah ' . 'Al-Qur\'an',
-                'achievement' => 'Juara 1 MHQ Tingkat Kabupaten & Provinsi'
-            ],
-            [
-                'title' => 'Khitobah Tiga Bahasa',
-                'category' => 'quran',
-                'cat_label' => 'Qur\'ani & Keagamaan',
-                'icon' => 'mic',
-                'image' => 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Latihan retorika dakwah dan public speaking dalam tiga bahasa (Arab, Inggris, dan Indonesia) untuk mencetak calon da\'i dan pemimpin muda muslim.',
-                'schedule' => 'Jumat Sore & Sabtu Pagi',
-                'coach' => 'Tim Pembina Dakwah Santri LPP',
-                'achievement' => 'Juara Pidato Bahasa Arab se-Jawa Barat'
-            ],
-            [
-                'title' => 'Kajian Adab & Siroh Nabawiyah',
-                'category' => 'quran',
-                'cat_label' => 'Qur\'ani & Keagamaan',
-                'icon' => 'heart',
-                'image' => 'https://images.unsplash.com/photo-1584697964190-7bb9b1f23788?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['TK', 'SDIT', 'SMPIT'],
-                'desc' => 'Penanaman keteladanan akhlak Rasulullah SAW dan para sahabat, fikih ibadah praktis, serta pembiasaan adab harian islami.',
-                'schedule' => 'Sabtu Pagi (Dwi-Mingguan)',
-                'coach' => 'Tim Asatidz Pendidikan Karakter',
-                'achievement' => 'Pembentukan Karakter Teladan & Mandiri'
-            ],
-
-            // Sains & Teknologi
-            [
-                'title' => 'Robotik & IoT Innovation',
-                'category' => 'stem',
-                'cat_label' => 'Sains & Teknologi',
-                'icon' => 'cpu',
-                'image' => 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Eksplorasi perakitan mikrokontroler, pemrograman sensor arduino, robot line follower, hingga automasi cerdas berbasis Internet of Things.',
-                'schedule' => 'Sabtu 08.00 – 10.30 WIB',
-                'coach' => 'Instruktur Profesional Robotika',
-                'achievement' => 'Gold Medal Lomba Robotik Tingkat Nasional'
-            ],
-            [
-                'title' => 'Coding & Game Development',
-                'category' => 'stem',
-                'cat_label' => 'Sains & Teknologi',
-                'icon' => 'code',
-                'image' => 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Pengenalan computational thinking, logika pemrograman Scratch untuk usia dini, serta Python & Web Development untuk jenjang lanjutan.',
-                'schedule' => 'Sabtu 10.30 – 12.00 WIB',
-                'coach' => 'Praktisi IT & Software Engineer',
-                'achievement' => 'Finalis Edu-Game Creator Cup'
-            ],
-            [
-                'title' => 'Kelompok Ilmiah Remaja (KIR)',
-                'category' => 'stem',
-                'cat_label' => 'Sains & Teknologi',
-                'icon' => 'activity',
-                'image' => 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SMPIT', 'SMAIT'],
-                'desc' => 'Praktikum riset ilmiah di laboratorium modern, penelitian lingkungan hidup sekitar Karawang, dan penulisan karya tulis ilmiah terstruktur.',
-                'schedule' => 'Rabu Ba\'da Ashar',
-                'coach' => 'Guru Sains & Praktisi Riset',
-                'achievement' => 'Juara Olimpiade Penelitian Siswa Daerah'
-            ],
-            [
-                'title' => 'Desain Grafis & Multimedia',
-                'category' => 'stem',
-                'cat_label' => 'Sains & Teknologi',
-                'icon' => 'image',
-                'image' => 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SMPIT', 'SMAIT'],
-                'desc' => 'Pembelajaran dasar tipografi, Canva, Adobe Illustrator, editing video kreatif, hingga pembuatan infografis edukasi dakwah santri.',
-                'schedule' => 'Kamis Ba\'da Ashar',
-                'coach' => 'Creative Designer & Video Editor',
-                'achievement' => 'Kreator Konten Dakwah Digital Santri'
-            ],
-
-            // Olahraga & Beladiri
-            [
-                'title' => 'Panahan Sunnah (Archery)',
-                'category' => 'sport',
-                'cat_label' => 'Olahraga & Beladiri',
-                'icon' => 'target',
-                'image' => 'https://images.unsplash.com/photo-1511067007772-9da29974ce44?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Menghidupkan olahraga sunnah dengan melatih fokus mental, kestabilan pernapasan, postur tubuh, serta teknik bidik standar nasional (Perpani).',
-                'schedule' => 'Sabtu Pagi 07.30 WIB',
-                'coach' => 'Pelatih Berlisensi PERPANI',
-                'achievement' => 'Medali Emas Kejurkab Panahan Pelajar'
-            ],
-            [
-                'title' => 'Tapak Suci Putera Muhammadiyah',
-                'category' => 'sport',
-                'cat_label' => 'Olahraga & Beladiri',
-                'icon' => 'shield',
-                'image' => 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Seni beladiri pencak silat berakidah tauhid, mengasah ketahanan fisik, jurus tanding, dan pertahanan diri santri berjiwa kesatria.',
-                'schedule' => 'Selasa & Jumat Sore',
-                'coach' => 'Pendekar & Wasit Juri Berlisensi',
-                'achievement' => 'Juara Umum Pencak Silat Antar-Pelajar'
-            ],
-            [
-                'title' => 'Taekwondo Teladan',
-                'category' => 'sport',
-                'cat_label' => 'Olahraga & Beladiri',
-                'icon' => 'zap',
-                'image' => 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Olahraga beladiri asal Korea yang melatih kekuatan tendangan, kecepatan reaksi fisik, dan kedisiplinan jenjang sabuk hingga kyorugi tanding.',
-                'schedule' => 'Kamis Sore & Minggu Pagi',
-                'coach' => 'Sabeum Nim Taekwondo Indonesia',
-                'achievement' => 'Medali Perak Kejuaraan Terbuka Jawa Barat'
-            ],
-            [
-                'title' => 'Futsal & Mini Soccer Club',
-                'category' => 'sport',
-                'cat_label' => 'Olahraga & Beladiri',
-                'icon' => 'circle',
-                'image' => 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Pembinaan taktik dasar, kerjasama regu, stamina, dan sportivitas santri di lapangan representatif LPP Al Irsyad Karawang.',
-                'schedule' => 'Senin & Kamis Sore',
-                'coach' => 'Pelatih Futsal Berlisensi AFC/FFI',
-                'achievement' => 'Juara 1 Turnamen Futsal Antar-Sekolah Islam'
-            ],
-            [
-                'title' => 'Basket Ball Club',
-                'category' => 'sport',
-                'cat_label' => 'Olahraga & Beladiri',
-                'icon' => 'disc',
-                'image' => 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SMPIT', 'SMAIT'],
-                'desc' => 'Latihan teknik dribble, passing, lay-up, dan strategi defense di Sporthall tertutup dengan ring dan lapangan standar kejuaraan.',
-                'schedule' => 'Rabu Sore & Sabtu Pagi',
-                'coach' => 'Pelatih Perbasi Karawang',
-                'achievement' => 'Semifinalis Kejuaraan Basket Pelajar'
-            ],
-            [
-                'title' => 'Renang (Irsyadin Water Pool)',
-                'category' => 'sport',
-                'cat_label' => 'Olahraga & Beladiri',
-                'icon' => 'droplet',
-                'image' => 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['TK', 'SDIT', 'SMPIT'],
-                'desc' => 'Olahraga sunnah renang di kolam renang privat Irsyadin Water Pool dengan pelatih profesional, jadwal ikhwan dan akhwat terpisah.',
-                'schedule' => 'Sesi Khusus Terjadwal per Kelas',
-                'coach' => 'Instruktur Renang Bersertifikat',
-                'achievement' => 'Kemampuan Akuatik & Ketahanan Fisik Prima'
-            ],
-
-            // Bahasa, Seni & Kepemimpinan
-            [
-                'title' => 'Pramuka SIT (Sekolah Islam Terpadu)',
-                'category' => 'leadership',
-                'cat_label' => 'Bahasa & Kepemimpinan',
-                'icon' => 'compass',
-                'image' => 'https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Gerakan kepanduan khas SIT yang menggembleng kemandirian, kecakapan survival alam terbuka, tali-temali, dan kepedulian sosial kemanusiaan.',
-                'schedule' => 'Jumat Siang (Wajib/Inti)',
-                'coach' => 'Pembina Pramuka Kwarda Jabar',
-                'achievement' => 'Kontingen Terbaik Jambore Daerah SIT'
-            ],
-            [
-                'title' => 'English Conversation Club',
-                'category' => 'leadership',
-                'cat_label' => 'Bahasa & Kepemimpinan',
-                'icon' => 'globe',
-                'image' => 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Pengasahan kelancaran bercakap bahasa Inggris melalui debat, drama edukasi, storytelling, dan persiapan sertifikasi Pearson Edexcel UK.',
-                'schedule' => 'Kamis Ba\'da Ashar',
-                'coach' => 'Native & Pearson Certified Teacher',
-                'achievement' => 'Top 3 English Storytelling se-Karawang'
-            ],
-            [
-                'title' => 'Nadi Al-Lughah (Arabic Club)',
-                'category' => 'leadership',
-                'cat_label' => 'Bahasa & Kepemimpinan',
-                'icon' => 'message-square',
-                'image' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SDIT', 'SMPIT', 'SMAIT'],
-                'desc' => 'Pembiasaan muhadatsah harian bahasa Arab fusha, pengenalan qawa\'id terapan, hafalan mufrodat tematik, dan lagu anak islami.',
-                'schedule' => 'Selasa Ba\'da Ashar',
-                'coach' => 'Alumni LIPIA & Timur Tengah',
-                'achievement' => 'Apresiasi Lomba Muhadatsah Karawang'
-            ],
-            [
-                'title' => 'Jurnalistik & Podcast Santri',
-                'category' => 'leadership',
-                'cat_label' => 'Bahasa & Kepemimpinan',
-                'icon' => 'radio',
-                'image' => 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['SMPIT', 'SMAIT'],
-                'desc' => 'Pelatihan liputan berita sekolah, teknik wawancara narasumber, penulisan artikel buletin, serta produksi siaran podcast edukatif santri.',
-                'schedule' => 'Sabtu 13.00 – 15.00 WIB',
-                'coach' => 'Jurnalis & Produser Konten Media',
-                'achievement' => 'Penerbitan Majalah Dinding & Podcast Santri'
-            ],
-            [
-                'title' => 'Montessori Practical Life & Cooking',
-                'category' => 'leadership',
-                'cat_label' => 'Bahasa & Kepemimpinan',
-                'icon' => 'smile',
-                'image' => 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600',
-                'levels' => ['Daycare', 'TK Islam'],
-                'desc' => 'Aktivitas motorik mandiri anak usia dini: menyajikan makanan sehat, merapikan perlengkapan sendiri, dan mengenal ragam tekstur bahan dapur halal.',
-                'schedule' => 'Jumat Pagi Terjadwal',
-                'coach' => 'Guru Montessori Bersertifikat',
-                'achievement' => 'Kemandirian & Disiplin Diri Sejak Dini'
-            ]
-        ];
-    @endphp
-
     <!-- Ekskul Catalog Grid -->
     <div class="ekskul-catalog-grid" id="ekskulCatalog">
         @foreach($ekskuls as $item)
@@ -607,6 +383,11 @@
             <div class="ekskul-media-header">
                 <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy">
                 <span class="ekskul-cat-badge">{{ $item['cat_label'] }}</span>
+                @if(!empty($item['highlight']) && $item['highlight'] == '1')
+                <span class="ekskul-highlight-badge" style="position: absolute; bottom: 12px; left: 16px; background: rgba(251, 191, 36, 0.95); color: #78350f; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 30px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 2;">
+                    <i data-feather="star" style="width: 12px; height: 12px;"></i> Unggulan
+                </span>
+                @endif
                 <div class="ekskul-icon-floating">
                     <i data-feather="{{ $item['icon'] }}"></i>
                 </div>
