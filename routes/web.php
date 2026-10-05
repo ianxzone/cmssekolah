@@ -199,6 +199,7 @@ Route::get('/fasilitas', [FrontendController::class, 'fasilitas'])->name('fasili
 Route::get('/ekstrakurikuler', [FrontendController::class, 'ekskul'])->name('ekskul.index');
 Route::get('/pearson-icp', [FrontendController::class, 'pearson'])->name('pearson.index');
 Route::get('/category/{slug}', [FrontendController::class, 'showCategory'])->name('categories.show');
+Route::get('/tag/{slug}', [FrontendController::class, 'showTag'])->name('tags.show');
 
 // Dynamic Forms
 Route::get('/form/{slug}', [FrontendController::class, 'showForm'])->name('forms.show.frontend');

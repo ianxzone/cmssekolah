@@ -510,6 +510,8 @@
         }, 4000);
     </script>
     @stack('scripts')
+    
+    @include('partials.footer-analytics')
 </body>
 
 </html>

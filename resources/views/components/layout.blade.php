@@ -462,6 +462,7 @@
 
     @include('frontend.layouts.footer')
 
+    @include('partials.footer-analytics')
 </body>
 
 </html>

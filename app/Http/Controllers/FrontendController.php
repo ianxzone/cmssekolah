@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Models\Form;
 use Illuminate\Http\Request;
 
@@ -240,6 +241,22 @@ class FrontendController extends Controller
             ->paginate(9);
 
         return view('frontend.category', compact('category', 'posts'));
+    }
+
+    /**
+     * Show Posts by Tag
+     */
+    public function showTag($slug)
+    {
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
+        $posts = $tag->posts()
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->latest('published_at')
+            ->paginate(9);
+
+        return view('frontend.tag', compact('tag', 'posts'));
     }
 
     /**

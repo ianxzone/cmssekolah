@@ -54,8 +54,8 @@
                         <div class="flex flex-wrap gap-2 mb-8 pt-6 border-t border-gray-100">
                             <span class="text-sm font-medium text-gray-500 mr-2">Topik:</span>
                             @foreach($post->tags as $tag)
-                                <span
-                                    class="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-lg hover:bg-gray-200 transition cursor-pointer">#{{ $tag->name }}</span>
+                                <a href="{{ route('tags.show', $tag->slug) }}"
+                                    class="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-lg hover:bg-gray-200 transition cursor-pointer">#{{ $tag->name }}</a>
                             @endforeach
                         </div>
                     @endif

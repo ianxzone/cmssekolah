@@ -303,6 +303,13 @@
                             @error('category_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label class="form-label" for="tags">Tags / Topik</label>
+                            <input type="text" id="tags" name="tags" class="form-control" value="{{ old('tags') }}" placeholder="Contoh: pendidikan, sekolah, prestasi">
+                            <small class="text-muted" style="font-size: 0.8rem; display: block; margin-top: 4px;">Pisahkan antar tag dengan tanda koma.</small>
+                            @error('tags') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
                         <!-- Author Selection Field -->
                         @php
                             $currentUser = auth()->user() ?? \App\Models\User::find(1);

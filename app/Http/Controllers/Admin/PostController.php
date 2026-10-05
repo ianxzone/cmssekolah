@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -54,6 +55,7 @@ class PostController extends Controller
             'user_id' => 'nullable|exists:users,id',
             'content' => 'required|string',
             'description' => 'nullable|string',
+            'tags' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'featured_image_path' => 'nullable|string|max:500',
             'seo_title' => 'nullable|string|max:255',
@@ -88,7 +90,22 @@ class PostController extends Controller
         }
         // If scheduled, the published_at from the request is used
 
-        Post::create($validated);
+        $post = Post::create($validated);
+
+        if ($request->filled('tags')) {
+            $tagNames = array_map('trim', explode(',', $request->tags));
+            $tagIds = [];
+            foreach ($tagNames as $tagName) {
+                if (!empty($tagName)) {
+                    $tag = Tag::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName]
+                    );
+                    $tagIds[] = $tag->id;
+                }
+            }
+            $post->tags()->sync($tagIds);
+        }
 
         return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
     }
@@ -110,6 +127,7 @@ class PostController extends Controller
             'user_id' => 'nullable|exists:users,id',
             'content' => 'required|string',
             'description' => 'nullable|string',
+            'tags' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'featured_image_path' => 'nullable|string|max:500',
             'remove_image' => 'nullable|boolean',
@@ -153,6 +171,21 @@ class PostController extends Controller
         }
 
         $post->update($validated);
+
+        if ($request->has('tags')) {
+            $tagNames = array_filter(array_map('trim', explode(',', $request->tags)));
+            $tagIds = [];
+            foreach ($tagNames as $tagName) {
+                if (!empty($tagName)) {
+                    $tag = Tag::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName]
+                    );
+                    $tagIds[] = $tag->id;
+                }
+            }
+            $post->tags()->sync($tagIds);
+        }
 
         return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');
     }

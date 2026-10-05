@@ -219,6 +219,7 @@
 
         <form action="{{ route('forms.submit', $form->slug) }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <x-utm-hidden-fields />
 
             @php
                 $fields = is_string($form->fields) ? json_decode($form->fields, true) : $form->fields;

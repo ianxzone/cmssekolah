@@ -1328,6 +1328,60 @@
                             </label>
                         </div>
                     </div>
+
+                    <!-- NEW: TRACKING PIXELS & ADS -->
+                    <div class="setting-section">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            <i data-feather="target" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Tracking Pixels & Ads (Periklanan)
+                        </h3>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="seo_meta_pixel_id">Meta Pixel ID (Facebook/Instagram)</label>
+                                <input type="text" id="seo_meta_pixel_id" name="seo_meta_pixel_id" class="form-control"
+                                    value="{{ old('seo_meta_pixel_id', $settings['seo_meta_pixel_id'] ?? '') }}" placeholder="Contoh: 123456789012345">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Untuk retargeting & konversi Meta Ads.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="seo_tiktok_pixel_id">TikTok Pixel ID</label>
+                                <input type="text" id="seo_tiktok_pixel_id" name="seo_tiktok_pixel_id" class="form-control"
+                                    value="{{ old('seo_tiktok_pixel_id', $settings['seo_tiktok_pixel_id'] ?? '') }}" placeholder="Contoh: CXXXXXXXXX">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Untuk tracking kampanye TikTok Ads.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="seo_google_ads_id">Google Ads Conversion ID</label>
+                                <input type="text" id="seo_google_ads_id" name="seo_google_ads_id" class="form-control"
+                                    value="{{ old('seo_google_ads_id', $settings['seo_google_ads_id'] ?? '') }}" placeholder="Contoh: AW-123456789">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="seo_gtm_id">Google Tag Manager ID (GTM)</label>
+                                <input type="text" id="seo_gtm_id" name="seo_gtm_id" class="form-control"
+                                    value="{{ old('seo_gtm_id', $settings['seo_gtm_id'] ?? '') }}" placeholder="Contoh: GTM-XXXXXXX">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Opsional. Gunakan jika Anda mengelola tag melalui GTM.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: CUSTOM SCRIPTS -->
+                    <div class="setting-section">
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary-color);">
+                            <i data-feather="code" style="width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;"></i> Custom Scripts (Advanced)
+                        </h3>
+
+                        <div class="form-group">
+                            <label class="form-label" for="seo_custom_head_scripts">Header Scripts (Sebelum &lt;/head&gt;)</label>
+                            <textarea id="seo_custom_head_scripts" name="seo_custom_head_scripts" class="form-control" rows="4" style="font-family: monospace; font-size: 0.85rem;" placeholder="<!-- Paste custom head script here -->">{{ old('seo_custom_head_scripts', $settings['seo_custom_head_scripts'] ?? '') }}</textarea>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Kode akan dirender di semua halaman. Cocok untuk custom tracking script, site verification, dll.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="seo_custom_footer_scripts">Footer Scripts (Sebelum &lt;/body&gt;)</label>
+                            <textarea id="seo_custom_footer_scripts" name="seo_custom_footer_scripts" class="form-control" rows="4" style="font-family: monospace; font-size: 0.85rem;" placeholder="<!-- Paste custom footer script here -->">{{ old('seo_custom_footer_scripts', $settings['seo_custom_footer_scripts'] ?? '') }}</textarea>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">Cocok untuk noscript tag fallback atau script live chat eksternal.</small>
+                        </div>
                 </div>
 
                 <div style="margin-top: 2rem; padding: 1.25rem; border-top: 1px solid var(--border-color); position: sticky; bottom: 0; background: var(--bg-body, #ffffff); border-radius: 0 0 12px 12px; z-index: 50; display: flex; justify-content: flex-end; box-shadow: 0 -10px 30px rgba(0,0,0,0.03);">
