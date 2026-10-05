@@ -398,14 +398,9 @@
                 <div class="bg-white rounded-2xl p-4 shadow-lg overflow-hidden">
                     @foreach($flyerAngkatan as $index => $angkatan)
                         @php
-                            if (!empty($angkatan->flyer_image)) {
-                                $flyerSrc = \Illuminate\Support\Str::startsWith($angkatan->flyer_image, ['http://', 'https://'])
-                                    ? $angkatan->flyer_image
-                                    : \Illuminate\Support\Facades\Storage::url($angkatan->flyer_image);
-                            } elseif ($angkatan->tahun_lulus == 2026) {
-                                $flyerSrc = 'https://www.alirsyad.sch.id/wp-content/uploads/2026/09/alumni-sma-alirsyad-2026-lulusptn.jpeg';
-                            } else {
-                                $flyerSrc = 'https://placehold.co/1200x800/1b4d3e/ffffff?text=Flyer+Lulusan+' . $angkatan->tahun_lulus;
+                            $flyerSrc = $angkatan->flyer_url;
+                            if (!$flyerSrc && file_exists(public_path('images/alumni/flyer-' . $angkatan->tahun_lulus . '.png'))) {
+                                $flyerSrc = asset('images/alumni/flyer-' . $angkatan->tahun_lulus . '.png');
                             }
                         @endphp
                         <div id="flyer-{{ $angkatan->tahun_lulus }}" class="flyer-container {{ $index === 0 ? '' : 'hidden' }} group">

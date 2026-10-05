@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             BiolinkSeeder::class,
             PartnershipSeeder::class,
             SliderSeeder::class,
+            AlumniSeeder::class,
         ]);
     }
 }

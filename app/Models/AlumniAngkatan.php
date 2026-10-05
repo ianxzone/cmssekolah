@@ -51,12 +51,29 @@ class AlumniAngkatan extends Model
     /**
      * Get the flyer image URL
      */
+    public function getFlyerUrlAttribute()
+    {
+        if (!$this->flyer_image) {
+            return null;
+        }
+
+        if (str_starts_with($this->flyer_image, 'http://') || str_starts_with($this->flyer_image, 'https://')) {
+            return $this->flyer_image;
+        }
+
+        if (file_exists(public_path($this->flyer_image))) {
+            return asset($this->flyer_image);
+        }
+
+        return \Illuminate\Support\Facades\Storage::url($this->flyer_image);
+    }
+
+    /**
+     * Backward-compatible alias
+     */
     public function getFliyerUrlAttribute()
     {
-        if ($this->flyer_image) {
-            return \Illuminate\Support\Facades\Storage::url($this->flyer_image);
-        }
-        return null;
+        return $this->getFlyerUrlAttribute();
     }
 
     /**
