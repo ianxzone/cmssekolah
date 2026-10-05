@@ -1399,29 +1399,71 @@
                 </div>
             </div>
 
-            <!-- SLIDE 2: Kurikulum Internasional Pearson (UK) -->
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920');">
+                        @php
+                $heroSlides = json_decode($settings['hero_slider_images'] ?? '[]', true);
+                if(empty($heroSlides)) {
+                    $heroSlides = [
+                        [
+                            'badge' => 'OFFICIAL PEARSON EDEXCEL PARTNER',
+                            'title' => 'Kurikulum Internasional Pearson (UK)',
+                            'subtitle' => 'International Class Program (ICP) berstandar global Pearson Edexcel UK, memadukan sains internasional dengan adab tauhid Rabbani.',
+                            'btn_text' => 'Pelajari Pearson ICP',
+                            'btn_link' => route('pearson.index'),
+                            'image' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920'
+                        ],
+                        [
+                            'badge' => 'KURIKULUM KHAS TERPADU AL IRSYAD',
+                            'title' => 'Integrasi Nilai Qur\'ani, Sains & Adab Nabawiyah',
+                            'subtitle' => 'Memadukan Kurikulum Merdeka Nasional dengan bimbingan tahfidz bersanad, pembiasaan adab harian, dan bilingual habit aktif.',
+                            'btn_text' => 'Pelajari Kurikulum Khas',
+                            'btn_link' => route('kurikulum.index'),
+                            'image' => 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1920'
+                        ],
+                        [
+                            'badge' => 'SARANA & PRASARANA MODERN',
+                            'title' => 'Fasilitas Lengkap & Lingkungan Belajar Representatif',
+                            'subtitle' => 'Menghadirkan lingkungan belajar yang aman, nyaman, dan berteknologi tinggi untuk memaksimalkan potensi nalar dan ibadah santri.',
+                            'btn_text' => 'Lihat Seluruh Fasilitas',
+                            'btn_link' => route('fasilitas.index'),
+                            'image' => 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1920'
+                        ],
+                        [
+                            'badge' => 'KEPERCAYAAN STAKEHOLDER KARAWANG',
+                            'title' => 'Pilihan Utama Tokoh, Pejabat & Profesional Karawang',
+                            'subtitle' => 'Amanah kehormatan dipercaya oleh kalangan pejabat pemda, dokter spesialis, akademisi, dan profesional industri di Karawang.',
+                            'btn_text' => 'Lihat Testimoni Tokoh',
+                            'btn_link' => '#testimonials',
+                            'image' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920'
+                        ]
+                    ];
+                }
+            @endphp
+            @foreach($heroSlides as $slide)
+            <div class="hero-slide" style="background-image: url('{{ $slide['image'] ?? '' }}');">
                 <div class="hero-overlay"></div>
                 <div class="container">
                     <div class="hero-content">
+                        @if(!empty($slide['badge']))
                         <div class="hero-badge">
                             <span class="badge-pulse"></span>
-                            {{ $settings['pearson_slide_badge'] ?? 'OFFICIAL PEARSON EDEXCEL PARTNER' }}
+                            {{ $slide['badge'] }}
                         </div>
-                        <h2>{{ $settings['pearson_slide_title'] ?? 'Kurikulum Internasional Pearson (UK)' }}</h2>
-                        <p class="hero-subtitle">International Class Program (ICP) berstandar global Pearson Edexcel UK, memadukan sains internasional dengan adab tauhid Rabbani.</p>
+                        @endif
+                        <h2>{{ $slide['title'] ?? '' }}</h2>
+                        <p class="hero-subtitle">{{ $slide['subtitle'] ?? '' }}</p>
+                        @if(!empty($slide['btn_text']))
                         <div class="hero-btns">
-                            <a href="{{ route('pearson.index') }}" class="btn btn-primary">
-                                Pelajari Pearson ICP <i data-feather="arrow-right"></i>
+                            <a href="{{ $slide['btn_link'] ?? '#' }}" class="btn btn-primary">
+                                {{ $slide['btn_text'] }} <i data-feather="arrow-right"></i>
                             </a>
                         </div>
+                        @endif
                         <div class="hero-pills">
-                            <span class="hero-pill-item"><i data-feather="check" style="width:14px; height:14px; color:var(--secondary);"></i> Pearson Edexcel UK</span>
-                            <span class="hero-pill-item"><i data-feather="check" style="width:14px; height:14px; color:var(--secondary);"></i> Active English Immersion</span>
-                            <span class="hero-pill-item"><i data-feather="check" style="width:14px; height:14px; color:var(--secondary);"></i> Global Qualifications</span>
                         </div>
                     </div>
                 </div>
+            </div>
+            @endforeach
             </div>
 
             <!-- SLIDE 3: Kurikulum Khas & Keunggulan Akademik -->
@@ -2750,3 +2792,4 @@
     </script>
 </body>
 </html>
+
