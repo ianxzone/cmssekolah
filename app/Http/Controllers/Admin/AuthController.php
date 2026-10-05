@@ -76,6 +76,14 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
 
+            if (!$user->is_active) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()->withInput($request->only('email'))
+                    ->withErrors(['email' => "Akun Anda telah dinonaktifkan. Silakan hubungi Administrator."]);
+            }
+
             // Clear brute force counters
             SecurityService::clearFailedLogins($ip, $email);
 

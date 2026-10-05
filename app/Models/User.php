@@ -43,6 +43,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'is_active',
+        'google2fa_secret',
+        'google2fa_enabled',
     ];
 
     /**
@@ -65,6 +68,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'google2fa_enabled' => 'boolean',
         ];
     }
 

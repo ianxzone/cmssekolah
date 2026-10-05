@@ -1355,9 +1355,98 @@
             $heroBg = "url('".$defaultHeroImage."')";
         }
     @endphp
-    <div class="hero-slider-wrapper" id="heroSliderWrapper">
+    @php
+        $activeSlider = \App\Models\Slider::getActive();
+        $slidesList = $activeSlider ? $activeSlider->items : collect();
+    @endphp
+
+    <div class="hero-slider-wrapper" id="heroSliderWrapper" data-autoplay="{{ ($activeSlider->auto_play ?? true) ? 'true' : 'false' }}" data-delay="{{ $activeSlider->delay ?? 6000 }}">
         <div class="hero-slider" id="heroSlider">
-            <!-- SLIDE 1: Profil Utama & SPMB -->
+            @forelse($slidesList as $index => $slide)
+            <div class="hero-slide {{ $index === 0 ? 'active' : '' }}" style="background-image: url('{{ $slide->image_url }}');">
+                <div class="hero-overlay"></div>
+                <div class="container">
+                    @if($slide->side_image_url)
+                    <div class="hero-split-grid">
+                        <div class="hero-content">
+                            @if(!empty($slide->badge))
+                            <div class="hero-badge">
+                                <span class="badge-pulse"></span>
+                                {{ $slide->badge }}
+                            </div>
+                            @endif
+                            <h2>{!! nl2br(e($slide->title)) !!}</h2>
+                            <p class="hero-subtitle">{{ $slide->subtitle }}</p>
+                            <div class="hero-btns">
+                                @if(!empty($slide->btn_text))
+                                <a href="{{ $slide->btn_link ?: '#' }}" class="btn btn-primary">
+                                    {{ $slide->btn_text }} <i data-feather="chevron-right"></i>
+                                </a>
+                                @endif
+                                @if(!empty($slide->btn2_text))
+                                <a href="{{ $slide->btn2_link ?: '#' }}" class="btn btn-outline" style="border: 2px solid rgba(255,255,255,0.8); color:#ffffff; margin-left: 8px;">
+                                    {{ $slide->btn2_text }}
+                                </a>
+                                @endif
+                            </div>
+                            @if(!empty($slide->pills) && is_array($slide->pills))
+                            <div class="hero-pills">
+                                @foreach($slide->pills as $pill)
+                                <span class="hero-pill-item"><i data-feather="check" style="width:14px; height:14px; color:var(--secondary);"></i> {{ $pill }}</span>
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
+
+                        <!-- Featured Visual Card -->
+                        <div class="hero-visual-card">
+                            <div class="hero-float-badge top-right">
+                                <i data-feather="award"></i>
+                                <span>Akreditasi A (Unggul)</span>
+                            </div>
+                            <div class="hero-visual-img-wrapper">
+                                <img src="{{ $slide->side_image_url }}" alt="{{ $slide->title }}" onerror="this.src='https://images.unsplash.com/photo-1719804320342-b7ebb6bc0ecb?q=80&w=800&auto=format&fit=crop'">
+                            </div>
+                            <div class="hero-float-badge bottom-left">
+                                <i data-feather="check-circle"></i>
+                                <span>SPMB Dibuka</span>
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div class="hero-content">
+                        @if(!empty($slide->badge))
+                        <div class="hero-badge">
+                            <span class="badge-pulse"></span>
+                            {{ $slide->badge }}
+                        </div>
+                        @endif
+                        <h2>{!! nl2br(e($slide->title)) !!}</h2>
+                        <p class="hero-subtitle">{{ $slide->subtitle }}</p>
+                        <div class="hero-btns">
+                            @if(!empty($slide->btn_text))
+                            <a href="{{ $slide->btn_link ?: '#' }}" class="btn btn-primary">
+                                {{ $slide->btn_text }} <i data-feather="arrow-right"></i>
+                            </a>
+                            @endif
+                            @if(!empty($slide->btn2_text))
+                            <a href="{{ $slide->btn2_link ?: '#' }}" class="btn btn-outline" style="border: 2px solid rgba(255,255,255,0.8); color:#ffffff; margin-left: 8px;">
+                                {{ $slide->btn2_text }}
+                            </a>
+                            @endif
+                        </div>
+                        @if(!empty($slide->pills) && is_array($slide->pills))
+                        <div class="hero-pills">
+                            @foreach($slide->pills as $pill)
+                            <span class="hero-pill-item"><i data-feather="check" style="width:14px; height:14px; color:var(--secondary);"></i> {{ $pill }}</span>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @empty
             <div class="hero-slide active" style="background-image: {{ $heroBg }};">
                 <div class="hero-overlay"></div>
                 <div class="container">
@@ -1368,180 +1457,20 @@
                                 {{ $settings['ppdb_badge'] ?? ($settings['ppdb_title'] ?? 'SPMB TA 2025/2026 - LPP Al Irsyad Karawang') }}
                             </div>
                             <h2>{!! nl2br(e($settings['hero_title'] ?? "Pendidikan Islam Terpadu & Rabbani\nLPP Al Irsyad Al Islamiyyah")) !!}</h2>
-                            <p class="hero-subtitle">{{ $settings['hero_subtitle'] ?? 'Membina generasi Rabbani dari usia emas anak (Daycare sejak lahir, Playgroup & TK Montessori) hingga SDIT, SMPIT, dan SMAIT berpadu akidah tauhid dan adab nabawiyah.' }}</p>
+                            <p class="hero-subtitle">{{ $settings['hero_subtitle'] ?? 'Membina generasi Rabbani dari usia emas anak hingga jenjang lanjutan.' }}</p>
                             <div class="hero-btns">
-                                <a href="{{ $settings['hero_btn_link'] ?? ($settings['contact_ppdb_link'] ?? '#') }}" class="btn btn-primary">
+                                <a href="{{ $settings['hero_btn_link'] ?? '#' }}" class="btn btn-primary">
                                     {{ $settings['hero_btn_text'] ?? 'Daftar SPMB Online' }} <i data-feather="chevron-right"></i>
                                 </a>
                             </div>
-                            <div class="hero-pills">
-                                <span class="hero-pill-item"><i data-feather="award" style="width:14px; height:14px; color:var(--secondary);"></i> Akreditasi A Unggul</span>
-                                <span class="hero-pill-item"><i data-feather="book-open" style="width:14px; height:14px; color:var(--secondary);"></i> Tahfidz Bersanad</span>
-                                <span class="hero-pill-item"><i data-feather="globe" style="width:14px; height:14px; color:var(--secondary);"></i> Kelas Internasional ICP</span>
-                            </div>
-                        </div>
-
-                        <!-- Featured Visual Card -->
-                        <div class="hero-visual-card">
-                            <div class="hero-float-badge top-right">
-                                <i data-feather="award"></i>
-                                <span>Akreditasi A (Unggul)</span>
-                            </div>
-                            <div class="hero-visual-img-wrapper">
-                                <img src="{{ !empty($settings['hero_side_image']) ? $settings['hero_side_image'] : asset('images/hero-students.png') }}" alt="Santri & Siswa LPP Al Irsyad Karawang" onerror="this.src='https://images.unsplash.com/photo-1719804320342-b7ebb6bc0ecb?q=80&w=800&auto=format&fit=crop'">
-                            </div>
-                            <div class="hero-float-badge bottom-left">
-                                <i data-feather="check-circle"></i>
-                                <span>SPMB Dibuka</span>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-                        @php
-                $heroSlides = json_decode($settings['hero_slider_images'] ?? '[]', true);
-                if(empty($heroSlides)) {
-                    $heroSlides = [
-                        [
-                            'badge' => 'OFFICIAL PEARSON EDEXCEL PARTNER',
-                            'title' => 'Kurikulum Internasional Pearson (UK)',
-                            'subtitle' => 'International Class Program (ICP) berstandar global Pearson Edexcel UK, memadukan sains internasional dengan adab tauhid Rabbani.',
-                            'btn_text' => 'Pelajari Pearson ICP',
-                            'btn_link' => route('pearson.index'),
-                            'image' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920'
-                        ],
-                        [
-                            'badge' => 'KURIKULUM KHAS TERPADU AL IRSYAD',
-                            'title' => 'Integrasi Nilai Qur\'ani, Sains & Adab Nabawiyah',
-                            'subtitle' => 'Memadukan Kurikulum Merdeka Nasional dengan bimbingan tahfidz bersanad, pembiasaan adab harian, dan bilingual habit aktif.',
-                            'btn_text' => 'Pelajari Kurikulum Khas',
-                            'btn_link' => route('kurikulum.index'),
-                            'image' => 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1920'
-                        ],
-                        [
-                            'badge' => 'SARANA & PRASARANA MODERN',
-                            'title' => 'Fasilitas Lengkap & Lingkungan Belajar Representatif',
-                            'subtitle' => 'Menghadirkan lingkungan belajar yang aman, nyaman, dan berteknologi tinggi untuk memaksimalkan potensi nalar dan ibadah santri.',
-                            'btn_text' => 'Lihat Seluruh Fasilitas',
-                            'btn_link' => route('fasilitas.index'),
-                            'image' => 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1920'
-                        ],
-                        [
-                            'badge' => 'KEPERCAYAAN STAKEHOLDER KARAWANG',
-                            'title' => 'Pilihan Utama Tokoh, Pejabat & Profesional Karawang',
-                            'subtitle' => 'Amanah kehormatan dipercaya oleh kalangan pejabat pemda, dokter spesialis, akademisi, dan profesional industri di Karawang.',
-                            'btn_text' => 'Lihat Testimoni Tokoh',
-                            'btn_link' => '#testimonials',
-                            'image' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920'
-                        ]
-                    ];
-                }
-            @endphp
-            @foreach($heroSlides as $slide)
-            <div class="hero-slide" style="background-image: url('{{ $slide['image'] ?? '' }}');">
-                <div class="hero-overlay"></div>
-                <div class="container">
-                    <div class="hero-content">
-                        @if(!empty($slide['badge']))
-                        <div class="hero-badge">
-                            <span class="badge-pulse"></span>
-                            {{ $slide['badge'] }}
-                        </div>
-                        @endif
-                        <h2>{{ $slide['title'] ?? '' }}</h2>
-                        <p class="hero-subtitle">{{ $slide['subtitle'] ?? '' }}</p>
-                        @if(!empty($slide['btn_text']))
-                        <div class="hero-btns">
-                            <a href="{{ $slide['btn_link'] ?? '#' }}" class="btn btn-primary">
-                                {{ $slide['btn_text'] }} <i data-feather="arrow-right"></i>
-                            </a>
-                        </div>
-                        @endif
-                        <div class="hero-pills">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-            </div>
-
-            <!-- SLIDE 3: Kurikulum Khas & Keunggulan Akademik -->
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1920');">
-                <div class="hero-overlay"></div>
-                <div class="container">
-                    <div class="hero-content">
-                        <div class="hero-badge">
-                            <span class="badge-pulse"></span>
-                            KURIKULUM KHAS TERPADU AL IRSYAD
-                        </div>
-                        <h2>Integrasi Nilai Qur'ani, Sains & Adab Nabawiyah</h2>
-                        <p class="hero-subtitle">Memadukan Kurikulum Merdeka Nasional dengan bimbingan tahfidz bersanad, pembiasaan adab harian, dan bilingual habit aktif.</p>
-                        <div class="hero-btns">
-                            <a href="{{ route('kurikulum.index') }}" class="btn btn-primary">
-                                Pelajari Kurikulum Khas <i data-feather="arrow-right"></i>
-                            </a>
-                        </div>
-                        <div class="hero-pills">
-                            <span class="hero-pill-item"><i data-feather="book-open" style="width:14px; height:14px; color:var(--secondary);"></i> Tahfidz Bersanad</span>
-                            <span class="hero-pill-item"><i data-feather="heart" style="width:14px; height:14px; color:var(--secondary);"></i> Bina Pribadi Islami</span>
-                            <span class="hero-pill-item"><i data-feather="code" style="width:14px; height:14px; color:var(--secondary);"></i> STEAM & Coding</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 4: Fasilitas Unggulan Sekolah -->
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1920');">
-                <div class="hero-overlay"></div>
-                <div class="container">
-                    <div class="hero-content">
-                        <div class="hero-badge">
-                            <span class="badge-pulse"></span>
-                            SARANA & PRASARANA MODERN
-                        </div>
-                        <h2>Fasilitas Lengkap & Lingkungan Belajar Representatif</h2>
-                        <p class="hero-subtitle">Menghadirkan lingkungan belajar yang aman, nyaman, dan berteknologi tinggi untuk memaksimalkan potensi nalar dan ibadah santri.</p>
-                        <div class="hero-btns">
-                            <a href="{{ route('fasilitas.index') }}" class="btn btn-primary">
-                                Lihat Seluruh Fasilitas <i data-feather="arrow-right"></i>
-                            </a>
-                        </div>
-                        <div class="hero-pills">
-                            <span class="hero-pill-item"><i data-feather="airplay" style="width:14px; height:14px; color:var(--secondary);"></i> Smart Classroom AC</span>
-                            <span class="hero-pill-item"><i data-feather="cpu" style="width:14px; height:14px; color:var(--secondary);"></i> Lab Sains & Komputer</span>
-                            <span class="hero-pill-item"><i data-feather="sun" style="width:14px; height:14px; color:var(--secondary);"></i> Masjid Luas & Representatif</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 5: Kepercayaan Stakeholder & Tokoh Karawang -->
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920');">
-                <div class="hero-overlay"></div>
-                <div class="container">
-                    <div class="hero-content">
-                        <div class="hero-badge">
-                            <span class="badge-pulse"></span>
-                            KEPERCAYAAN STAKEHOLDER KARAWANG
-                        </div>
-                        <h2>Pilihan Utama Tokoh, Pejabat & Profesional Karawang</h2>
-                        <p class="hero-subtitle">Amanah kehormatan dipercaya oleh kalangan pejabat pemda, dokter spesialis, akademisi, dan profesional industri di Karawang.</p>
-                        <div class="hero-btns">
-                            <a href="#testimonials" class="btn btn-primary">
-                                Lihat Testimoni Tokoh <i data-feather="message-square"></i>
-                            </a>
-                        </div>
-                        <div class="hero-pills">
-                            <span class="hero-pill-item"><i data-feather="users" style="width:14px; height:14px; color:var(--secondary);"></i> Pejabat Pemda & ASN</span>
-                            <span class="hero-pill-item"><i data-feather="activity" style="width:14px; height:14px; color:var(--secondary);"></i> Dokter & Tenaga Medis</span>
-                            <span class="hero-pill-item"><i data-feather="briefcase" style="width:14px; height:14px; color:var(--secondary);"></i> Profesional Industri & BUMN</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
 
+        @if($slidesList->count() > 1)
         <!-- Slider Navigation Arrows -->
         <button class="hero-nav hero-prev" id="heroPrevBtn" aria-label="Slide Sebelumnya">
             <i data-feather="chevron-left"></i>
@@ -1552,12 +1481,11 @@
 
         <!-- Slider Indicators -->
         <div class="hero-indicators" id="heroIndicators">
-            <button class="hero-dot active" data-slide="0" aria-label="Slide 1: Profil & PPDB"></button>
-            <button class="hero-dot" data-slide="1" aria-label="Slide 2: Kurikulum Internasional Pearson"></button>
-            <button class="hero-dot" data-slide="2" aria-label="Slide 3: Kurikulum Khas"></button>
-            <button class="hero-dot" data-slide="3" aria-label="Slide 4: Fasilitas Unggulan"></button>
-            <button class="hero-dot" data-slide="4" aria-label="Slide 5: Kepercayaan Stakeholder"></button>
+            @foreach($slidesList as $idx => $s)
+            <button class="hero-dot {{ $idx === 0 ? 'active' : '' }}" data-slide="{{ $idx }}" aria-label="Slide {{ $idx + 1 }}: {{ Str::limit($s->title, 25) }}"></button>
+            @endforeach
         </div>
+        @endif
     </div>
 
     <!-- 4. PRAYER TIMES -->
@@ -2518,7 +2446,8 @@
 
             let currentSlide = 0;
             let slideInterval = null;
-            const intervalTime = 6000;
+            const autoPlayEnabled = wrapper ? (wrapper.getAttribute('data-autoplay') !== 'false') : true;
+            const intervalTime = wrapper ? (parseInt(wrapper.getAttribute('data-delay'), 10) || 6000) : 6000;
 
             function showSlide(index) {
                 if (index < 0) {
@@ -2556,6 +2485,7 @@
 
             function startAutoplay() {
                 stopAutoplay();
+                if (!autoPlayEnabled || slides.length <= 1) return;
                 slideInterval = setInterval(nextSlide, intervalTime);
             }
 

@@ -44,9 +44,17 @@
                     </select>
                 </div>
 
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer;">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }} style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
+                        Akun Aktif (Dapat Login)
+                    </label>
+                    <p style="margin-top: 0.25rem; font-size: 0.875rem; color: #6b7280;">Jika dimatikan, pengguna tidak akan bisa login ke dalam sistem.</p>
+                </div>
+
                 <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; background-color: #f9fafb;">
                     <h4 style="margin-top: 0; margin-bottom: 1rem; color: var(--text-secondary);">Ganti Password (Opsional)</h4>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Biarkan kosong jika tidak ingin mengubah password.</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Biarkan kosong jika tidak ingin mengubah password. Minimal 8 karakter, huruf besar & kecil, angka, dan simbol.</p>
                     
                     <div style="margin-bottom: 1rem;">
                         <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password Baru</label>

@@ -72,6 +72,12 @@
                     <i data-feather="share-2"></i>
                     <span>Biolink Manager</span>
                 </a>
+
+                <a href="{{ route('admin.sliders.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}" title="Sliders & Banner">
+                    <i data-feather="sliders"></i>
+                    <span>Sliders & Banner</span>
+                </a>
                 @endif
 
                 <a href="{{ route('admin.posts.index') }}"
@@ -220,12 +226,12 @@
                     <h1 class="page-title">@yield('title', 'Dashboard')</h1>
                 </div>
                 <div class="topbar-right">
-                    <div class="user-profile">
+                    <a href="{{ route('admin.security.profile') }}" class="user-profile" style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
                         <div class="avatar">
                             {{ substr(Auth::user()->name ?? 'Admin', 0, 1) }}
                         </div>
                         <span class="user-name">{{ Auth::user()->name ?? 'Administrator' }}</span>
-                    </div>
+                    </a>
                 </div>
             </header>
 

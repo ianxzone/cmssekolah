@@ -48,9 +48,16 @@
                                             $roleColor = $rolesList[$user->role]['badge_color'] ?? '#6b7280';
                                             $roleName = $rolesList[$user->role]['name'] ?? ucfirst($user->role);
                                         @endphp
-                                        <span style="background-color: {{ $roleColor }}20; color: {{ $roleColor }}; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
-                                            {{ $roleName }}
-                                        </span>
+                                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                            <span style="background-color: {{ $roleColor }}20; color: {{ $roleColor }}; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
+                                                {{ $roleName }}
+                                            </span>
+                                            @if($user->is_active)
+                                                <span style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600;">Aktif</span>
+                                            @else
+                                                <span style="background-color: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600;">Nonaktif</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td style="padding: 1rem; text-align: right;">
                                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">

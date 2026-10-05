@@ -25,6 +25,7 @@ use App\Http\Controllers\AlumniController;
 use App\Http\Controllers\BiolinkController;
 use App\Http\Controllers\GuestBookController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
+use App\Http\Controllers\Admin\SliderController as AdminSliderController;
 
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\SecurityController as AdminSecurityController;
@@ -49,8 +50,16 @@ Route::prefix($adminPath)->middleware(['web'])->group(function () {
 });
 
 // Protected Admin Routes (Authenticated Only)
-Route::prefix($adminPath)->middleware(['web', 'auth'])->group(function () {
+Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensure2FA::class])->group(function () {
     
+    // 2FA Routes
+    Route::get('2fa/verify', [\App\Http\Controllers\Admin\TwoFactorController::class, 'verifyForm'])->name('admin.2fa.verify');
+    Route::post('2fa/verify', [\App\Http\Controllers\Admin\TwoFactorController::class, 'verify'])->name('admin.2fa.verify.submit');
+    Route::get('security-profile', [\App\Http\Controllers\Admin\TwoFactorController::class, 'index'])->name('admin.security.profile');
+    Route::post('security-profile/enable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'enable'])->name('admin.security.profile.enable');
+    Route::post('security-profile/confirm', [\App\Http\Controllers\Admin\TwoFactorController::class, 'confirm'])->name('admin.security.profile.confirm');
+    Route::post('security-profile/disable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'disable'])->name('admin.security.profile.disable');
+
     // Group 1: All Authenticated Backend Users (Admin, Editor, Author, Contributor)
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/about', [DashboardController::class, 'about'])->name('admin.about');
@@ -91,6 +100,18 @@ Route::prefix($adminPath)->middleware(['web', 'auth'])->group(function () {
         Route::put('alumni/video/{id}', [AdminAlumniController::class, 'updateVideo'])->name('admin.alumni.video.update');
         Route::delete('alumni/video/{id}', [AdminAlumniController::class, 'destroyVideo'])->name('admin.alumni.video.destroy');
         Route::post('alumni/settings', [AdminAlumniController::class, 'updateSettings'])->name('admin.alumni.settings.update');
+
+        // Sliders Management (Revolution Slider style: Slider Tema & Slide Items)
+        Route::get('sliders', [AdminSliderController::class, 'index'])->name('admin.sliders.index');
+        Route::post('sliders', [AdminSliderController::class, 'store'])->name('admin.sliders.store');
+        Route::put('sliders/{slider}', [AdminSliderController::class, 'update'])->name('admin.sliders.update');
+        Route::delete('sliders/{slider}', [AdminSliderController::class, 'destroy'])->name('admin.sliders.destroy');
+        Route::patch('sliders/{slider}/active', [AdminSliderController::class, 'setActive'])->name('admin.sliders.active');
+        Route::get('sliders/{slider}/items', [AdminSliderController::class, 'items'])->name('admin.sliders.items');
+        Route::post('sliders/{slider}/items', [AdminSliderController::class, 'storeItem'])->name('admin.sliders.items.store');
+        Route::put('sliders/{slider}/items/{item}', [AdminSliderController::class, 'updateItem'])->name('admin.sliders.items.update');
+        Route::delete('sliders/{slider}/items/{item}', [AdminSliderController::class, 'destroyItem'])->name('admin.sliders.items.destroy');
+        Route::patch('sliders/{slider}/items/{item}/toggle', [AdminSliderController::class, 'toggleItem'])->name('admin.sliders.items.toggle');
     });
 
     // Group 3: Admin only (Settings, Security, Forms, Guestbook, Redirects, Imports, Users)

@@ -43,8 +43,17 @@
                 </div>
 
                 <div style="margin-bottom: 1.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer;">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }} style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
+                        Akun Aktif (Dapat Login)
+                    </label>
+                    <p style="margin-top: 0.25rem; font-size: 0.875rem; color: #6b7280;">Jika dimatikan, pengguna tidak akan bisa login ke dalam sistem.</p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
                     <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password</label>
                     <input type="password" id="password" name="password" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <p style="margin-top: 0.25rem; font-size: 0.875rem; color: #6b7280;">Minimal 8 karakter, harus mengandung huruf besar, huruf kecil, angka, dan simbol.</p>
                 </div>
 
                 <div style="margin-bottom: 2rem;">

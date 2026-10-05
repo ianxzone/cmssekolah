@@ -108,7 +108,7 @@ class InstallController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
         // Clear existing users just in case
@@ -119,6 +119,7 @@ class InstallController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => User::ROLE_SUPERADMIN, // User pertama yang diinstall otomatis jadi superadmin (Dewa)
+            'is_active' => true,
         ]);
 
         return redirect()->route('install.finish');
