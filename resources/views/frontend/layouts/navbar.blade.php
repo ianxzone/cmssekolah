@@ -64,6 +64,7 @@
                     $isBlog = str_contains($label, 'blog') || str_contains($label, 'berita') || str_contains($rawUrl, 'blog') || str_contains($rawUrl, 'berita');
                     $isAlumni = str_contains($label, 'alumni') || str_contains($rawUrl, 'alumni');
                     $isEkskul = str_contains($label, 'ekstrakurikuler') || str_contains($label, 'ekskul') || str_contains($rawUrl, 'ekskul') || str_contains($rawUrl, 'ekstrakurikuler');
+                    $isPartnership = str_contains($label, 'partnership') || str_contains($label, 'kerjasama') || str_contains($rawUrl, 'partnership');
 
                     if ($isHome) {
                         // DI BERANDA: Gunakan tanda pagar (#) agar smooth scroll ke header section yang sesuai
@@ -74,6 +75,7 @@
                         if ($isBlog) return ['url' => route('posts.index'), 'active' => false];
                         if ($isAlumni) return ['url' => route('alumni.index'), 'active' => false];
                         if ($isEkskul) return ['url' => '#programs', 'active' => false];
+                        if ($isPartnership) return ['url' => '#partnership', 'active' => false];
 
                         if (str_starts_with($rawUrl, '/#')) {
                             return ['url' => substr($rawUrl, 1), 'active' => false];
@@ -88,6 +90,7 @@
                         if ($isBlog) return ['url' => route('posts.index'), 'active' => request()->routeIs('posts.*') || request()->is('blog*') || request()->is('post/*') || request()->is('category/*')];
                         if ($isAlumni) return ['url' => route('alumni.index'), 'active' => request()->routeIs('alumni.*') || request()->is('alumni*')];
                         if ($isEkskul) return ['url' => route('ekskul.index'), 'active' => request()->routeIs('ekskul.*') || request()->is('ekstrakurikuler*')];
+                        if ($isPartnership) return ['url' => url('/#partnership'), 'active' => false];
 
                         if (str_starts_with($rawUrl, '#')) {
                             return ['url' => url('/' . $rawUrl), 'active' => false];

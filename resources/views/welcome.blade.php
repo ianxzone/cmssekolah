@@ -206,6 +206,122 @@
         }
 
         /* ------------------------------------------------------------
+           PARTNERSHIP SECTION
+        ------------------------------------------------------------ */
+        .partnership-section {
+            padding: 42px 0 46px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .partnership-title-wrap {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+        .partnership-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            margin: 0;
+            position: relative;
+            display: inline-block;
+        }
+        .partnership-title::after {
+            content: '';
+            display: block;
+            width: 44px;
+            height: 3px;
+            background: var(--secondary);
+            margin: 8px auto 0;
+            border-radius: 2px;
+        }
+        .partnership-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            align-items: stretch;
+        }
+        .partner-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 18px 10px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            text-decoration: none;
+            color: inherit;
+        }
+        .partner-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -6px rgba(0, 104, 55, 0.16);
+            border-color: var(--primary);
+        }
+        .partner-logo-wrap {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            padding: 6px;
+            border-radius: 12px;
+            background: #f8fafc;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .partner-item:hover .partner-logo-wrap {
+            transform: scale(1.08);
+            background: #ffffff;
+        }
+        .partner-logo-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .partner-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #334155;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            line-height: 1.25;
+        }
+        .partner-item:hover .partner-name {
+            color: var(--primary);
+        }
+
+        @media (max-width: 992px) {
+            .partnership-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+            }
+        }
+        @media (max-width: 576px) {
+            .partnership-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .partner-item {
+                padding: 14px 6px 12px;
+            }
+            .partner-logo-wrap {
+                width: 54px;
+                height: 54px;
+                margin-bottom: 8px;
+            }
+            .partner-name {
+                font-size: 0.72rem;
+            }
+        }
+
+        /* ------------------------------------------------------------
            MENGAPA LPP AL IRSYAD? (VALUE PROPOSITION)
         ------------------------------------------------------------ */
         .why-us {
@@ -1449,6 +1565,67 @@
         </div>
     </section>
 
+    <!-- 4.1 PARTNERSHIP SECTION -->
+    @if(($settings['home_show_partnership'] ?? '1') == '1')
+    <section class="partnership-section" id="partnership">
+        <div class="container">
+            <div class="partnership-title-wrap">
+                <h3 class="partnership-title">PARTNERSHIP</h3>
+            </div>
+            
+            <div class="partnership-grid">
+                <!-- 1. GSE -->
+                <a href="https://lama.alirsyad.sch.id/partnership/global-school-of-english-gse" target="_blank" rel="noopener noreferrer" class="partner-item" title="Global Scale of English (GSE)">
+                    <div class="partner-logo-wrap">
+                        <img src="{{ asset('images/partners/gse.png') }}" alt="GSE" loading="lazy">
+                    </div>
+                    <span class="partner-name">GSE</span>
+                </a>
+
+                <!-- 2. PEARSON EDEXCEL -->
+                <a href="{{ route('pearson.index') }}" class="partner-item" title="Pearson Edexcel International Curriculum">
+                    <div class="partner-logo-wrap">
+                        <img src="{{ asset('images/partners/pearson.png') }}" alt="PEARSON EDEXCEL" loading="lazy">
+                    </div>
+                    <span class="partner-name">PEARSON EDEXCEL</span>
+                </a>
+
+                <!-- 3. MUSTAQILI -->
+                <a href="https://lama.alirsyad.sch.id/mustaqili" target="_blank" rel="noopener noreferrer" class="partner-item" title="Metode Mustaqili Bahasa Arab">
+                    <div class="partner-logo-wrap">
+                        <img src="{{ asset('images/partners/mustaqili.png') }}" alt="MUSTAQILI" loading="lazy">
+                    </div>
+                    <span class="partner-name">MUSTAQILI</span>
+                </a>
+
+                <!-- 4. KOMITE -->
+                <a href="https://lama.alirsyad.sch.id/komite" target="_blank" rel="noopener noreferrer" class="partner-item" title="Komite Sekolah Al Irsyad">
+                    <div class="partner-logo-wrap">
+                        <img src="{{ asset('images/partners/komite.png') }}" alt="KOMITE" loading="lazy">
+                    </div>
+                    <span class="partner-name">KOMITE</span>
+                </a>
+
+                <!-- 5. CODE ORG -->
+                <a href="https://lama.alirsyad.sch.id/code-org" target="_blank" rel="noopener noreferrer" class="partner-item" title="Code.org Computer Science">
+                    <div class="partner-logo-wrap">
+                        <img src="{{ asset('images/partners/codeorg.jpg') }}" alt="CODE ORG" loading="lazy">
+                    </div>
+                    <span class="partner-name">CODE ORG</span>
+                </a>
+
+                <!-- 6. PERPUNAS -->
+                <a href="https://lama.alirsyad.sch.id/partnership/perpunas" target="_blank" rel="noopener noreferrer" class="partner-item" title="Perpustakaan Nasional RI">
+                    <div class="partner-logo-wrap">
+                        <img src="{{ asset('images/partners/perpusnas.png') }}" alt="PERPUNAS" loading="lazy">
+                    </div>
+                    <span class="partner-name">PERPUNAS</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    @endif
+
     <!-- 5. STATS -->
     @if(($settings['home_show_stats'] ?? '1') == '1')
     <div class="stats">
@@ -1801,7 +1978,7 @@
     @endif
 
     <!-- 9. AGENDA -->
-    @if(($settings['home_show_events'] ?? '1') == '1')
+    @if((($settings['home_show_events'] ?? '1') == '1') && isset($events) && (is_countable($events) ? count($events) > 0 : $events->isNotEmpty()))
     <section class="agenda">
         <div class="container">
             <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
@@ -1832,10 +2009,6 @@
                     @endif
                 </div>
                 @empty
-                <div class="agenda-card" style="grid-column: span {{ $agendaStyle === 'list' ? '1' : '2' }}; justify-content: center; background: #fff; text-align: center; flex-direction: column; padding: 40px;">
-                    <i data-feather="calendar" style="width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 10px;"></i>
-                    <p style="color: var(--text-muted);">Belum ada agenda terdekat.</p>
-                </div>
                 @endforelse
             </div>
         </div>
@@ -1843,18 +2016,18 @@
     @endif
 
     <!-- 10. TEACHERS -->
-    @if(($settings['home_show_teachers'] ?? '1') == '1')
+    @php
+        if (!isset($teachers)) {
+            $teachers = \App\Models\Teacher::where('is_active', true)->orderBy('order', 'asc')->orderBy('id', 'asc')->get();
+        }
+    @endphp
+    @if((($settings['home_show_teachers'] ?? '1') == '1') && isset($teachers) && (is_countable($teachers) ? count($teachers) > 0 : $teachers->isNotEmpty()))
     <section class="teachers" id="pimpinan">
         <div class="container">
             <div class="section-header">
                 <span>Our Leadership & Educators</span>
                 <h2>Pimpinan & Tenaga Pendidik Lembaga</h2>
             </div>
-            @php
-                if (!isset($teachers) || (is_object($teachers) && method_exists($teachers, 'isEmpty') && $teachers->isEmpty())) {
-                    $teachers = \App\Models\Teacher::where('is_active', true)->orderBy('order', 'asc')->orderBy('id', 'asc')->get();
-                }
-            @endphp
             <div class="teacher-grid">
                 @forelse($teachers as $t)
                     @php

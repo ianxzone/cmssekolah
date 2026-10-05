@@ -950,9 +950,10 @@
                             @php
                                 $toggles = [
                                     'home_show_news' => ['Tampilkan Seksi Berita Terkini', 'Berita & pengumuman dari database posts'],
-                                    'home_show_events' => ['Tampilkan Seksi Agenda Kegiatan', 'Kalender kegiatan sekolah terdekat'],
+                                    'home_show_events' => ['Tampilkan Seksi Agenda Kegiatan', 'Kalender kegiatan sekolah terdekat (otomatis disembunyikan jika belum ada agenda)'],
                                     'home_show_testimonials' => ['Tampilkan Seksi Testimonial', 'Kutipan apresiasi orang tua, siswa, dan alumni'],
-                                    'home_show_teachers' => ['Tampilkan Pimpinan & SDM', 'Daftar pendidik dari menu Data SDM & Pimpinan'],
+                                    'home_show_teachers' => ['Tampilkan Pimpinan & SDM', 'Daftar pendidik dari menu Data SDM & Pimpinan (otomatis disembunyikan jika kosong)'],
+                                    'home_show_partnership' => ['Tampilkan Seksi Kemitraan (Partnership)', 'Baris logo mitra resmi (GSE, Pearson, Mustaqili, Komite, Code.org, Perpusnas)'],
                                 ];
                             @endphp
                             @foreach($toggles as $key => $info)
