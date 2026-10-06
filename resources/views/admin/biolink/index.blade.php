@@ -755,6 +755,16 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <!-- Quick Status Badge & 1-Click Toggle -->
+            <form action="{{ route('admin.biolink.toggle-status') }}" method="POST" style="margin: 0;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="btn" style="padding: 7px 14px; font-size: 0.8rem; font-weight: 700; border-radius: 20px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; {{ $profile->is_active ? 'background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;' : 'background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;' }}" title="Klik untuk {{ $profile->is_active ? 'menonaktifkan' : 'mengaktifkan' }} halaman Biolink">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: {{ $profile->is_active ? '#10b981' : '#ef4444' }};"></span>
+                    <span>Status: {{ $profile->is_active ? 'ONLINE (Aktif)' : 'OFFLINE (Nonaktif)' }}</span>
+                </button>
+            </form>
+
             <div class="studio-url-box">
                 <i data-feather="link" style="width: 14px; height: 14px; color: #FBB03B;"></i>
                 <span class="studio-url-text">{{ url('/links') }}</span>
@@ -1119,6 +1129,7 @@
                                 <div style="font-size: 0.75rem; color: var(--studio-muted);">Aktifkan agar halaman publik dapat diakses pengunjung.</div>
                             </div>
                             <label class="studio-switch">
+                                <input type="hidden" name="is_active_submitted" value="1">
                                 <input type="checkbox" name="is_active" value="1" {{ $profile->is_active ? 'checked' : '' }}>
                                 <span class="studio-slider"></span>
                             </label>

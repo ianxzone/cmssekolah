@@ -370,19 +370,29 @@
         background: #ffffff;
         width: 100%;
         max-width: 1140px;
+        height: 88vh;
+        max-height: 88vh;
         border-radius: 20px;
         box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        max-height: 90vh;
         transform: translateY(15px);
         transition: transform 0.25s ease;
     }
     .slide-studio-modal.show .slide-studio-dialog {
         transform: translateY(0);
     }
+    #slideStudioForm {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 100%;
+        min-height: 0;
+        overflow: hidden;
+    }
     .slide-studio-header {
+        flex-shrink: 0;
         padding: 1.25rem 1.75rem;
         border-bottom: 1px solid #e2e8f0;
         display: flex;
@@ -427,8 +437,10 @@
     .slide-studio-body {
         display: grid;
         grid-template-columns: 46% 54%;
-        overflow: hidden;
         flex: 1;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
     }
 
     /* Left: Live Preview Canvas */
@@ -439,6 +451,8 @@
         flex-direction: column;
         border-right: 1px solid #e2e8f0;
         overflow-y: auto;
+        height: 100%;
+        max-height: 100%;
     }
     .preview-header-tag {
         display: flex;
@@ -581,7 +595,33 @@
     .studio-form-pane {
         padding: 1.75rem;
         overflow-y: auto;
+        height: 100%;
+        max-height: 100%;
         background: #ffffff;
+        scroll-behavior: smooth;
+    }
+    .studio-form-pane::-webkit-scrollbar {
+        width: 8px;
+    }
+    .studio-form-pane::-webkit-scrollbar-track {
+        background: #f8fafc;
+    }
+    .studio-form-pane::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .studio-form-pane::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    .studio-preview-pane::-webkit-scrollbar {
+        width: 6px;
+    }
+    .studio-preview-pane::-webkit-scrollbar-track {
+        background: #091e14;
+    }
+    .studio-preview-pane::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
     }
     .studio-section-title {
         font-size: 0.8rem;
@@ -667,12 +707,15 @@
 
     /* Footer of studio */
     .slide-studio-footer {
+        flex-shrink: 0;
         padding: 1rem 1.75rem;
         background: #fafbfc;
         border-top: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+        z-index: 10;
     }
     .btn-studio-cancel {
         background: #e2e8f0;
@@ -721,12 +764,26 @@
             border-top: 1px solid #f1f5f9;
             flex-direction: row;
         }
+        .slide-studio-dialog {
+            height: 94vh;
+            max-height: 94vh;
+        }
         .slide-studio-body {
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
         .studio-preview-pane {
             border-right: none;
             border-bottom: 1px solid #e2e8f0;
+            height: auto;
+            max-height: none;
+            flex-shrink: 0;
+        }
+        .studio-form-pane {
+            height: auto;
+            max-height: none;
+            overflow-y: visible;
         }
     }
 </style>
@@ -1330,8 +1387,11 @@
 
     // Media Library Integration
     window.onSliderMediaSelected = function(item) {
-        inImageUrl.value = item.url;
-        liveStage.style.backgroundImage = `url('${item.url}')`;
+        if (!item) return;
+        const url = (typeof item === 'object' && item.url) ? item.url : item;
+        inImageFile.value = '';
+        inImageUrl.value = url;
+        liveStage.style.backgroundImage = `url('${url}')`;
         syncLivePreview();
     };
     function openMediaPickerForBackground() {
@@ -1339,8 +1399,11 @@
     }
 
     window.onSliderSideMediaSelected = function(item) {
-        inSideUrl.value = item.url;
-        liveSideThumb.src = item.url;
+        if (!item) return;
+        const url = (typeof item === 'object' && item.url) ? item.url : item;
+        inSideFile.value = '';
+        inSideUrl.value = url;
+        liveSideThumb.src = url;
         liveSideThumb.style.display = 'block';
         syncLivePreview();
     };

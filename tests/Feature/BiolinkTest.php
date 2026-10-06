@@ -125,4 +125,43 @@ class BiolinkTest extends TestCase
         $deleteResponse->assertStatus(302);
         $this->assertNull(BiolinkSection::where('title', 'Seksi Uji Coba Updated')->first());
     }
+
+    public function test_saving_seo_settings_does_not_deactivate_biolink(): void
+    {
+        $profile = BiolinkProfile::first();
+        $profile->update(['is_active' => true]);
+
+        // Simpan SEO tab seperti yang dilakukan user di dashboard
+        $response = $this->post('/admin/biolink/profile', [
+            '_tab' => 'seo',
+            'meta_title' => 'Judul Baru SEO',
+            'meta_description' => 'Deskripsi baru SEO',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('success');
+
+        $profile->refresh();
+        $this->assertTrue($profile->is_active, 'is_active MUST remain TRUE after saving SEO settings!');
+        $this->assertEquals('Judul Baru SEO', $profile->meta_title);
+
+        // Pastikan halaman /links tetap 200 OK dan TIDAK 404
+        $publicResponse = $this->get('/links');
+        $publicResponse->assertStatus(200);
+    }
+
+    public function test_admin_can_toggle_biolink_status(): void
+    {
+        $profile = BiolinkProfile::first();
+        $initialStatus = $profile->is_active;
+
+        $response = $this->patch('/admin/biolink/toggle-status');
+        $response->assertStatus(302);
+
+        $profile->refresh();
+        $this->assertEquals(!$initialStatus, $profile->is_active);
+
+        // Kembalikan ke true
+        $profile->update(['is_active' => true]);
+    }
 }
