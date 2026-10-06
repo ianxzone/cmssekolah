@@ -561,7 +561,7 @@
 
     function openEditModal(slider) {
         const form = document.getElementById('editSliderForm');
-        form.action = "{{ url('admin/sliders') }}/" + slider.id;
+        form.action = "{{ route('admin.sliders.index') }}/" + slider.id;
         document.getElementById('edit_name').value = slider.name;
         document.getElementById('edit_slug').value = slider.slug;
         document.getElementById('edit_description').value = slider.description || '';

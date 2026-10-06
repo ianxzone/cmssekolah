@@ -1179,7 +1179,7 @@
 
 @push('scripts')
 <script>
-    const sliderBaseUrl = "{{ url('admin/sliders/' . $slider->id . '/items') }}";
+    const sliderBaseUrl = "{{ route('admin.sliders.items', $slider->id) }}";
 
     // Live Preview Elements
     const liveStage = document.getElementById('liveMockupStage');
@@ -1340,7 +1340,7 @@
     function openEditSlideModal(slide) {
         const form = document.getElementById('slideStudioForm');
         form.action = sliderBaseUrl + '/' + slide.id;
-        document.getElementById('methodSpoofContainer').innerHTML = '@method("PUT")';
+        document.getElementById('methodSpoofContainer').innerHTML = '<input type="hidden" name="_method" value="PUT">';
 
         document.getElementById('studioModalTitle').innerHTML = `<i data-feather="edit-2" style="color:#006837;"></i> <span>Edit Slide #${slide.sort_order}</span>`;
         document.getElementById('studioModalSubtitle').innerText = `Perbarui data slide "${slide.title || 'Tanpa Judul'}".`;
