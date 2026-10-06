@@ -23,6 +23,8 @@
     <!-- Admin CSS Styles -->
     <link href="{{ asset('css/admin.css') }}?v={{ filemtime(public_path('css/admin.css')) }}" rel="stylesheet">
     @stack('styles')
+    <!-- AlpineJS -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
 <body>
@@ -356,3 +358,4 @@
 </body>
 
 </html>
+

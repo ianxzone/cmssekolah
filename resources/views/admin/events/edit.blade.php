@@ -449,40 +449,40 @@
 
         // Fix Trix Toolbar (ensure it runs even if loaded late)
         function initTrixCustomization(event) {
-            const toolbar = event ? event.target.toolbarElement : (document.querySelector('trix-toolbar') || document.querySelector('trix-editor').toolbarElement);
+            const toolbar = event ? event.target.toolbarElement : (document.querySelector("trix-toolbar") || document.querySelector("trix-editor").toolbarElement);
             if (!toolbar) return;
             
             // Check if already initialized
-            if (toolbar.hasAttribute('data-customized')) return;
-            toolbar.setAttribute('data-customized', 'true');
+            if (toolbar.hasAttribute("data-customized")) return;
+            toolbar.setAttribute("data-customized", "true");
 
             const blockGroup = toolbar.querySelector(".trix-button-group--block-tools");
             const textGroup = toolbar.querySelector(".trix-button-group--text-tools");
             const historyGroup = toolbar.querySelector(".trix-button-group--history-tools");
 
             if (blockGroup) {
-                const alignCenterHtml = <button type="button" class="trix-button trix-button--icon trix-button--icon-align-center" data-trix-attribute="alignCenter" title="Align Center"></button>;
-                const alignRightHtml = <button type="button" class="trix-button trix-button--icon trix-button--icon-align-right" data-trix-attribute="alignRight" title="Align Right"></button>;
-                const tableHtml = <button type="button" class="trix-button trix-button--icon trix-button--icon-table" data-trix-action="insert-table" title="Insert Table"></button>;
-                const btnHtml = <button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media from Library" style="background-image: none !important; display: flex; align-items: center; justify-content: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>;
+                const alignCenterHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-center" data-trix-attribute="alignCenter" title="Align Center"></button>`;
+                const alignRightHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-align-right" data-trix-attribute="alignRight" title="Align Right"></button>`;
+                const tableHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-table" data-trix-action="insert-table" title="Insert Table"></button>`;
+                const btnHtml = `<button type="button" class="trix-button trix-button--icon" data-trix-action="add-media" title="Add Media from Library" style="background-image: none !important; display: flex; align-items: center; justify-content: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>`;
                 
                 blockGroup.insertAdjacentHTML("beforeend", alignCenterHtml + alignRightHtml + tableHtml + btnHtml);
 
                 toolbar.querySelector('[data-trix-action="add-media"]').addEventListener("click", () => {
-                    window.dispatchEvent(new CustomEvent('open-media-picker', { detail: { callback: 'insertTrixMedia' }}));
+                    window.dispatchEvent(new CustomEvent("open-media-picker", { detail: { callback: "insertTrixMedia" }}));
                 });
 
                 toolbar.querySelector('[data-trix-action="insert-table"]').addEventListener("click", (e) => {
-                    const table = <table border="1" style="width:100%; border-collapse: collapse; margin: 10px 0;"><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table><p>&nbsp;</p>;
+                    const table = `<table border="1" style="width:100%; border-collapse: collapse; margin: 10px 0;"><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table><p>&nbsp;</p>`;
                     document.querySelector("trix-editor").editor.insertHTML(table);
                 });
             }
 
             if (historyGroup) {
-                const fsHtml = <button type="button" class="trix-button trix-button--icon trix-button--icon-fullscreen" data-trix-action="toggle-fullscreen" title="Full Screen" style="margin-left: auto; border-left: 1px solid #eee;"></button>;
+                const fsHtml = `<button type="button" class="trix-button trix-button--icon trix-button--icon-fullscreen" data-trix-action="toggle-fullscreen" title="Full Screen" style="margin-left: auto; border-left: 1px solid #eee;"></button>`;
                 historyGroup.insertAdjacentHTML("beforeend", fsHtml);
                 toolbar.querySelector('[data-trix-action="toggle-fullscreen"]').addEventListener("click", () => {
-                    document.getElementById('editor-container').classList.toggle('full-screen');
+                    document.getElementById("editor-container").classList.toggle("full-screen");
                 });
             }
         }
@@ -490,7 +490,7 @@
         document.addEventListener("trix-initialize", initTrixCustomization);
         // Fallback if trix is already initialized before script runs
         setTimeout(() => {
-            const trix = document.querySelector('trix-editor');
+            const trix = document.querySelector("trix-editor");
             if(trix && trix.editor) initTrixCustomization();
         }, 500);
 
@@ -570,3 +570,4 @@ function uploadFileAttachment(attachment) {
         };
     </script>
 @endpush
+
