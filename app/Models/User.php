@@ -46,6 +46,14 @@ class User extends Authenticatable
         'is_active',
         'google2fa_secret',
         'google2fa_enabled',
+        'bio',
+        'avatar',
+        'phone',
+        'job_title',
+        'facebook_url',
+        'twitter_url',
+        'instagram_url',
+        'linkedin_url',
     ];
 
     /**
@@ -170,3 +178,4 @@ class User extends Authenticatable
         return $this->hasMany(Post::class, 'user_id');
     }
 }
+

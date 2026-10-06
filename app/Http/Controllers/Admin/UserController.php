@@ -27,12 +27,26 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+                $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'string', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
             'role' => 'required|string',
+            'job_title' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'bio' => 'nullable|string|max:1000',
+            'avatar' => 'nullable|string|max:500',
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'linkedin_url' => 'nullable|url|max:255',
         ]);
+
+        $avatarPath = null;
+        if ($request->filled('avatar')) {
+            $avatarPath = str_replace(url('/storage') . '/', '', $request->input('avatar'));
+            $avatarPath = str_replace('/storage/', '', $avatarPath);
+        }
 
         User::create([
             'name' => $request->name,
@@ -40,6 +54,14 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'is_active' => $request->has('is_active'),
+            'job_title' => $request->job_title,
+            'phone' => $request->phone,
+            'bio' => $request->bio,
+            'avatar' => $avatarPath,
+            'facebook_url' => $request->facebook_url,
+            'twitter_url' => $request->twitter_url,
+            'instagram_url' => $request->instagram_url,
+            'linkedin_url' => $request->linkedin_url,
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan.');
@@ -56,17 +78,43 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
+                $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|string',
             'password' => ['nullable', 'string', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+            'job_title' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'bio' => 'nullable|string|max:1000',
+            'avatar' => 'nullable|string|max:500',
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'linkedin_url' => 'nullable|url|max:255',
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
         $user->role = $request->role;
         $user->is_active = $request->has('is_active');
+        
+        $user->job_title = $request->job_title;
+        $user->phone = $request->phone;
+        $user->bio = $request->bio;
+        
+        if ($request->filled('avatar')) {
+            $avatarPath = str_replace(url('/storage') . '/', '', $request->input('avatar'));
+            $avatarPath = str_replace('/storage/', '', $avatarPath);
+            $user->avatar = $avatarPath;
+        } elseif ($request->has('avatar') && empty($request->input('avatar'))) {
+            $user->avatar = null;
+        }
+
+        $user->facebook_url = $request->facebook_url;
+        $user->twitter_url = $request->twitter_url;
+        $user->instagram_url = $request->instagram_url;
+        $user->linkedin_url = $request->linkedin_url;
+
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
@@ -85,3 +133,4 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
     }
 }
+
