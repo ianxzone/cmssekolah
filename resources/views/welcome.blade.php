@@ -90,8 +90,8 @@
         .hero-badge { background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 8px 22px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.25); font-weight: 600; font-size: 0.9rem; color: var(--secondary); letter-spacing: 0.5px; }
         .hero-badge .badge-pulse { width: 8px; height: 8px; background-color: var(--secondary); border-radius: 50%; box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); animation: heroPulseDot 1.8s infinite; display: inline-block; }
         @keyframes heroPulseDot { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(251, 191, 36, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); } }
-        .hero h2 { font-size: 3.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 18px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .hero p { font-size: 1.15rem; margin-bottom: 28px; opacity: 0.92; max-width: 750px; line-height: 1.6; }
+        .hero h2, .hero-slide h2, .hero-content h2 { font-size: 3.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 18px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .hero p, .hero-slide p, .hero-content p { font-size: 1.15rem; margin-bottom: 28px; opacity: 0.92; max-width: 750px; line-height: 1.6; }
         .hero-btns { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 22px; }
         
         .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
@@ -123,12 +123,12 @@
         @media (max-width: 992px) {
             .hero-split-grid { grid-template-columns: 1fr; }
             .hero-visual-card { display: none; }
-            .hero h2 { font-size: 2.8rem; }
+            .hero h2, .hero-slide h2, .hero-content h2 { font-size: 2.8rem; }
         }
         @media (max-width: 768px) {
             .hero-slider-wrapper, .hero-slider { min-height: 78vh; }
             .hero-slide { padding: 60px 0 100px 0; }
-            .hero h2 { font-size: 2.15rem; }
+            .hero h2, .hero-slide h2, .hero-content h2 { font-size: 2.15rem; }
             .hero-subtitle { font-size: 0.98rem; margin-bottom: 20px; line-height: 1.5; }
             .hero-nav { display: none; }
             .hero-indicators { bottom: 65px; }

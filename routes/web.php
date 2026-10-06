@@ -85,6 +85,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
         Route::post('biolink/links', [AdminBiolinkController::class, 'storeLink'])->name('admin.biolink.links.store');
         Route::put('biolink/links/{link}', [AdminBiolinkController::class, 'updateLink'])->name('admin.biolink.links.update');
         Route::delete('biolink/links/{link}', [AdminBiolinkController::class, 'destroyLink'])->name('admin.biolink.links.destroy');
+        Route::patch('biolink/toggle-status', [AdminBiolinkController::class, 'toggleStatus'])->name('admin.biolink.toggle-status');
 
         // Post Comments Moderation
         Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
@@ -112,6 +113,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
         Route::put('sliders/{slider}/items/{item}', [AdminSliderController::class, 'updateItem'])->name('admin.sliders.items.update');
         Route::delete('sliders/{slider}/items/{item}', [AdminSliderController::class, 'destroyItem'])->name('admin.sliders.items.destroy');
         Route::patch('sliders/{slider}/items/{item}/toggle', [AdminSliderController::class, 'toggleItem'])->name('admin.sliders.items.toggle');
+        Route::post('sliders/{slider}/presets', [AdminSliderController::class, 'loadPresets'])->name('admin.sliders.presets');
     });
 
     // Group 3: Admin only (Settings, Security, Forms, Guestbook, Redirects, Imports, Users)

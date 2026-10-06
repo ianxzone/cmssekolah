@@ -378,4 +378,89 @@ class SliderController extends Controller
         return redirect()->route('admin.sliders.items', $slider->id)
             ->with('success', "Slide berhasil {$statusStr}.");
     }
+
+    /**
+     * Muat slide rekomendasi/preset ke dalam tema slider ini
+     */
+    public function loadPresets($id)
+    {
+        $slider = Slider::findOrFail($id);
+
+        $presets = [
+            [
+                'title'      => "Pendidikan Islam Terpadu & Rabbani\nLPP Al Irsyad Al Islamiyyah",
+                'subtitle'   => 'Membina generasi Rabbani dari usia emas anak (Daycare sejak lahir, Playgroup & TK Montessori) hingga SDIT, SMPIT, dan SMAIT berpadu akidah tauhid dan adab nabawiyah.',
+                'badge'      => 'SPMB TA 2025/2026 - LPP Al Irsyad Karawang',
+                'image'      => 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&q=80&w=1920',
+                'side_image' => 'images/hero-students.png',
+                'btn_text'   => 'Daftar SPMB Online',
+                'btn_link'   => '#contact',
+                'pills'      => ['Akreditasi A Unggul', 'Tahfidz Bersanad', 'Kelas Internasional ICP'],
+                'sort_order' => 1,
+                'is_active'  => true,
+            ],
+            [
+                'title'      => 'Kurikulum Internasional Pearson (UK)',
+                'subtitle'   => 'International Class Program (ICP) berstandar global Pearson Edexcel UK, memadukan sains internasional dengan adab tauhid Rabbani.',
+                'badge'      => 'OFFICIAL PEARSON EDEXCEL PARTNER',
+                'image'      => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920',
+                'side_image' => null,
+                'btn_text'   => 'Pelajari Pearson ICP',
+                'btn_link'   => '/pearson-icp',
+                'pills'      => ['Pearson Edexcel UK', 'Active English Immersion', 'Global Qualifications'],
+                'sort_order' => 2,
+                'is_active'  => true,
+            ],
+            [
+                'title'      => 'Integrasi Nilai Qur\'ani, Sains & Adab Nabawiyah',
+                'subtitle'   => 'Memadukan Kurikulum Merdeka Nasional dengan bimbingan tahfidz bersanad, pembiasaan adab harian, dan bilingual habit aktif.',
+                'badge'      => 'KURIKULUM KHAS TERPADU AL IRSYAD',
+                'image'      => 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1920',
+                'side_image' => null,
+                'btn_text'   => 'Pelajari Kurikulum Khas',
+                'btn_link'   => '/kurikulum-khas',
+                'pills'      => ['Tahfidz Bersanad', 'Bina Pribadi Islami', 'STEAM & Coding'],
+                'sort_order' => 3,
+                'is_active'  => true,
+            ],
+            [
+                'title'      => 'Fasilitas Lengkap & Lingkungan Belajar Representatif',
+                'subtitle'   => 'Menghadirkan lingkungan belajar yang aman, nyaman, dan berteknologi tinggi untuk memaksimalkan potensi nalar dan ibadah santri.',
+                'badge'      => 'SARANA & PRASARANA MODERN',
+                'image'      => 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1920',
+                'side_image' => null,
+                'btn_text'   => 'Lihat Seluruh Fasilitas',
+                'btn_link'   => '/fasilitas',
+                'pills'      => ['Smart Classroom AC', 'Lab Sains & Komputer', 'Masjid Luas & Representatif'],
+                'sort_order' => 4,
+                'is_active'  => true,
+            ],
+            [
+                'title'      => 'Pilihan Utama Tokoh, Pejabat & Profesional Karawang',
+                'subtitle'   => 'Amanah kehormatan dipercaya oleh kalangan pejabat pemda, dokter spesialis, akademisi, dan profesional industri di Karawang.',
+                'badge'      => 'KEPERCAYAAN STAKEHOLDER KARAWANG',
+                'image'      => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1920',
+                'side_image' => null,
+                'btn_text'   => 'Lihat Testimoni Tokoh',
+                'btn_link'   => '#testimonials',
+                'pills'      => ['Pejabat Pemda & ASN', 'Dokter & Tenaga Medis', 'Profesional Industri & BUMN'],
+                'sort_order' => 5,
+                'is_active'  => true,
+            ],
+        ];
+
+        $currentMax = $slider->items()->max('sort_order') ?? 0;
+        foreach ($presets as $preset) {
+            $currentMax++;
+            $preset['sort_order'] = $currentMax;
+            $slider->items()->create($preset);
+        }
+
+        if (class_exists(SecurityService::class)) {
+            SecurityService::logAudit('created', 'sliders', "Memuat template slide rekomendasi ke tema: {$slider->name}", (string) $slider->id, null, null);
+        }
+
+        return redirect()->route('admin.sliders.items', $slider->id)
+            ->with('success', 'Preset template slide rekomendasi Al Irsyad berhasil dimuat ke dalam tema ini!');
+    }
 }

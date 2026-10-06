@@ -50,35 +50,71 @@ class BiolinkController extends Controller
     public function updateProfile(Request $request)
     {
         $profile = BiolinkProfile::firstOrCreate(['slug' => 'default']);
+        $tab = $request->input('_tab', 'profile');
 
+        // 1. Tab SEO
+        if ($tab === 'seo') {
+            $data = $request->validate([
+                'meta_title' => 'nullable|string|max:255',
+                'meta_description' => 'nullable|string|max:1000',
+                'meta_keywords' => 'nullable|string|max:500',
+                'og_image_file' => 'nullable|image|max:2048',
+            ]);
+
+            if ($request->hasFile('og_image_file')) {
+                $ogResult = ImageService::optimizeAndStore($request->file('og_image_file'), 'biolink', 'og_image');
+                $data['og_image'] = \Illuminate\Support\Facades\Storage::url($ogResult['path']);
+            } elseif ($request->filled('og_image')) {
+                $data['og_image'] = $request->input('og_image');
+            }
+
+            // PENTING: Jangan ubah is_active atau setting tab lain saat simpan SEO!
+            $profile->update($data);
+
+            return redirect()->route('admin.biolink.index', ['tab' => 'seo'])->with('success', 'Pengaturan SEO & OG Image berhasil disimpan.');
+        }
+
+        // 2. Tab Tema & Tampilan
+        if ($tab === 'theme') {
+            $data = $request->validate([
+                'theme_bg_color' => 'nullable|string|max:30',
+                'theme_primary_color' => 'nullable|string|max:30',
+                'theme_accent_color' => 'nullable|string|max:30',
+                'footer_text' => 'nullable|string|max:255',
+                'footer_subtext' => 'nullable|string|max:255',
+            ]);
+
+            $data['show_pattern'] = $request->has('show_pattern');
+            $data['show_scanline'] = $request->has('show_scanline');
+
+            // PENTING: Jangan ubah is_active atau setting tab lain saat simpan Tema!
+            $profile->update($data);
+
+            return redirect()->route('admin.biolink.index', ['tab' => 'theme'])->with('success', 'Pengaturan Tema Visual berhasil disimpan.');
+        }
+
+        // 3. Tab Profil & Branding (Default)
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:100',
             'badge_icon' => 'nullable|string|max:100',
             'bio' => 'nullable|string|max:1000',
-            'theme_bg_color' => 'nullable|string|max:30',
-            'theme_primary_color' => 'nullable|string|max:30',
-            'theme_accent_color' => 'nullable|string|max:30',
             'youtube_url' => 'nullable|string|max:500',
-            'footer_text' => 'nullable|string|max:255',
-            'footer_subtext' => 'nullable|string|max:255',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:1000',
-            'meta_keywords' => 'nullable|string|max:500',
             'avatar' => 'nullable|image|max:2048',
             'banner' => 'nullable|image|max:2048',
-            'og_image_file' => 'nullable|image|max:2048',
         ]);
 
-        // Booleans
         $data['show_verified_badge'] = $request->has('show_verified_badge');
-        $data['show_pattern'] = $request->has('show_pattern');
-        $data['show_scanline'] = $request->has('show_scanline');
         $data['show_youtube'] = $request->has('show_youtube');
-        $data['is_active'] = $request->has('is_active');
 
-        // File uploads with optimization
+        if ($request->has('is_active_submitted')) {
+            $data['is_active'] = $request->has('is_active');
+        } elseif ($request->has('is_active')) {
+            $data['is_active'] = true;
+        }
+
+        // Upload avatar & banner
         if ($request->hasFile('avatar')) {
             $avatarResult = ImageService::optimizeAndStore($request->file('avatar'), 'biolink', 'avatar');
             $data['avatar_path'] = $avatarResult['path'];
@@ -89,14 +125,7 @@ class BiolinkController extends Controller
             $data['banner_path'] = $bannerResult['path'];
         }
 
-        if ($request->hasFile('og_image_file')) {
-            $ogResult = ImageService::optimizeAndStore($request->file('og_image_file'), 'biolink', 'og_image');
-            $data['og_image'] = \Illuminate\Support\Facades\Storage::url($ogResult['path']);
-        } elseif ($request->filled('og_image')) {
-            $data['og_image'] = $request->input('og_image');
-        }
-
-        // Process social links
+        // Process social links jika ada
         if ($request->has('social_links') && is_array($request->input('social_links'))) {
             $socialLinks = [];
             foreach ($request->input('social_links') as $item) {
@@ -115,8 +144,21 @@ class BiolinkController extends Controller
 
         $profile->update($data);
 
-        $tab = $request->input('_tab', 'profile');
-        return redirect()->route('admin.biolink.index', ['tab' => $tab])->with('success', 'Pengaturan Biolink berhasil diperbarui.');
+        return redirect()->route('admin.biolink.index', ['tab' => 'profile'])->with('success', 'Pengaturan Profil berhasil disimpan.');
+    }
+
+    /**
+     * Toggle Biolink Active Status (Quick Toggle).
+     */
+    public function toggleStatus(Request $request)
+    {
+        $profile = BiolinkProfile::firstOrCreate(['slug' => 'default']);
+        $profile->update([
+            'is_active' => !$profile->is_active
+        ]);
+
+        $statusText = $profile->is_active ? 'diaktifkan (Online)' : 'dinonaktifkan (Offline)';
+        return back()->with('success', "Status Halaman Biolink berhasil {$statusText}.");
     }
 
     /**

@@ -21,8 +21,19 @@ class BiolinkController extends Controller
             }])
             ->first();
 
+        // Fallback auto-recovery: jika ada profil di database, pastikan tetap tampil dan auto-heal
         if (!$profile) {
-            abort(404, 'Halaman Biolink belum dikonfigurasi.');
+            $fallback = BiolinkProfile::first();
+            if ($fallback) {
+                $fallback->update(['is_active' => true]);
+                $profile = $fallback->load(['sections' => function ($query) {
+                    $query->where('is_active', true)
+                        ->orderBy('sort_order', 'asc')
+                        ->with(['activeLinks']);
+                }]);
+            } else {
+                abort(404, 'Halaman Biolink belum dikonfigurasi.');
+            }
         }
 
         return view('frontend.biolink', compact('profile'));
