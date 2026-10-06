@@ -348,6 +348,7 @@
     </script>
     {{-- WordPress-Style Link Insert & Edit Modal for Trix Editors --}}
     @include('admin.partials.link-modal')
+    @include('admin.partials.media-picker')
 
 
 

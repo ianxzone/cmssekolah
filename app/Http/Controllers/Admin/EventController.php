@@ -43,15 +43,16 @@ class EventController extends Controller
             'location' => 'nullable|string|max:255',
             'map_link' => 'nullable|string',
             'capacity' => 'nullable|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|string|max:1000',
             'organizer_name' => 'nullable|string|max:255',
             'sponsor_names' => 'nullable|array',
             'sponsor_logos' => 'nullable|array',
         ]);
 
-        if ($request->hasFile('image')) {
-            $opt = ImageService::optimizeAndStore($request->file('image'), 'events');
-            $validated['image'] = $opt['path'];
+                if ($request->filled('image')) {
+            $path = str_replace(url('/storage') . '/', '', $request->input('image'));
+            $path = str_replace('/storage/', '', $path);
+            $validated['image'] = $path;
         }
 
         $sponsors = [];
@@ -108,20 +109,22 @@ class EventController extends Controller
             'location' => 'nullable|string|max:255',
             'map_link' => 'nullable|string',
             'capacity' => 'nullable|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|string|max:1000',
             'organizer_name' => 'nullable|string|max:255',
             'sponsor_names' => 'nullable|array',
             'sponsor_logos' => 'nullable|array',
             'existing_sponsor_logos' => 'nullable|array',
         ]);
 
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($event->image) {
+                if ($request->filled('image')) {
+            $path = str_replace(url('/storage') . '/', '', $request->input('image'));
+            $path = str_replace('/storage/', '', $path);
+            
+            // Delete old if changed
+            if ($event->image && $event->image !== $path) {
                 Storage::disk('public')->delete($event->image);
             }
-            $opt = ImageService::optimizeAndStore($request->file('image'), 'events');
-            $validated['image'] = $opt['path'];
+            $validated['image'] = $path;
         }
 
         $sponsors = [];
@@ -181,3 +184,4 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
     }
 }
+
