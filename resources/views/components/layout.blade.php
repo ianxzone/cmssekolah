@@ -1,3 +1,4 @@
+@props(['title' => null, 'metaDescription' => null, 'metaImage' => null, 'metaType' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
@@ -19,7 +20,7 @@
         $finalTitle = (!empty($title) && $pageTitle !== $siteName) ? str_replace('%title%', $pageTitle, $defaultTitleFormat) : $pageTitle;
         
         $finalDescription = $metaDescription ?? $defaultDescription;
-        $metaImage = $metaImage ?? ($defaultImage ? Storage::url($defaultImage) : asset('assets/images/default-og.png'));
+        $metaImage = $metaImage ?? ($defaultImage ? \Illuminate\Support\Facades\Storage::url($defaultImage) : asset('assets/images/default-og.png'));
         $metaUrl = url()->current();
     @endphp
 
