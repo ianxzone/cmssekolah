@@ -149,6 +149,18 @@ class SecurityController extends Controller
     }
 
     /**
+     * Clear auto-banned IP addresses
+     */
+    public function clearAutoBan()
+    {
+        IpRule::where('rule_type', 'blacklist')->whereNull('created_by')->delete();
+        SecurityService::logAudit('deleted', 'security', 'Membersihkan semua IP yang diblokir otomatis oleh sistem');
+
+        return redirect()->route('admin.security.index', ['tab' => 'threats'])
+            ->with('success', 'Seluruh aturan blokir IP otomatis (Auto-Ban) berhasil dibersihkan.');
+    }
+
+    /**
      * Update security configuration settings
      */
     public function updateSettings(Request $request)

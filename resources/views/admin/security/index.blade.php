@@ -947,15 +947,15 @@
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
+                    <form action="{{ route('admin.security.ip.clearAutoBan') }}" method="POST" onsubmit="return confirm('Hapus semua IP yang diblokir otomatis oleh sistem?');" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn" style="background:#fff7ed; color:#c2410c; border: 1px solid #fed7aa;">
+                            <i data-feather="refresh-cw"></i> Bersihkan Auto-Ban
+                        </button>
+                    </form>
                     <button type="button" class="btn btn-primary" onclick="openIpModal()">
                         <i data-feather="plus"></i> Tambah Aturan IP
                     </button>
-                    <form action="{{ route('admin.security.threats.clear') }}" method="POST" onsubmit="return confirm('Kosongkan semua riwayat log ancaman?');" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn" style="background:#fee2e2; color:#b91c1c;">
-                            <i data-feather="trash-2"></i> Bersihkan Log
-                        </button>
-                    </form>
                 </div>
             </div>
 
@@ -1013,10 +1013,17 @@
             @endif
 
             <!-- Threat Logs Table -->
-            <div style="border-top: 1px dashed #cbd5e1; padding-top: 1.5rem;">
-                <h3 style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+            <div style="border-top: 1px dashed #cbd5e1; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.05rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; margin: 0;">
                     <i data-feather="alert-octagon" style="color: #ef4444; width: 18px; height: 18px;"></i> Log Percobaan Serangan Real-time
                 </h3>
+                <form action="{{ route('admin.security.threats.clear') }}" method="POST" onsubmit="return confirm('Kosongkan semua riwayat log ancaman?');" style="display:inline;">
+                    @csrf
+                    <button type="submit" class="btn" style="background:#fee2e2; color:#b91c1c; padding: 6px 12px; font-size: 0.8rem; display: flex; align-items: center; gap: 5px;">
+                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i> Bersihkan Log Serangan
+                    </button>
+                </form>
+            </div>
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
                         <thead>
