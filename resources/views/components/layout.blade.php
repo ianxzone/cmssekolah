@@ -1,4 +1,4 @@
-@props(['title' => null, 'metaDescription' => null, 'metaImage' => null, 'metaType' => null])
+@props(['title' => null, 'metaDescription' => null, 'metaKeywords' => null, 'metaImage' => null, 'metaType' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
@@ -64,7 +64,24 @@
     <script src="https://unpkg.com/feather-icons"></script>
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if(file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <!-- Fallback if Vite is not built yet (e.g. on cPanel Git deployment) -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#b45309',
+                        }
+                    }
+                }
+            }
+        </script>
+    @endif
 
     <style>
         :root {
@@ -450,20 +467,28 @@
             }
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased text-gray-900 bg-gray-50 flex flex-col min-h-screen">
 
-    @include('frontend.layouts.navbar')
+    @php
+        if (!isset($settings)) {
+            $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        }
+    @endphp
+    @include('frontend.layouts.navbar', ['settings' => $settings])
 
     <!-- Main Content -->
     <main class="flex-grow">
         {{ $slot }}
     </main>
 
-    @include('frontend.layouts.footer')
+    @include('frontend.layouts.footer', ['settings' => $settings])
 
-    @include('partials.footer-analytics')
+    @include('partials.footer-analytics', ['settings' => $settings])
+    
+    @stack('scripts')
 </body>
 
 </html>
