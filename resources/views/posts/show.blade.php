@@ -1,4 +1,4 @@
-<x-layout :title="$post->seo_title ?? $post->title" :metaDescription="$post->seo_description ?? Str::limit(strip_tags($post->content), 160)">
+<x-layout :title="$post->seo_title ?? $post->title" :metaDescription="$post->seo_description ?? Str::limit(strip_tags($post->content ?? ''), 160)">
     <div class="bg-gray-50 min-h-screen py-8 md:py-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 

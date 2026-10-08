@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('title', $post->title . ' - ' . config('app.name'))
-@section('meta_description', $post->description ?? Str::limit(strip_tags($post->content), 150))
+@section('meta_description', $post->description ?? Str::limit(strip_tags($post->content ?? ''), 150))
 @if($post->image)
 @section('meta_image', $post->image_url)
 @endif

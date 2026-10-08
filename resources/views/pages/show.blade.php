@@ -1,4 +1,4 @@
-<x-layout :title="$page->seo_title ?: $page->title" :metaDescription="$page->seo_description ?: Str::limit(strip_tags($page->content), 160)" :metaImage="$page->image ? Storage::url($page->image) : null" metaType="article">
+<x-layout :title="$page->seo_title ?: $page->title" :metaDescription="$page->seo_description ?: \Illuminate\Support\Str::limit(strip_tags($page->content ?? ''), 160)" :metaImage="$page->image ? \Illuminate\Support\Facades\Storage::url($page->image) : null" metaType="article">
     <!-- Page Header -->
     <div class="bg-primary-900 py-16 md:py-24 relative overflow-hidden">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-10">
