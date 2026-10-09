@@ -2193,7 +2193,7 @@
             <div class="facilities-highlight-grid">
                 @foreach($featuredFacilities as $f)
                 @php
-                    $imgUrl = str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image);
+                    $imgUrl = $f->image ? (str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image)) : asset('images/no-image.png');
                 @endphp
                 <div class="fac-mini-card">
                     <div class="fac-mini-media">
