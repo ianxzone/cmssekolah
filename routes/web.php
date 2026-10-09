@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\TeacherController as AdminTeacherController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\FacilityController as AdminFacilityController;
 use App\Http\Controllers\Admin\BiolinkController as AdminBiolinkController;
 use App\Http\Controllers\Admin\GuestBookController as AdminGuestBookController;
 use App\Http\Controllers\Admin\WordPressImportController;
@@ -77,6 +78,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
         Route::resource('events', AdminEventController::class)->names('admin.events');
         Route::resource('teachers', AdminTeacherController::class)->names('admin.teachers');
         Route::resource('testimonials', AdminTestimonialController::class)->names('admin.testimonials');
+        Route::resource('facilities', AdminFacilityController::class)->names('admin.facilities');
 
         // Biolink Routes
         Route::get('biolink', [AdminBiolinkController::class, 'index'])->name('admin.biolink.index');

@@ -378,7 +378,11 @@ class FrontendController extends Controller
     public function fasilitas()
     {
         $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
-        return view('frontend.fasilitas', compact('settings'));
+        $dbFacilities = \App\Models\Facility::where('is_active', true)
+                            ->orderBy('order', 'asc')
+                            ->orderBy('id', 'desc')
+                            ->get();
+        return view('frontend.fasilitas', compact('settings', 'dbFacilities'));
     }
 
     /**
