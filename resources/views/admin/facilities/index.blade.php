@@ -32,14 +32,22 @@
                         <td style="padding: 1rem; font-weight: 600; color: var(--text-primary);">{{ $f->order }}</td>
                         <td style="padding: 1rem;">
                             @if($f->image)
-                                <img src="{{ $f->image }}" alt="{{ $f->title }}" width="60" style="border-radius:6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                @php
+                                    $imgUrl = str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image);
+                                @endphp
+                                <img src="{{ $imgUrl }}" alt="{{ $f->title }}" width="60" height="40" style="object-fit:cover; border-radius:6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                             @else
                                 <span style="font-size: 12px; color: #999;">No Image</span>
                             @endif
                         </td>
                         <td style="padding: 1rem; font-weight: 600; color: var(--text-primary);">
-                            {{ $f->title }}<br>
-                            <span style="font-size: 12px; font-weight: 400; color: var(--text-secondary);">{{ Str::limit($f->desc, 50) }}</span>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                @if($f->icon)
+                                    <i data-feather="{{ $f->icon }}" style="width: 16px; height: 16px; color: var(--primary-color);"></i>
+                                @endif
+                                <span>{{ $f->title }}</span>
+                            </div>
+                            <span style="font-size: 12px; font-weight: 400; color: var(--text-secondary);">{{ Str::limit(strip_tags($f->desc), 50) }}</span>
                         </td>
                         <td style="padding: 1rem;">
                             <span style="background-color: #e0e7ff; color: #4338ca; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">

@@ -2191,49 +2191,23 @@
 
             <!-- 4 Featured Visual Cards -->
             <div class="facilities-highlight-grid">
+                @foreach($featuredFacilities as $f)
+                @php
+                    $imgUrl = str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image);
+                @endphp
                 <div class="fac-mini-card">
                     <div class="fac-mini-media">
-                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600" alt="Masjid Jami Al Irsyad" loading="lazy">
-                        <span class="fac-mini-badge">Episentrum Ibadah</span>
+                        <img src="{{ $imgUrl }}" alt="{{ $f->title }}" loading="lazy">
+                        @if($f->badge)
+                        <span class="fac-mini-badge">{{ $f->badge }}</span>
+                        @endif
                     </div>
                     <div class="fac-mini-body">
-                        <h4>Masjid Jami Al Irsyad</h4>
-                        <p>Pusat sholat fardhu & dhuha berjamaah, halaqah tahfidz bersanad, dan kajian adab nabawiyah santri.</p>
+                        <h4>{{ $f->title }}</h4>
+                        <p>{{ strip_tags($f->desc) }}</p>
                     </div>
                 </div>
-
-                <div class="fac-mini-card">
-                    <div class="fac-mini-media">
-                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=600" alt="Lab Komputer iMac & Robotik" loading="lazy">
-                        <span class="fac-mini-badge">iMac & STEM Lab</span>
-                    </div>
-                    <div class="fac-mini-body">
-                        <h4>Lab Komputer & Robotik</h4>
-                        <p>Workstation iMac mutakhir, lab sains terstandar, dan studio robotik untuk inovasi teknologi digital.</p>
-                    </div>
-                </div>
-
-                <div class="fac-mini-card">
-                    <div class="fac-mini-media">
-                        <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&q=80&w=600" alt="Irsyadin Water Pool & Sporthall" loading="lazy">
-                        <span class="fac-mini-badge">Renang & Olahraga</span>
-                    </div>
-                    <div class="fac-mini-body">
-                        <h4>Water Pool & Sporthall</h4>
-                        <p>Kolam renang privat syar'i terpisah ikhwan/akhwat, arena futsal, basket, dan panahan sunnah.</p>
-                    </div>
-                </div>
-
-                <div class="fac-mini-card">
-                    <div class="fac-mini-media">
-                        <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&q=80&w=600" alt="Kelas Smart AC & Montessori" loading="lazy">
-                        <span class="fac-mini-badge">Smart AC & Daycare</span>
-                    </div>
-                    <div class="fac-mini-body">
-                        <h4>Kelas Smart AC & Montessori</h4>
-                        <p>Ruang kelas sejuk dengan Interactive TV serta sentra Montessori ramah anak sejak usia bayi/balita.</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- 4-Pill Overview Strip -->

@@ -389,9 +389,12 @@
     <!-- Facility Cards Grid -->
     <div class="facility-grid-large" id="facilityGrid">
         @foreach($dbFacilities as $f)
+        @php
+            $imgUrl = str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image);
+        @endphp
         <div class="facility-card-pro" data-category="{{ $f->category }}">
             <div class="facility-card-media">
-                <img src="{{ $f->image }}" alt="{{ $f->title }}" loading="lazy">
+                <img src="{{ $imgUrl }}" alt="{{ $f->title }}" loading="lazy">
                 @if($f->badge)
                 <span class="facility-card-badge">
                     <i data-feather="check-circle" style="width: 12px; height: 12px; vertical-align: middle;"></i> {{ $f->badge }}

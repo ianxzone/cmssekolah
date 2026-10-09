@@ -52,7 +52,16 @@ class FrontendController extends Controller
                 ->get();
         }
 
-        return view('welcome', compact('settings', 'posts', 'events', 'testimonials', 'teachers'));
+        $featuredFacilities = collect();
+        if (($settings['home_show_facilities'] ?? '1') == '1') {
+            $featuredFacilities = \App\Models\Facility::where('is_active', true)
+                ->orderBy('order', 'asc')
+                ->orderBy('id', 'desc')
+                ->take(4)
+                ->get();
+        }
+
+        return view('welcome', compact('settings', 'posts', 'events', 'testimonials', 'teachers', 'featuredFacilities'));
     }
 
     /**
