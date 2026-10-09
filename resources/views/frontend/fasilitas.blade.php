@@ -30,10 +30,10 @@
       "@type": "Offer",
       "itemOffered": {
         "@type": "Service",
-        "name": "{{ $f->title }}",
-        "description": "{{ strip_tags($f->desc) }}"
+        "name": {!! json_encode($f->title) !!},
+        "description": {!! json_encode(strip_tags($f->desc ?? '')) !!}
       }
-    }{{ $index < count($dbFacilities) - 1 ? ',' : '' }}
+    }@if(!$loop->last),@endif
     @endforeach
   ]
 }
