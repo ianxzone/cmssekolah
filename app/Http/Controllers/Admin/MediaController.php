@@ -27,42 +27,60 @@ class MediaController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $file = $request->file('file');
-        $originalName = $file->getClientOriginalName();
-        $fileName = pathinfo($originalName, PATHINFO_FILENAME);
+        try {
+            $file = $request->file('file');
+            $originalName = $file->getClientOriginalName();
+            $fileName = pathinfo($originalName, PATHINFO_FILENAME);
 
-        $optimized = ImageService::optimizeAndStore($file, 'media');
+            $optimized = ImageService::optimizeAndStore($file, 'media');
 
-        $media = Media::create([
-            'name' => $originalName,
-            'file_name' => $optimized['file_name'],
-            'mime_type' => $optimized['mime_type'],
-            'path' => $optimized['path'],
-            'disk' => 'public',
-            'size' => $optimized['size'],
-            'alt_text' => $request->input('alt_text', Str::headline($fileName)),
-            'title' => $request->input('title', Str::headline($fileName)),
-            'caption' => $request->input('caption'),
-            'description' => $request->input('description'),
-        ]);
-
-        \App\Services\SecurityService::logAudit('created', 'media', "Mengupload media: {$originalName}", (string)$media->id);
-
-        if ($request->header('Accept') === 'application/json' || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'media' => $media,
-                'url' => $media->url,
-                'id' => $media->id,
-                'name' => $media->name,
-                'alt_text' => $media->alt_text,
-                'title' => $media->title,
-                'caption' => $media->caption,
-                'description' => $media->description,
+            $media = Media::create([
+                'name' => $originalName,
+                'file_name' => $optimized['file_name'],
+                'mime_type' => $optimized['mime_type'],
+                'path' => $optimized['path'],
+                'disk' => 'public',
+                'size' => (int) $optimized['size'],
+                'alt_text' => $request->input('alt_text', Str::headline($fileName)),
+                'title' => $request->input('title', Str::headline($fileName)),
+                'caption' => $request->input('caption'),
+                'description' => $request->input('description'),
             ]);
-        }
 
-        return redirect()->route('admin.media.index')->with('success', 'File uploaded successfully.');
+            try {
+                \App\Services\SecurityService::logAudit('created', 'media', "Mengupload media: {$originalName}", (string)$media->id);
+            } catch (\Throwable $e) {
+                // Ignore audit log failures
+            }
+
+            if ($request->header('Accept') === 'application/json' || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'media' => $media,
+                    'url' => $media->url,
+                    'id' => $media->id,
+                    'name' => $media->name,
+                    'alt_text' => $media->alt_text,
+                    'title' => $media->title,
+                    'caption' => $media->caption,
+                    'description' => $media->description,
+                ]);
+            }
+
+            return redirect()->route('admin.media.index')->with('success', 'File uploaded successfully.');
+
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Media Upload Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            
+            if ($request->header('Accept') === 'application/json' || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengunggah berkas: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->with('error', 'Gagal mengunggah berkas: ' . $e->getMessage());
+        }
     }
 
     public function apiList(Request $request)
