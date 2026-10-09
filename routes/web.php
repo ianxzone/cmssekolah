@@ -235,6 +235,17 @@ Route::get('/robots.txt', [FrontendController::class, 'robots'])->name('robots')
 // Post Comment Submission
 Route::post('/{slug}/komentar', [FrontendController::class, 'storeComment'])->middleware('throttle:10,1')->name('posts.comments.store');
 
+// Deployment sync route
+Route::get('/dev/sync', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        return 'Setup berhasil! Database sudah dimigrasi dan cache telah dibersihkan.';
+    } catch (\Exception $e) {
+        return 'Gagal: ' . $e->getMessage();
+    }
+});
+
 // Catch-all: Post slug first, then Page slug
 Route::get('/{slug}', [FrontendController::class, 'showSlug'])->name('posts.show');
 
