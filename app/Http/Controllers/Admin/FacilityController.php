@@ -32,7 +32,12 @@ class FacilityController extends Controller
             'order' => 'nullable|integer',
             'is_active' => 'boolean',
             'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'featured_image_path' => 'nullable|string',
         ]);
+
+        if ($request->filled('featured_image_path')) {
+            $validated['image'] = str_starts_with($request->featured_image_path, 'http') ? $request->featured_image_path : '/storage/' . $request->featured_image_path;
+        }
 
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('facilities', 'public');
@@ -63,7 +68,15 @@ class FacilityController extends Controller
             'order' => 'nullable|integer',
             'is_active' => 'boolean',
             'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'featured_image_path' => 'nullable|string',
+            'remove_image' => 'nullable|boolean',
         ]);
+
+        if ($request->remove_image) {
+            $validated['image'] = null;
+        } elseif ($request->filled('featured_image_path')) {
+            $validated['image'] = str_starts_with($request->featured_image_path, 'http') ? $request->featured_image_path : '/storage/' . $request->featured_image_path;
+        }
 
         if ($request->hasFile('image_file')) {
             if ($facility->image && str_starts_with($facility->image, '/storage/')) {

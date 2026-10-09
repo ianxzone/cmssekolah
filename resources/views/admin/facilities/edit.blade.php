@@ -85,13 +85,36 @@
             </div>
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Gambar (Opsional)</label>
-                @if($facility->image)
-                    <div style="margin-bottom: 0.5rem;">
-                        <img src="{{ $facility->image }}" alt="Preview" width="120" style="border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="border: 1px dashed var(--border-color); border-radius: 8px; padding: 1rem; text-align: center; background-color: var(--surface-color); position: relative; max-width: 100%;">
+                    <!-- Hidden Inputs for logic -->
+                    <input type="hidden" name="featured_image_path" id="featured_image_path" value="">
+                    <input type="hidden" name="remove_image" id="remove_image" value="0">
+                    
+                    <!-- Preview Wrapper -->
+                    <div id="image-preview-wrapper" style="display: {{ $facility->image ? 'block' : 'none' }}; position: relative; max-width: 250px; margin: 0 auto 1rem auto;">
+                        <img id="preview-img" src="{{ $facility->image ? $facility->image : '#' }}" alt="Preview" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <button type="button" onclick="removeFeaturedImage()" class="btn btn-danger" style="position: absolute; top: -10px; right: -10px; padding: 0.25rem; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                            <i data-feather="x" style="width: 14px; height: 14px;"></i>
+                        </button>
                     </div>
-                @endif
-                <input type="file" name="image_file" class="form-control" style="width: 100%; padding: 0.625rem; border: 1px solid var(--border-color); border-radius: 6px;" accept="image/*">
-                <small style="color: var(--text-secondary); display: block; margin-top: 0.25rem;">Biarkan kosong jika tidak ingin mengubah gambar.</small>
+
+                    <!-- Placeholder Wrapper -->
+                    <div id="image-placeholder" style="margin-bottom: 1rem; display: {{ $facility->image ? 'none' : 'block' }};">
+                        <i data-feather="image" style="margin: 0 auto 0.5rem auto; width: 48px; height: 48px; color: #9ca3af; display: block;"></i>
+                        <p style="font-size: 0.8125rem; color: #6b7280; margin: 0 0 0.75rem 0;">Belum ada gambar yang dipilih</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-primary" onclick="openFeaturedImageMediaPicker()" style="font-size: 0.8125rem; padding: 0.4rem 0.875rem;">
+                            <i data-feather="image" style="width: 15px; height: 15px; margin-right: 4px;"></i> Pilih dari Media
+                        </button>
+                        <label class="btn" style="font-size: 0.8125rem; padding: 0.4rem 0.875rem; background: #f3f4f6; border: 1px solid #d1d5db; color: #374151; cursor: pointer; margin-bottom: 0;">
+                            <i data-feather="upload" style="width: 15px; height: 15px; margin-right: 4px;"></i> Upload File
+                            <input type="file" id="image" name="image_file" accept="image/*" style="display: none;" onchange="handleDirectFileSelect(event)">
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Urutan Tampil (Order)</label>
@@ -162,6 +185,57 @@
             if (window.feather) feather.replace();
         });
     });
+
+    // Media Picker Logic
+    function openFeaturedImageMediaPicker() {
+        if (window.openWpMediaModal) {
+            window.openWpMediaModal({
+                mode: 'featured',
+                onSelect: function(item) {
+                    document.getElementById('featured_image_path').value = item.path;
+                    document.getElementById('remove_image').value = '0';
+                    
+                    const previewImg = document.getElementById('preview-img');
+                    const previewWrapper = document.getElementById('image-preview-wrapper');
+                    const placeholder = document.getElementById('image-placeholder');
+                    
+                    previewImg.src = item.url ? item.url : `/storage/${item.path}`;
+                    previewWrapper.style.display = 'block';
+                    placeholder.style.display = 'none';
+
+                    if (window.feather) feather.replace();
+                }
+            });
+        } else {
+            alert('Media Library tidak tersedia.');
+        }
+    }
+
+    function handleDirectFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview-img').src = e.target.result;
+                document.getElementById('image-preview-wrapper').style.display = 'block';
+                document.getElementById('image-placeholder').style.display = 'none';
+                document.getElementById('remove_image').value = '0';
+                document.getElementById('featured_image_path').value = '';
+                if (window.feather) feather.replace();
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeFeaturedImage() {
+        document.getElementById('featured_image_path').value = '';
+        document.getElementById('remove_image').value = '1';
+        document.getElementById('preview-img').src = '#';
+        document.getElementById('image-preview-wrapper').style.display = 'none';
+        document.getElementById('image-placeholder').style.display = 'block';
+        const fileInput = document.getElementById('image');
+        if (fileInput) fileInput.value = '';
+    }
 </script>
 @endpush
 @endsection
