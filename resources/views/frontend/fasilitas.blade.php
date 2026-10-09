@@ -1,7 +1,44 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Fasilitas & Sarana Prasarana - ' . config('app.name', 'LPP Al Irsyad Karawang'))
-@section('meta_description', 'Fasilitas lengkap, modern, dan representatif di LPP Al Irsyad Karawang mendukung kenyamanan belajar, pembiasaan ibadah, dan prestasi santri.')
+@section('title', 'Fasilitas & Sarana Prasarana Lengkap')
+@section('meta_description', 'Jelajahi fasilitas modern dan representatif di LPP Al Irsyad Karawang. Mulai dari Smart Class ber-AC, Laboratorium iMac, Kolam Renang Privat, hingga Masjid Jami untuk kenyamanan belajar santri.')
+@section('meta_keywords', 'fasilitas al irsyad karawang, sekolah fasilitas lengkap karawang, kolam renang sekolah karawang, sekolah islam modern karawang, lab komputer sekolah karawang')
+@section('meta_type', 'website')
+@if(isset($settings['site_logo']))
+@section('meta_image', asset('storage/' . $settings['site_logo']))
+@endif
+
+@push('scripts')
+<!-- Structured Data / JSON-LD untuk SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "{{ $settings['site_name'] ?? config('app.name') }}",
+  "description": "Fasilitas lengkap, modern, dan representatif mendukung kenyamanan belajar, pembiasaan ibadah, dan prestasi santri.",
+  "url": "{{ url()->current() }}",
+  "telephone": "{{ $settings['contact_phone'] ?? '' }}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Karawang",
+    "addressRegion": "Jawa Barat",
+    "addressCountry": "ID"
+  },
+  "makesOffer": [
+    @foreach($dbFacilities as $index => $f)
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "{{ $f->title }}",
+        "description": "{{ strip_tags($f->desc) }}"
+      }
+    }{{ $index < count($dbFacilities) - 1 ? ',' : '' }}
+    @endforeach
+  ]
+}
+</script>
+@endpush
 
 @push('styles')
 <style>
