@@ -107,6 +107,11 @@
                     <i data-feather="folder"></i>
                     <span>Categories</span>
                 </a>
+                <a href="{{ route('admin.tags.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}" title="Tags">
+                    <i data-feather="hash"></i>
+                    <span>Tags</span>
+                </a>
                 @endif
 
                 <a href="{{ route('admin.media.index') }}"
@@ -358,5 +363,6 @@
 </body>
 
 </html>
+
 
 
