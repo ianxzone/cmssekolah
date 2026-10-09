@@ -24,6 +24,21 @@
                         <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Biarkan kosong untuk generate otomatis dari nama tag.</p>
                     </div>
 
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4b5563; padding-top: 1rem; border-top: 1px solid #e5e7eb;">Pengaturan SEO (Opsional)</label>
+                        <label for="description" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Deskripsi Singkat</label>
+                        <textarea id="description" name="description" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;">{{ old('description') }}</textarea>
+
+                        <label for="meta_title" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Meta Title</label>
+                        <input type="text" id="meta_title" name="meta_title" value="{{ old('meta_title') }}" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;">
+
+                        <label for="meta_description" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Meta Description</label>
+                        <textarea id="meta_description" name="meta_description" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;">{{ old('meta_description') }}</textarea>
+
+                        <label for="meta_keywords" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Meta Keywords</label>
+                        <input type="text" id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords') }}" placeholder="pisahkan dengan koma" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                    </div>
+
                     <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Simpan Tag</button>
                 </form>
             </div>
@@ -52,32 +67,19 @@
                             </thead>
                             <tbody>
                                 @foreach($tags as $tag)
-                                    <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.15s ease;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'" x-data="{ editing: false }">
-                                        <!-- Mode Tampil -->
-                                        <td x-show="!editing" style="padding: 1rem; font-weight: 500; color: var(--text-primary);">{{ $tag->name }}</td>
-                                        <td x-show="!editing" style="padding: 1rem; color: var(--text-secondary);">{{ $tag->slug }}</td>
-                                        
-                                        <!-- Mode Edit -->
-                                        <td x-show="editing" colspan="2" style="padding: 1rem;">
-                                            <form action="{{ route('admin.tags.update', $tag->id) }}" method="POST" style="display: flex; gap: 0.5rem;">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="text" name="name" value="{{ $tag->name }}" required style="flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;">
-                                                <input type="text" name="slug" value="{{ $tag->slug }}" required style="flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;">
-                                                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">Simpan</button>
-                                                <button type="button" @click="editing = false" class="btn btn-outline" style="padding: 0.5rem 1rem;">Batal</button>
-                                            </form>
-                                        </td>
+                                    <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.15s ease;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'">
+                                        <td style="padding: 1rem; font-weight: 500; color: var(--text-primary);">{{ $tag->name }}</td>
+                                        <td style="padding: 1rem; color: var(--text-secondary);">{{ $tag->slug }}</td>
                                         
                                         <!-- Kolom Statis -->
                                         <td style="padding: 1rem;">
                                             <span style="background: #f3f4f6; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem;">{{ $tag->posts_count }} post</span>
                                         </td>
                                         <td style="padding: 1rem; text-align: right;">
-                                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;" x-show="!editing">
-                                                <button @click="editing = true" class="btn btn-outline" style="padding: 0.4rem 0.75rem;" title="Edit">
+                                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                                <a href="{{ route('admin.tags.edit', $tag->id) }}" class="btn btn-outline" style="padding: 0.4rem 0.75rem;" title="Edit">
                                                     <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
-                                                </button>
+                                                </a>
                                                 <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tag ini? Semua relasi pada post akan hilang.');" style="display: inline-block;">
                                                     @csrf
                                                     @method('DELETE')

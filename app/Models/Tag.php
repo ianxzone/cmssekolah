@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = [
+        'name', 
+        'slug',
+        'description',
+        'meta_title',
+        'meta_description',
+        'meta_keywords'
+    ];
 
     public function posts()
     {

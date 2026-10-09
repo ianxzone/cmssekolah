@@ -35,6 +35,10 @@ class TagController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:tags,slug',
+            'description' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string|max:255',
         ]);
 
         $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
@@ -50,9 +54,21 @@ class TagController extends Controller
         Tag::create([
             'name' => $request->name,
             'slug' => $slug,
+            'description' => $request->description,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
         ]);
 
         return redirect()->route('admin.tags.index')->with('success', 'Tag berhasil ditambahkan.');
+    }
+
+    /**
+     * Show the form for editing the specified tag.
+     */
+    public function edit(Tag $tag)
+    {
+        return view('admin.tags.edit', compact('tag'));
     }
 
     /**
@@ -63,6 +79,10 @@ class TagController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:tags,slug,' . $tag->id,
+            'description' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string|max:255',
         ]);
 
         $slug = Str::slug($request->slug);
@@ -70,6 +90,10 @@ class TagController extends Controller
         $tag->update([
             'name' => $request->name,
             'slug' => $slug,
+            'description' => $request->description,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
         ]);
 
         return redirect()->route('admin.tags.index')->with('success', 'Tag berhasil diperbarui.');
