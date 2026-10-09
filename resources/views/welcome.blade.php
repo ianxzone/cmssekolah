@@ -2193,7 +2193,10 @@
             <div class="facilities-highlight-grid">
                 @foreach($featuredFacilities as $f)
                 @php
-                    $imgUrl = $f->image ? (str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image)) : asset('images/no-image.png');
+                    $imgUrl = asset('images/no-image.png');
+                    if ($f->image) {
+                        $imgUrl = (str_starts_with($f->image, 'http') || str_starts_with($f->image, '/')) ? url($f->image) : asset('storage/' . $f->image);
+                    }
                 @endphp
                 <div class="fac-mini-card">
                     <div class="fac-mini-media">
@@ -2204,7 +2207,7 @@
                     </div>
                     <div class="fac-mini-body">
                         <h4>{{ $f->title }}</h4>
-                        <p>{{ strip_tags($f->desc) }}</p>
+                        <p>{{ Str::limit(strip_tags($f->desc ?? ''), 95) }}</p>
                     </div>
                 </div>
                 @endforeach

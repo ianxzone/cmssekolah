@@ -390,7 +390,10 @@
     <div class="facility-grid-large" id="facilityGrid">
         @foreach($dbFacilities as $f)
         @php
-            $imgUrl = $f->image ? (str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image)) : asset('images/no-image.png');
+            $imgUrl = asset('images/no-image.png');
+            if ($f->image) {
+                $imgUrl = (str_starts_with($f->image, 'http') || str_starts_with($f->image, '/')) ? url($f->image) : asset('storage/' . $f->image);
+            }
         @endphp
         <div class="facility-card-pro" data-category="{{ $f->category }}">
             <div class="facility-card-media">

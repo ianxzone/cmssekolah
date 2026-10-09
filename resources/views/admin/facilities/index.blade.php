@@ -33,7 +33,7 @@
                         <td style="padding: 1rem;">
                             @if($f->image)
                                 @php
-                                    $imgUrl = str_starts_with($f->image, 'http') ? $f->image : asset('storage/' . $f->image);
+                                    $imgUrl = (str_starts_with($f->image, 'http') || str_starts_with($f->image, '/')) ? url($f->image) : asset('storage/' . $f->image);
                                 @endphp
                                 <img src="{{ $imgUrl }}" alt="{{ $f->title }}" width="60" height="40" style="object-fit:cover; border-radius:6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                             @else
