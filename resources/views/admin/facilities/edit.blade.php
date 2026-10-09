@@ -109,13 +109,59 @@
         </form>
     </div>
 </div>
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-container .select2-selection--single {
+    height: 42px !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 6px !important;
+    display: flex;
+    align-items: center;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--text-primary) !important;
+    line-height: normal !important;
+    padding-left: 0.625rem !important;
+}
+</style>
+@endpush
+
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    function updateIconPreview(val) {
-        const preview = document.getElementById('icon-preview');
-        preview.innerHTML = `<i data-feather="${val}"></i>`;
-        if (window.feather) feather.replace();
-    }
+    $(document).ready(function() {
+        function formatIcon(icon) {
+            if (!icon.id) {
+                return icon.text;
+            }
+            var svg = '';
+            if (window.feather && window.feather.icons[icon.id]) {
+                svg = window.feather.icons[icon.id].toSvg({ width: 18, height: 18 });
+            }
+            var $icon = $(
+                '<span style="display: flex; align-items: center; gap: 8px;">' + svg + ' <span>' + icon.text + '</span></span>'
+            );
+            return $icon;
+        }
+
+        $('#icon-select').select2({
+            templateResult: formatIcon,
+            templateSelection: formatIcon,
+            width: '100%'
+        });
+
+        $('#icon-select').on('change', function() {
+            const val = $(this).val();
+            const preview = document.getElementById('icon-preview');
+            preview.innerHTML = `<i data-feather="${val}"></i>`;
+            if (window.feather) feather.replace();
+        });
+    });
 </script>
 @endpush
 @endsection
