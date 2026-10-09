@@ -14,7 +14,6 @@ class ImageService
     protected const OPTIMIZABLE_MIMES = [
         'image/jpeg',
         'image/jpg',
-        'image/png',
         'image/webp',
     ];
 
