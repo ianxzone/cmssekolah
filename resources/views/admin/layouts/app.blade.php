@@ -69,6 +69,12 @@
                     <span>Pages</span>
                 </a>
 
+                <a href="{{ route('admin.facilities.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" title="Fasilitas">
+                    <i data-feather="layers"></i>
+                    <span>Fasilitas</span>
+                </a>
+
                 <a href="{{ route('admin.biolink.index') }}"
                     class="nav-item {{ request()->routeIs('admin.biolink.*') ? 'active' : '' }}" title="Biolink Manager">
                     <i data-feather="share-2"></i>
