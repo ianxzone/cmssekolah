@@ -235,3 +235,4 @@ Route::post('/{slug}/komentar', [FrontendController::class, 'storeComment'])->mi
 
 // Catch-all: Post slug first, then Page slug
 Route::get('/{slug}', [FrontendController::class, 'showSlug'])->name('posts.show');
+

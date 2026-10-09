@@ -925,9 +925,23 @@
 
                     <div class="article-content">
                         {!! $post->content !!}
-                    </div>
+                                        </div>
 
-                    {{-- Share Section (Icon Only) --}}
+                    {{-- Tags --}}
+                    @if($post->tags && $post->tags->count() > 0)
+                        <div class="article-tags" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                            <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500; margin-right: 0.5rem;">
+                                <i data-feather="tag" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-top:-2px;"></i> Topik:
+                            </span>
+                            @foreach($post->tags as $tag)
+                                <a href="{{ route('tags.show', $tag->slug) }}" style="background: #f3f4f6; border: 1px solid #e5e7eb; color: #4b5563; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.background='#e5e7eb'; this.style.color='#1f2937'" onmouseout="this.style.background='#f3f4f6'; this.style.color='#4b5563'">
+                                    #{{ $tag->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {\{-- Share Section (Icon Only) --}\}
                     <div class="share-section">
                         <span class="share-label">
                             <i data-feather="share-2" style="width: 16px; height: 16px; color: var(--primary);"></i>

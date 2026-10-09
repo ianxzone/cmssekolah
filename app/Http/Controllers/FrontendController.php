@@ -94,7 +94,7 @@ class FrontendController extends Controller
      */
     public function showPost($slug)
     {
-        $post = Post::with(['category', 'author', 'approvedComments'])
+        $post = Post::with(['category', 'author', 'approvedComments', 'tags'])
             ->where('slug', $slug)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
@@ -469,3 +469,4 @@ class FrontendController extends Controller
         }, $content);
     }
 }
+
