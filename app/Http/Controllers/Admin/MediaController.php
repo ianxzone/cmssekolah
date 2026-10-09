@@ -14,7 +14,11 @@ class MediaController extends Controller
     public function index(Request $request)
     {
         $media = Media::latest()->paginate(24);
-        return view('admin.media.index', compact('media'));
+        try {
+            return response(view('admin.media.index', compact('media'))->render());
+        } catch (\Throwable $e) {
+            return response('Error rendering media index: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(), 500);
+        }
     }
 
     public function store(Request $request)
