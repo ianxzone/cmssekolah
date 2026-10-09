@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\FormController as AdminFormController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\MediaController as AdminMediaController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
@@ -72,6 +73,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
     Route::middleware('role:admin,editor')->group(function () {
         Route::resource('pages', AdminPageController::class)->names('admin.pages');
         Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
+        Route::resource('tags', AdminTagController::class)->names('admin.tags');
         Route::resource('events', AdminEventController::class)->names('admin.events');
         Route::resource('teachers', AdminTeacherController::class)->names('admin.teachers');
         Route::resource('testimonials', AdminTestimonialController::class)->names('admin.testimonials');
