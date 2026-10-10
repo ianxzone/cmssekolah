@@ -628,6 +628,56 @@
         </div>
     </div>
 
+<!-- Modal Form School Tour -->
+<div class="fac-modal-backdrop" id="tourModal">
+    <div class="fac-modal-dialog" style="max-width: 500px;">
+        <button class="fac-modal-close" onclick="closeTourModal()">&times;</button>
+        <div class="fac-modal-content">
+            <div style="background: var(--primary-dark); padding: 25px 30px; text-align: center; color: white;">
+                <h3 style="margin-bottom: 5px; color: white; font-size: 1.4rem;">Jadwalkan School Tour</h3>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Silakan lengkapi data untuk mengatur jadwal kunjungan Anda.</p>
+            </div>
+            <div class="fac-modal-body">
+                <form id="tourForm" onsubmit="submitTourForm(event)">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Nama Orang Tua / Wali *</label>
+                        <input type="text" id="tourName" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Tujuan Unit Pendidikan *</label>
+                        <select id="tourUnit" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                            <option value="">-- Pilih Unit --</option>
+                            <option value="TK">TK IT Al Irsyad</option>
+                            <option value="SD">SD IT Al Irsyad</option>
+                            <option value="SMP">SMP IT Al Irsyad</option>
+                            <option value="SMA">SMA Islam Al Irsyad</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Rencana Tanggal Kunjungan *</label>
+                        <input type="date" id="tourDate" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Pilihan Sesi Waktu *</label>
+                        <select id="tourSession" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                            <option value="">-- Pilih Sesi --</option>
+                            <option value="Pagi (08.00 - 11.30)">Pagi (08.00 - 11.30)</option>
+                            <option value="Siang (13.00 - 15.00)">Siang (13.00 - 15.00)</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Catatan Tambahan (Opsional)</label>
+                        <textarea id="tourNotes" rows="2" placeholder="Misal: Ingin fokus melihat fasilitas kolam renang." style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem; resize: vertical;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: #25D366; color: white !important; border: none; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
+                        <i data-feather="message-circle" style="width: 18px;"></i> Kirim Jadwal via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Detail Fasilitas -->
 <div class="fac-modal-backdrop" id="facModal">
     <div class="fac-modal-dialog">
@@ -692,6 +742,48 @@
             });
         });
 
+            window.openTourModal = function() {
+        document.getElementById('tourModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeTourModal = function() {
+        document.getElementById('tourModal').classList.remove('show');
+        document.body.style.overflow = '';
+    };
+
+    document.getElementById('tourModal').addEventListener('click', function(e) {
+        if(e.target === this) {
+            closeTourModal();
+        }
+    });
+
+    window.submitTourForm = function(e) {
+        e.preventDefault();
+        const name = document.getElementById('tourName').value;
+        const unit = document.getElementById('tourUnit').value;
+        const date = document.getElementById('tourDate').value;
+        const session = document.getElementById('tourSession').value;
+        const notes = document.getElementById('tourNotes').value;
+        
+        let msg = "Halo Admin Sekolah, saya ingin mendaftar jadwal School Tour.\n\n";
+        msg += "*Nama Orang Tua/Wali:* " + name + "\n";
+        msg += "*Tujuan Unit:* " + unit + "\n";
+        msg += "*Tanggal Kunjungan:* " + date + "\n";
+        msg += "*Sesi Waktu:* " + session + "\n";
+        if(notes) {
+            msg += "*Catatan:* " + notes + "\n";
+        }
+        msg += "\nMohon konfirmasi ketersediaan jadwalnya ya. Terima kasih.";
+        
+        const phone = '{{  }}';
+        const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+        
+        window.open(waUrl, '_blank');
+        closeTourModal();
+        document.getElementById('tourForm').reset();
+    };
+
         window.closeFacModal = function() {
             document.getElementById('facModal').classList.remove('show');
             document.body.style.overflow = '';
@@ -707,6 +799,8 @@
 </script>
 @endpush
 @endsection
+
+
 
 
 
