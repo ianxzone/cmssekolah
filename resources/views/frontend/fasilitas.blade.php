@@ -346,6 +346,102 @@
             padding: 8px 16px;
         }
     }
+
+    .d-none { display: none !important; }
+    .fac-modal-backdrop {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        padding: 20px;
+    }
+    .fac-modal-backdrop.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .fac-modal-dialog {
+        background: #fff;
+        width: 100%;
+        max-width: 650px;
+        border-radius: 16px;
+        position: relative;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .fac-modal-backdrop.show .fac-modal-dialog {
+        transform: translateY(0);
+    }
+    .fac-modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.5);
+        color: #fff;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+    }
+    .fac-modal-close:hover {
+        background: #000;
+    }
+    .fac-modal-content img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        display: block;
+    }
+    .fac-modal-body {
+        padding: 30px;
+    }
+    .fac-modal-body h3 {
+        margin-bottom: 15px;
+        color: var(--primary-dark);
+        font-size: 1.5rem;
+    }
+    .fac-modal-text {
+        color: #4b5563;
+        line-height: 1.7;
+    }
+    .btn-fac-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0;
+        margin-top: 15px;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .btn-fac-detail:hover {
+        color: var(--secondary);
+    }
+    .fac-desc-preview {
+        color: #6b7280;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
 </style>
 @endpush
 
@@ -395,7 +491,8 @@
                 $imgUrl = (str_starts_with($f->image, 'http') || str_starts_with($f->image, '/')) ? url($f->image) : asset('storage/' . $f->image);
             }
         @endphp
-        <div class="facility-card-pro" data-category="{{ $f->category }}">
+        <div class="facility-card-pro" data-category="{{ $f->category }}" data-title="{{ $f->title }}" data-img="{{ $imgUrl }}">
+            <div class="d-none fac-full-desc">{!! $f->desc !!}</div>
             <div class="facility-card-media">
                 <img src="{{ $imgUrl }}" alt="{{ $f->title }}" loading="lazy">
                 @if($f->badge)
@@ -409,7 +506,7 @@
                     <i data-feather="{{ $f->icon ?? 'check' }}" style="width: 22px; height: 22px;"></i>
                 </div>
                 <h4>{{ $f->title }}</h4>
-                <p>{{ $f->desc }}</p>
+                <p class="fac-desc-preview">{{ Str::limit(strip_tags($f->desc ?? ''), 130) }}</p><button type="button" class="btn-fac-detail">Lihat Detail <i data-feather="arrow-right" style="width: 14px; height: 14px;"></i></button>
             </div>
         </div>
         @endforeach
@@ -496,8 +593,22 @@
             </a>
         </div>
     </div>
+
+<!-- Modal Detail Fasilitas -->
+<div class="fac-modal-backdrop" id="facModal">
+    <div class="fac-modal-dialog">
+        <button class="fac-modal-close" onclick="closeFacModal()">&times;</button>
+        <div class="fac-modal-content">
+            <img id="facModalImg" src="" alt="Fasilitas">
+            <div class="fac-modal-body">
+                <h3 id="facModalTitle">Title</h3>
+                <div id="facModalDesc" class="fac-modal-text"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
+</div>
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -525,6 +636,34 @@
                     }
                 });
 
+                    document.querySelectorAll('.btn-fac-detail').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const card = this.closest('.facility-card-pro');
+            const title = card.getAttribute('data-title');
+            const img = card.getAttribute('data-img');
+            const desc = card.querySelector('.fac-full-desc').innerHTML;
+            
+            document.getElementById('facModalTitle').innerText = title;
+            document.getElementById('facModalImg').src = img;
+            document.getElementById('facModalDesc').innerHTML = desc;
+            
+            document.getElementById('facModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    window.closeFacModal = function() {
+        document.getElementById('facModal').classList.remove('show');
+        document.body.style.overflow = '';
+    };
+
+    // Tutup modal kalau klik area luar
+    document.getElementById('facModal').addEventListener('click', function(e) {
+        if(e.target === this) {
+            closeFacModal();
+        }
+    });
+
                 if (window.feather) {
                     feather.replace();
                 }
@@ -534,3 +673,7 @@
 </script>
 @endpush
 @endsection
+
+
+
+
