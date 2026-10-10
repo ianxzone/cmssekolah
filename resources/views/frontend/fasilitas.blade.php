@@ -9,6 +9,7 @@
 @endif
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script><script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
 <!-- Structured Data / JSON-LD untuk SEO -->
 <script type="application/ld+json">
 {
@@ -41,6 +42,7 @@
 @endpush
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
     .page-hero {
         background: linear-gradient(135deg, var(--primary-dark) 0%, #022c22 100%);
@@ -709,7 +711,7 @@
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Rencana Tanggal Kunjungan *</label>
-                        <input type="date" id="tourDate" required style="width: 100%; padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem; color: #4b5563; background-color: #f9fafb;">
+                        <input type="text" id="tourDate" placeholder="Pilih Tanggal Kunjungan..." required style="width: 100%; padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem; color: #4b5563; background-color: #f9fafb;">
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #374151;">Pilihan Sesi Waktu *</label>
@@ -753,6 +755,7 @@
 
 </div>
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script><script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const filterBtns = document.querySelectorAll('.filter-tab-btn');
@@ -784,6 +787,8 @@
                 }
             });
         });
+
+        flatpickr('#tourDate', { dateFormat: 'd F Y', locale: 'id', minDate: 'today', disableMobile: true });
 
         document.querySelectorAll('.btn-fac-detail').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -864,6 +869,8 @@
 </script>
 @endpush
 @endsection
+
+
 
 
 
