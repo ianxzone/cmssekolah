@@ -636,38 +636,38 @@
                     }
                 });
 
-                    document.querySelectorAll('.btn-fac-detail').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const card = this.closest('.facility-card-pro');
-            const title = card.getAttribute('data-title');
-            const img = card.getAttribute('data-img');
-            const desc = card.querySelector('.fac-full-desc').innerHTML;
-            
-            document.getElementById('facModalTitle').innerText = title;
-            document.getElementById('facModalImg').src = img;
-            document.getElementById('facModalDesc').innerHTML = desc;
-            
-            document.getElementById('facModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
-        });
-    });
-
-    window.closeFacModal = function() {
-        document.getElementById('facModal').classList.remove('show');
-        document.body.style.overflow = '';
-    };
-
-    // Tutup modal kalau klik area luar
-    document.getElementById('facModal').addEventListener('click', function(e) {
-        if(e.target === this) {
-            closeFacModal();
-        }
-    });
-
                 if (window.feather) {
                     feather.replace();
                 }
             });
+        });
+
+        document.querySelectorAll('.btn-fac-detail').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.facility-card-pro');
+                const title = card.getAttribute('data-title');
+                const img = card.getAttribute('data-img');
+                const desc = card.querySelector('.fac-full-desc').innerHTML;
+                
+                document.getElementById('facModalTitle').innerText = title;
+                document.getElementById('facModalImg').src = img;
+                document.getElementById('facModalDesc').innerHTML = desc;
+                
+                document.getElementById('facModal').classList.add('show');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        window.closeFacModal = function() {
+            document.getElementById('facModal').classList.remove('show');
+            document.body.style.overflow = '';
+        };
+
+        // Tutup modal kalau klik area luar
+        document.getElementById('facModal').addEventListener('click', function(e) {
+            if(e.target === this) {
+                closeFacModal();
+            }
         });
     });
 </script>
