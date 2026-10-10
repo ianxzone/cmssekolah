@@ -400,7 +400,11 @@ class FrontendController extends Controller
     public function ekskul()
     {
         $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
-        return view('frontend.ekskul', compact('settings'));
+        $dbExtracurriculars = \App\Models\Extracurricular::where('is_active', true)
+                            ->orderBy('order', 'asc')
+                            ->orderBy('id', 'desc')
+                            ->get();
+        return view('frontend.ekskul', compact('settings', 'dbExtracurriculars'));
     }
 
     /**

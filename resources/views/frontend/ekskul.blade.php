@@ -354,13 +354,13 @@
 
 <div class="ekskul-container">
     @php
-        $ekskuls = \App\Models\Setting::getExtracurriculars();
+        $dbExtracurriculars = \App\Models\Setting::getExtracurriculars();
     @endphp
 
     <!-- Category Filter Tabs -->
     <div class="filter-tabs-wrapper">
         <button class="filter-tab-btn active" data-filter="all">
-            <i data-feather="grid" style="width: 16px; height: 16px;"></i> Semua Ekskul ({{ count($ekskuls) }})
+            <i data-feather="grid" style="width: 16px; height: 16px;"></i> Semua Ekskul ({{ $dbExtracurriculars->count() }})
         </button>
         <button class="filter-tab-btn" data-filter="quran">
             <i data-feather="book-open" style="width: 16px; height: 16px;"></i> Qur'ani & Keislaman
@@ -378,45 +378,29 @@
 
     <!-- Ekskul Catalog Grid -->
     <div class="ekskul-catalog-grid" id="ekskulCatalog">
-        @foreach($ekskuls as $item)
-        <div class="ekskul-card-item" data-category="{{ $item['category'] }}">
+        @foreach($dbExtracurriculars as $item)
+        <div class="ekskul-card-item" data-category="{{ $item->category }}">
             <div class="ekskul-media-header">
-                <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy">
-                <span class="ekskul-cat-badge">{{ $item['cat_label'] }}</span>
-                @if(!empty($item['highlight']) && $item['highlight'] == '1')
+                @php
+                    $imgUrl = asset('images/no-image.png');
+                    if ($item->image) {
+                        $imgUrl = (str_starts_with($item->image, 'http') || str_starts_with($item->image, '/')) ? url($item->image) : asset('storage/' . $item->image);
+                    }
+                @endphp
+                <img src="{{ $imgUrl }}" alt="{{ $item->title }}" loading="lazy">
+                <span class="ekskul-cat-badge">{{ $item->category }}</span>
+                @if($item->badge)
                 <span class="ekskul-highlight-badge" style="position: absolute; bottom: 12px; left: 16px; background: rgba(251, 191, 36, 0.95); color: #78350f; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 30px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 2;">
-                    <i data-feather="star" style="width: 12px; height: 12px;"></i> Unggulan
+                    <i data-feather="star" style="width: 12px; height: 12px;"></i> {{ $item->badge }}
                 </span>
                 @endif
                 <div class="ekskul-icon-floating">
-                    <i data-feather="{{ $item['icon'] }}"></i>
+                    <i data-feather="{{ ($item->icon ?? 'star') }}"></i>
                 </div>
             </div>
             <div class="ekskul-card-body">
-                <div class="ekskul-levels">
-                    @foreach($item['levels'] as $lvl)
-                    <span class="level-tag">{{ $lvl }}</span>
-                    @endforeach
-                </div>
-                <h3>{{ $item['title'] }}</h3>
-                <p>{{ $item['desc'] }}</p>
-
-                <div class="ekskul-meta-info">
-                    <div class="ekskul-meta-row">
-                        <i data-feather="clock" style="width: 14px; height: 14px;"></i>
-                        <span>{{ $item['schedule'] }}</span>
-                    </div>
-                    <div class="ekskul-meta-row">
-                        <i data-feather="user-check" style="width: 14px; height: 14px;"></i>
-                        <span>{{ $item['coach'] }}</span>
-                    </div>
-                    @if(!empty($item['achievement']))
-                    <div class="achievement-highlight">
-                        <i data-feather="award" style="width: 14px; height: 14px;"></i>
-                        <span>{{ $item['achievement'] }}</span>
-                    </div>
-                    @endif
-                </div>
+                <h3>{{ $item->title }}</h3>
+                <p>{!! $item->desc !!}</p>
             </div>
         </div>
         @endforeach

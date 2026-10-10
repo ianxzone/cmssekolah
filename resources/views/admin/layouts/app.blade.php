@@ -75,6 +75,12 @@
                     <span>Fasilitas</span>
                 </a>
 
+                <a href="{{ route('admin.extracurriculars.index') }}"
+                    class="nav-item {{ request()->routeIs('admin.extracurriculars.*') ? 'active' : '' }}" title="Ekstrakurikuler">
+                    <i data-feather="target"></i>
+                    <span>Ekstrakurikuler</span>
+                </a>
+
                 <a href="{{ route('admin.biolink.index') }}"
                     class="nav-item {{ request()->routeIs('admin.biolink.*') ? 'active' : '' }}" title="Biolink Manager">
                     <i data-feather="share-2"></i>
