@@ -476,6 +476,49 @@
         border-color: var(--white);
         transform: translateY(-2px);
     }
+
+    /* Fancy Radio Pills */
+    .fancy-radio-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .fancy-radio-label {
+        position: relative;
+        cursor: pointer;
+        display: block;
+    }
+    .fancy-radio-label input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .fancy-radio-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+        color: #4b5563;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        text-align: center;
+        height: 100%;
+    }
+    .fancy-radio-label input[type="radio"]:checked + .fancy-radio-card {
+        border-color: var(--secondary);
+        background: #fffbeb;
+        color: var(--primary-dark);
+        box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.4);
+    }
+    .fancy-radio-label input[type="radio"]:hover + .fancy-radio-card {
+        border-color: var(--secondary);
+    }
 </style>
 @endpush
 
@@ -643,27 +686,43 @@
                         <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Nama Orang Tua / Wali *</label>
                         <input type="text" id="tourName" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Tujuan Unit Pendidikan *</label>
-                        <select id="tourUnit" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
-                            <option value="">-- Pilih Unit --</option>
-                            <option value="TK">TK IT Al Irsyad</option>
-                            <option value="SD">SD IT Al Irsyad</option>
-                            <option value="SMP">SMP IT Al Irsyad</option>
-                            <option value="SMA">SMA Islam Al Irsyad</option>
-                        </select>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #374151;">Tujuan Unit Pendidikan *</label>
+                        <div class="fancy-radio-group">
+                            <label class="fancy-radio-label">
+                                <input type="radio" name="tourUnit" value="TK IT Al Irsyad" required>
+                                <div class="fancy-radio-card">TK IT</div>
+                            </label>
+                            <label class="fancy-radio-label">
+                                <input type="radio" name="tourUnit" value="SD IT Al Irsyad">
+                                <div class="fancy-radio-card">SD IT</div>
+                            </label>
+                            <label class="fancy-radio-label">
+                                <input type="radio" name="tourUnit" value="SMP IT Al Irsyad">
+                                <div class="fancy-radio-card">SMP IT</div>
+                            </label>
+                            <label class="fancy-radio-label">
+                                <input type="radio" name="tourUnit" value="SMA Islam Al Irsyad">
+                                <div class="fancy-radio-card">SMA Islam</div>
+                            </label>
+                        </div>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Rencana Tanggal Kunjungan *</label>
-                        <input type="date" id="tourDate" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Rencana Tanggal Kunjungan *</label>
+                        <input type="date" id="tourDate" required style="width: 100%; padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem; color: #4b5563; background-color: #f9fafb;">
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Pilihan Sesi Waktu *</label>
-                        <select id="tourSession" required style="width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; font-size: 1rem;">
-                            <option value="">-- Pilih Sesi --</option>
-                            <option value="Pagi (08.00 - 11.30)">Pagi (08.00 - 11.30)</option>
-                            <option value="Siang (13.00 - 15.00)">Siang (13.00 - 15.00)</option>
-                        </select>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #374151;">Pilihan Sesi Waktu *</label>
+                        <div class="fancy-radio-group">
+                            <label class="fancy-radio-label">
+                                <input type="radio" name="tourSession" value="Pagi (08.00 - 11.30)" required>
+                                <div class="fancy-radio-card">Pagi<br><small style="font-size:0.75rem; font-weight:normal; opacity:0.8; margin-top:2px;">08.00 - 11.30</small></div>
+                            </label>
+                            <label class="fancy-radio-label">
+                                <input type="radio" name="tourSession" value="Siang (13.00 - 15.00)">
+                                <div class="fancy-radio-card">Siang<br><small style="font-size:0.75rem; font-weight:normal; opacity:0.8; margin-top:2px;">13.00 - 15.00</small></div>
+                            </label>
+                        </div>
                     </div>
                     <div style="margin-bottom: 25px;">
                         <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #374151;">Catatan Tambahan (Opsional)</label>
@@ -761,9 +820,15 @@
     window.submitTourForm = function(e) {
         e.preventDefault();
         const name = document.getElementById('tourName').value;
-        const unit = document.getElementById('tourUnit').value;
+        
+        const unitEl = document.querySelector('input[name="tourUnit"]:checked');
+        const unit = unitEl ? unitEl.value : '-';
+        
         const date = document.getElementById('tourDate').value;
-        const session = document.getElementById('tourSession').value;
+        
+        const sessionEl = document.querySelector('input[name="tourSession"]:checked');
+        const session = sessionEl ? sessionEl.value : '-';
+        
         const notes = document.getElementById('tourNotes').value;
         
         let msg = "Halo Admin Sekolah, saya ingin mendaftar jadwal School Tour.\n\n";
@@ -799,6 +864,7 @@
 </script>
 @endpush
 @endsection
+
 
 
 
