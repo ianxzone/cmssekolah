@@ -12,14 +12,14 @@
 <!-- Structured Data / JSON-LD untuk SEO -->
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
+  "@@context": "https://schema.org",
+  "@@type": "EducationalOrganization",
   "name": "{{ $settings['site_name'] ?? config('app.name') }}",
   "description": "Fasilitas lengkap, modern, dan representatif mendukung kenyamanan belajar, pembiasaan ibadah, dan prestasi santri.",
   "url": "{{ url()->current() }}",
   "telephone": "{{ $settings['contact_phone'] ?? '' }}",
   "address": {
-    "@type": "PostalAddress",
+    "@@type": "PostalAddress",
     "addressLocality": "Karawang",
     "addressRegion": "Jawa Barat",
     "addressCountry": "ID"
@@ -27,9 +27,9 @@
   "makesOffer": [
     @foreach($dbFacilities as $index => $f)
     {
-      "@type": "Offer",
+      "@@type": "Offer",
       "itemOffered": {
-        "@type": "Service",
+        "@@type": "Service",
         "name": {!! json_encode($f->title) !!},
         "description": {!! json_encode(strip_tags($f->desc ?? '')) !!}
       }
