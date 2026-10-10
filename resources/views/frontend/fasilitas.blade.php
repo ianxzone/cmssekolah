@@ -619,9 +619,9 @@
             @php
                 $phoneNum = preg_replace('/[^0-9]/', '', $settings['contact_phone'] ?? '6281234567890');
             @endphp
-            <a href="https://wa.me/{{ $phoneNum }}?text=Halo%20Admin%20Sekolah,%20saya%20ingin%20jadwalkan%20School%20Tour%20dan%20melihat%20fasilitas%20sekolah." target="_blank" class="btn btn-primary" style="white-space: nowrap;">
+            <button type="button" class="btn btn-primary" onclick="openTourModal()" style="white-space: nowrap;">
                 <i data-feather="calendar" style="width: 16px;"></i> Jadwalkan School Tour
-            </a>
+            </button>
             <a href="{{ $settings['contact_ppdb_link'] ?? '#' }}" class="btn btn-outline-white" style="white-space: nowrap;">
                 Daftar SPMB Online <i data-feather="arrow-right" style="width: 16px;"></i>
             </a>
