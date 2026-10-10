@@ -776,7 +776,7 @@
         }
         msg += "\nMohon konfirmasi ketersediaan jadwalnya ya. Terima kasih.";
         
-        const phone = '{{  }}';
+        const phone = '{{ $phoneNum }}';
         const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
         
         window.open(waUrl, '_blank');
@@ -799,6 +799,7 @@
 </script>
 @endpush
 @endsection
+
 
 
 
