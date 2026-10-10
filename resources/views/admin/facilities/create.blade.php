@@ -34,49 +34,7 @@
                     <div id="icon-preview" style="padding: 0.625rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; min-width: 48px; min-height: 48px;">
                         <i data-feather="{{ old('icon', 'check-circle') }}"></i>
                     </div>
-                    <select name="icon" id="icon-select" class="form-control" style="width: 100%; padding: 0.625rem; border: 1px solid var(--border-color); border-radius: 6px;" onchange="updateIconPreview(this.value)">
-                        <option value="check-circle" {{ old('icon') == 'check-circle' ? 'selected' : '' }}>Default (Ceklis)</option>
-                        
-                        <optgroup label="Akademik & Ruang Kelas">
-                            <option value="book" {{ old('icon') == 'book' ? 'selected' : '' }}>Buku</option>
-                            <option value="book-open" {{ old('icon') == 'book-open' ? 'selected' : '' }}>Buku Terbuka (Perpustakaan)</option>
-                            <option value="edit-3" {{ old('icon') == 'edit-3' ? 'selected' : '' }}>Pena/Menulis</option>
-                            <option value="award" {{ old('icon') == 'award' ? 'selected' : '' }}>Penghargaan/Prestasi</option>
-                        </optgroup>
-
-                        <optgroup label="IT & Laboratorium">
-                            <option value="cpu" {{ old('icon') == 'cpu' ? 'selected' : '' }}>CPU/Prosesor (Lab Komputer)</option>
-                            <option value="monitor" {{ old('icon') == 'monitor' ? 'selected' : '' }}>Monitor/Layar</option>
-                            <option value="airplay" {{ old('icon') == 'airplay' ? 'selected' : '' }}>Airplay/Proyektor (Smart Class)</option>
-                            <option value="zap" {{ old('icon') == 'zap' ? 'selected' : '' }}>Listrik/Energi (Lab Sains)</option>
-                            <option value="sliders" {{ old('icon') == 'sliders' ? 'selected' : '' }}>Pengaturan/Robotik</option>
-                            <option value="globe" {{ old('icon') == 'globe' ? 'selected' : '' }}>Global/Internet (Lab Bahasa)</option>
-                            <option value="database" {{ old('icon') == 'database' ? 'selected' : '' }}>Server/Data</option>
-                        </optgroup>
-
-                        <optgroup label="Agama & Karakter">
-                            <option value="sun" {{ old('icon') == 'sun' ? 'selected' : '' }}>Cahaya/Matahari (Masjid)</option>
-                            <option value="users" {{ old('icon') == 'users' ? 'selected' : '' }}>Jamaah/Orang Banyak (Aula)</option>
-                            <option value="heart" {{ old('icon') == 'heart' ? 'selected' : '' }}>Hati/Karakter (UKS/Kesehatan)</option>
-                            <option value="smile" {{ old('icon') == 'smile' ? 'selected' : '' }}>Senyum (Playgroup/TK)</option>
-                        </optgroup>
-
-                        <optgroup label="Olahraga & Fasilitas Fisik">
-                            <option value="activity" {{ old('icon') == 'activity' ? 'selected' : '' }}>Aktivitas/Olahraga</option>
-                            <option value="droplet" {{ old('icon') == 'droplet' ? 'selected' : '' }}>Air (Kolam Renang)</option>
-                            <option value="target" {{ old('icon') == 'target' ? 'selected' : '' }}>Target (Panahan)</option>
-                        </optgroup>
-
-                        <optgroup label="Fasilitas Umum & Layanan">
-                            <option value="shield" {{ old('icon') == 'shield' ? 'selected' : '' }}>Perisai (Keamanan/CCTV)</option>
-                            <option value="truck" {{ old('icon') == 'truck' ? 'selected' : '' }}>Kendaraan (Antar-Jemput)</option>
-                            <option value="coffee" {{ old('icon') == 'coffee' ? 'selected' : '' }}>Kopi/Makanan (Kantin)</option>
-                            <option value="shopping-cart" {{ old('icon') == 'shopping-cart' ? 'selected' : '' }}>Keranjang (Koperasi/Mart)</option>
-                            <option value="briefcase" {{ old('icon') == 'briefcase' ? 'selected' : '' }}>Tas Kerja (Kantor/Admin)</option>
-                            <option value="credit-card" {{ old('icon') == 'credit-card' ? 'selected' : '' }}>Kartu (Smart Card)</option>
-                            <option value="wifi" {{ old('icon') == 'wifi' ? 'selected' : '' }}>Sinyal WiFi</option>
-                        </optgroup>
-                    </select>
+                    <select name="icon" id="icon-select" class="form-control" style="width: 100%; padding: 0.625rem; border: 1px solid var(--border-color); border-radius: 6px;" data-selected="{{ old('icon', 'check-circle') }}"></select>
                 </div>
             </div>
             <div class="form-group" style="margin-bottom: 1.5rem;">
@@ -159,7 +117,19 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function() {
+        $(document).ready(function() {
+        var $iconSelect = $('#icon-select');
+        var selectedIcon = $iconSelect.attr('data-selected') || 'check-circle';
+        $iconSelect.empty();
+        
+        if (window.feather) {
+            Object.keys(window.feather.icons).forEach(function(iconName) {
+                var selected = (iconName === selectedIcon) ? 'selected' : '';
+                var displayName = iconName.replace(/-/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                $iconSelect.append('<option value="' + iconName + '" ' + selected + '>' + displayName + '</option>');
+            });
+        }
+
         function formatIcon(icon) {
             if (!icon.id) {
                 return icon.text;
@@ -168,24 +138,23 @@
             if (window.feather && window.feather.icons[icon.id]) {
                 svg = window.feather.icons[icon.id].toSvg({ width: 18, height: 18 });
             }
-            var $icon = $(
-                '<span style="display: flex; align-items: center; gap: 8px;">' + svg + ' <span>' + icon.text + '</span></span>'
-            );
-            return $icon;
+            return $('<span><span style="display:inline-block; vertical-align:middle; width:24px;">' + svg + '</span> <span style="vertical-align:middle;">' + icon.text + '</span></span>');
         }
 
-        $('#icon-select').select2({
+        $iconSelect.select2({
             templateResult: formatIcon,
             templateSelection: formatIcon,
             width: '100%'
         });
 
-        $('#icon-select').on('change', function() {
+        $iconSelect.on('change', function() {
             const val = $(this).val();
             const preview = document.getElementById('icon-preview');
             preview.innerHTML = `<i data-feather="${val}"></i>`;
             if (window.feather) feather.replace();
         });
+        
+        $iconSelect.trigger('change');
     });
 
     // Media Picker Logic
@@ -241,3 +210,4 @@
 </script>
 @endpush
 @endsection
+
