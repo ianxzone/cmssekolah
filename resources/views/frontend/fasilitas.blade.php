@@ -442,6 +442,40 @@
         line-height: 1.6;
         margin-bottom: 0;
     }
+
+    /* Buttons in CTA */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: 2px solid transparent;
+    }
+    .btn-primary {
+        background: var(--secondary);
+        color: var(--primary-dark) !important;
+    }
+    .btn-primary:hover {
+        background: #f59e0b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    .btn-outline-white {
+        background: transparent;
+        color: var(--white) !important;
+        border-color: rgba(255,255,255,0.6);
+    }
+    .btn-outline-white:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: var(--white);
+        transform: translateY(-2px);
+    }
 </style>
 @endpush
 
@@ -673,6 +707,7 @@
 </script>
 @endpush
 @endsection
+
 
 
 
