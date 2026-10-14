@@ -1316,6 +1316,283 @@
                             </div>
                         </div>
 
+                        <!-- Matomo Reporting API Token (Fase 3) -->
+                        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem;">
+                            <h4 style="font-size: 0.95rem; font-weight: 700; color: #166534; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px;">
+                                <i data-feather="key" style="width: 16px; height: 16px; color: #16a34a;"></i> 3. Matomo Reporting API Token (Untuk Tarik Data ke Dashboard Admin)
+                            </h4>
+                            <p style="font-size: 0.8rem; color: #15803d; margin-bottom: 1rem;">
+                                Opsional: Masukkan <code>token_auth</code> jika Anda ingin sistem Laravel menarik data statistik pengunjung resmi dari server Matomo ke Dashboard Admin CMS.
+                            </p>
+                            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label" for="matomo_api_source">Sumber Data API</label>
+                                    <select id="matomo_api_source" name="matomo_api_source" class="form-control">
+                                        <option value="self_hosted" {{ ($settings['matomo_api_source'] ?? 'self_hosted') === 'self_hosted' ? 'selected' : '' }}>Gunakan Matomo Self-Hosted</option>
+                                        <option value="cloud" {{ ($settings['matomo_api_source'] ?? '') === 'cloud' ? 'selected' : '' }}>Gunakan Matomo Cloud</option>
+                                    </select>
+                                    <span class="form-text">Pilih instans Matomo mana yang akan ditarik datanya ke dashboard admin.</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label" for="matomo_api_token">Matomo Auth Token (token_auth)</label>
+                                    <input type="password" id="matomo_api_token" name="matomo_api_token" class="form-control"
+                                        value="{{ old('matomo_api_token', $settings['matomo_api_token'] ?? '') }}" placeholder="Contoh: 0123456789abcdef0123456789abcdef">
+                                    <span class="form-text">Dapatkan di Matomo: <em>Settings ➔ Personal ➔ Security ➔ Auth Tokens</em>.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UTM Link Generator Helper for PPDB with 1-Click Templates -->
+                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1.35rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);"
+                            x-data="{
+                                baseUrl: '{{ url('/') }}',
+                                targetPage: 'home',
+                                utmSource: 'instagram',
+                                utmMedium: 'bio',
+                                utmCampaign: 'ppdb2026',
+                                utmContent: 'linkinbio',
+                                activePreset: 'ig_bio',
+                                copied: false,
+                                showQr: false,
+
+                                setTargetPage(type) {
+                                    this.targetPage = type;
+                                    if (type === 'home') this.baseUrl = '{{ url('/') }}';
+                                    else if (type === 'form') this.baseUrl = '{{ url('/form/pendaftaran') }}';
+                                    else if (type === 'links') this.baseUrl = '{{ url('/links') }}';
+                                    else if (type === 'kontak') this.baseUrl = '{{ url('/kontak') }}';
+                                },
+
+                                applyPreset(presetKey, source, medium, defaultContent) {
+                                    this.activePreset = presetKey;
+                                    this.utmSource = source;
+                                    this.utmMedium = medium;
+                                    this.utmContent = defaultContent;
+                                },
+
+                                setCampaign(name) {
+                                    this.utmCampaign = name;
+                                },
+
+                                get generatedUrl() {
+                                    let url = (this.baseUrl || '').trim();
+                                    if (!url) url = '{{ url('/') }}';
+
+                                    const params = new URLSearchParams();
+                                    if (this.utmSource) params.append('utm_source', this.utmSource.trim());
+                                    if (this.utmMedium) params.append('utm_medium', this.utmMedium.trim());
+                                    if (this.utmCampaign) params.append('utm_campaign', this.utmCampaign.trim());
+                                    if (this.utmContent) params.append('utm_content', this.utmContent.trim());
+
+                                    const qs = params.toString();
+                                    return qs ? (url.includes('?') ? `${url}&${qs}` : `${url}?${qs}`) : url;
+                                },
+
+                                get qrCodeUrl() {
+                                    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=10&data=${encodeURIComponent(this.generatedUrl)}`;
+                                },
+
+                                copy() {
+                                    navigator.clipboard.writeText(this.generatedUrl);
+                                    this.copied = true;
+                                    setTimeout(() => { this.copied = false; }, 2500);
+                                }
+                            }">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 8px;">
+                                <div>
+                                    <h4 style="font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 6px;">
+                                        <i data-feather="link" style="width: 16px; height: 16px; color: #2563eb;"></i> Generator Link Kampanye & Iklan PPDB (UTM Builder)
+                                    </h4>
+                                    <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0;">
+                                        Pilih template di bawah untuk membuat tautan promosi otomatis. Sumber calon wali santri akan terlacak rapi di Google Analytics & Matomo.
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <a href="{{ route('admin.analytics.report') }}" class="btn btn-sm" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; font-size: 0.75rem; padding: 0.3rem 0.65rem; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i data-feather="printer" style="width: 12px; height: 12px; color: #2563eb;"></i> Cetak Laporan PPDB
+                                    </a>
+                                    <span style="background: #e0e7ff; color: #3730a3; font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 9999px;">
+                                        Preset 1-Klik Siap Pakai
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 1-Click Preset Buttons -->
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem;">
+                                <div style="font-size: 0.73rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span>⚡ Template Saluran Promosi (Klik untuk pasang):</span>
+                                    <span style="font-size: 0.7rem; color: #94a3b8; font-weight: normal;">Source & Medium otomatis terisi</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    <button type="button" @click="applyPreset('ig_bio', 'instagram', 'bio', 'linkinbio')"
+                                        :style="activePreset === 'ig_bio' ? 'background: #2563eb; color: #fff; border-color: #1d4ed8; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        📱 Bio Instagram
+                                    </button>
+                                    <button type="button" @click="applyPreset('ig_story', 'instagram', 'story', 'promo_story')"
+                                        :style="activePreset === 'ig_story' ? 'background: #2563eb; color: #fff; border-color: #1d4ed8; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        📸 Story Instagram
+                                    </button>
+                                    <button type="button" @click="applyPreset('wa_broadcast', 'whatsapp', 'broadcast', 'pesan_wali')"
+                                        :style="activePreset === 'wa_broadcast' ? 'background: #16a34a; color: #fff; border-color: #15803d; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        💬 WhatsApp Broadcast
+                                    </button>
+                                    <button type="button" @click="applyPreset('meta_ads', 'facebook', 'ads', 'feed_video')"
+                                        :style="activePreset === 'meta_ads' ? 'background: #0284c7; color: #fff; border-color: #0369a1; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        📣 Meta Ads (FB/IG)
+                                    </button>
+                                    <button type="button" @click="applyPreset('tiktok', 'tiktok', 'bio', 'profil_vt')"
+                                        :style="activePreset === 'tiktok' ? 'background: #0f172a; color: #fff; border-color: #020617; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        🎵 TikTok Bio
+                                    </button>
+                                    <button type="button" @click="applyPreset('brosur_qr', 'brosur_cetak', 'qrcode', 'banner_gerbang')"
+                                        :style="activePreset === 'brosur_qr' ? 'background: #d97706; color: #fff; border-color: #b45309; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        📄 Brosur & Spanduk (QR)
+                                    </button>
+                                    <button type="button" @click="applyPreset('edufair', 'edufair', 'booth_qr', 'stand_mall')"
+                                        :style="activePreset === 'edufair' ? 'background: #7c3aed; color: #fff; border-color: #6d28d9; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        🏫 Pameran / Edufair
+                                    </button>
+                                    <button type="button" @click="applyPreset('alumni', 'alumni', 'referral', 'wali_santri')"
+                                        :style="activePreset === 'alumni' ? 'background: #059669; color: #fff; border-color: #047857; font-weight: 600;' : 'background: #f8fafc; color: #334155; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease;">
+                                        🤝 Rekomendasi Alumni/Wali
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Target Page Selection Chips -->
+                            <div style="margin-bottom: 0.85rem;">
+                                <div style="font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 0.35rem;">
+                                    🎯 Pilih Halaman Tujuan (Landing Page):
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    <button type="button" @click="setTargetPage('home')"
+                                        :style="targetPage === 'home' ? 'background: #e0f2fe; color: #0369a1; border-color: #38bdf8; font-weight: 600;' : 'background: #ffffff; color: #475569; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 4px; padding: 0.25rem 0.55rem; font-size: 0.75rem; cursor: pointer;">
+                                        🏠 Beranda Utama
+                                    </button>
+                                    <button type="button" @click="setTargetPage('form')"
+                                        :style="targetPage === 'form' ? 'background: #e0f2fe; color: #0369a1; border-color: #38bdf8; font-weight: 600;' : 'background: #ffffff; color: #475569; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 4px; padding: 0.25rem 0.55rem; font-size: 0.75rem; cursor: pointer;">
+                                        📝 Formulir Pendaftaran (SPMB)
+                                    </button>
+                                    <button type="button" @click="setTargetPage('links')"
+                                        :style="targetPage === 'links' ? 'background: #e0f2fe; color: #0369a1; border-color: #38bdf8; font-weight: 600;' : 'background: #ffffff; color: #475569; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 4px; padding: 0.25rem 0.55rem; font-size: 0.75rem; cursor: pointer;">
+                                        🔗 Biolink Sekolah (/links)
+                                    </button>
+                                    <button type="button" @click="setTargetPage('kontak')"
+                                        :style="targetPage === 'kontak' ? 'background: #e0f2fe; color: #0369a1; border-color: #38bdf8; font-weight: 600;' : 'background: #ffffff; color: #475569; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 4px; padding: 0.25rem 0.55rem; font-size: 0.75rem; cursor: pointer;">
+                                        📞 Kontak WhatsApp (/kontak)
+                                    </button>
+                                    <button type="button" @click="targetPage = 'custom'"
+                                        :style="targetPage === 'custom' ? 'background: #e0f2fe; color: #0369a1; border-color: #38bdf8; font-weight: 600;' : 'background: #ffffff; color: #475569; border-color: #cbd5e1;'"
+                                        style="border: 1px solid; border-radius: 4px; padding: 0.25rem 0.55rem; font-size: 0.75rem; cursor: pointer;">
+                                        ✏️ Artikel / URL Kustom
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Parameter Grid -->
+                            <div style="display: grid; grid-template-columns: 2fr 1.2fr 1fr 1.2fr 1fr; gap: 0.75rem; margin-bottom: 0.85rem;">
+                                <div>
+                                    <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">URL Target</label>
+                                    <input type="text" x-model="baseUrl" class="form-control" style="font-size: 0.8rem; height: 36px;" placeholder="https://...">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Source (Asal)</label>
+                                    <input type="text" x-model="utmSource" class="form-control" style="font-size: 0.8rem; height: 36px;" placeholder="instagram / whatsapp">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Medium (Media)</label>
+                                    <input type="text" x-model="utmMedium" class="form-control" style="font-size: 0.8rem; height: 36px;" placeholder="bio / broadcast">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">
+                                        Campaign (Nama)
+                                    </label>
+                                    <input type="text" x-model="utmCampaign" class="form-control" style="font-size: 0.8rem; height: 36px;" placeholder="ppdb2026">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Content (Variasi)</label>
+                                    <input type="text" x-model="utmContent" class="form-control" style="font-size: 0.8rem; height: 36px;" placeholder="linkinbio / flyer">
+                                </div>
+                            </div>
+
+                            <!-- Quick Campaign Periods -->
+                            <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                                <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">🏷️ Pilih Cepat Gelombang:</span>
+                                <button type="button" @click="setCampaign('ppdb2026_gel1')" style="background: none; border: none; font-size: 0.72rem; color: #2563eb; cursor: pointer; text-decoration: underline; padding: 0;">Gelombang 1</button>
+                                <span style="color: #cbd5e1; font-size: 0.72rem;">•</span>
+                                <button type="button" @click="setCampaign('ppdb2026_gel2')" style="background: none; border: none; font-size: 0.72rem; color: #2563eb; cursor: pointer; text-decoration: underline; padding: 0;">Gelombang 2</button>
+                                <span style="color: #cbd5e1; font-size: 0.72rem;">•</span>
+                                <button type="button" @click="setCampaign('ppdb2026_earlybird')" style="background: none; border: none; font-size: 0.72rem; color: #2563eb; cursor: pointer; text-decoration: underline; padding: 0;">Early Bird</button>
+                                <span style="color: #cbd5e1; font-size: 0.72rem;">•</span>
+                                <button type="button" @click="setCampaign('openhouse2026')" style="background: none; border: none; font-size: 0.72rem; color: #2563eb; cursor: pointer; text-decoration: underline; padding: 0;">Open House</button>
+                            </div>
+
+                            <!-- Generated URL & Actions -->
+                            <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <input type="text" :value="generatedUrl" readonly class="form-control"
+                                    style="flex: 1; min-width: 250px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; height: 38px; color: #0f172a;">
+
+                                <button type="button" @click="copy()" class="btn btn-primary"
+                                    style="white-space: nowrap; font-size: 0.82rem; height: 38px; padding: 0 1rem; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                                    <span x-show="!copied" style="display: inline-flex; align-items: center; gap: 4px;">
+                                        <i data-feather="copy" style="width: 14px; height: 14px;"></i> Salin Link
+                                    </span>
+                                    <span x-show="copied" style="display: inline-flex; align-items: center; gap: 4px; color: #bbf7d0;">
+                                        <i data-feather="check" style="width: 14px; height: 14px;"></i> Tersalin!
+                                    </span>
+                                </button>
+
+                                <a :href="generatedUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline"
+                                    style="white-space: nowrap; font-size: 0.82rem; height: 38px; padding: 0 0.85rem; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #cbd5e1; color: #334155; text-decoration: none; border-radius: 6px;">
+                                    <i data-feather="external-link" style="width: 13px; height: 13px;"></i> Uji Buka
+                                </a>
+
+                                <button type="button" @click="showQr = !showQr" class="btn"
+                                    :style="showQr ? 'background: #0f172a; color: #fff;' : 'background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;'"
+                                    style="white-space: nowrap; font-size: 0.82rem; height: 38px; padding: 0 0.85rem; display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; cursor: pointer;">
+                                    <i data-feather="grid" style="width: 14px; height: 14px;"></i>
+                                    <span x-text="showQr ? 'Tutup QR' : 'Lihat QR Code'"></span>
+                                </button>
+                            </div>
+
+                            <!-- QR Code Preview Box -->
+                            <div x-show="showQr" x-cloak style="margin-top: 1rem; padding: 1rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+                                <div style="background: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                    <img :src="qrCodeUrl" alt="QR Code Kampanye PPDB" style="width: 130px; height: 130px; display: block;">
+                                </div>
+                                <div style="flex: 1; min-width: 220px;">
+                                    <h5 style="font-size: 0.88rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem;">
+                                        QR Code Kampanye Siap Cetak
+                                    </h5>
+                                    <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 0.75rem; line-height: 1.4;">
+                                        QR Code ini mengarah langsung ke link kampanye di atas. Sangat cocok ditempel pada desain Canva/Photoshop brosur PPDB, spanduk jalan, x-banner, atau stand pameran.
+                                    </p>
+                                    <div style="display: flex; gap: 8px;">
+                                        <a :href="qrCodeUrl" download="qrcode-ppdb.png" target="_blank" class="btn btn-sm btn-primary"
+                                            style="font-size: 0.78rem; padding: 0.4rem 0.8rem; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
+                                            <i data-feather="download" style="width: 13px; height: 13px;"></i> Unduh Gambar QR
+                                        </a>
+                                        <button type="button" @click="window.open(qrCodeUrl, '_blank')" class="btn btn-sm btn-outline"
+                                            style="font-size: 0.78rem; padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; color: #334155;">
+                                            Buka Resolusi Penuh
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Matomo Privacy Setting -->
                         <div class="toggle-wrap">
                             <div>

@@ -485,5 +485,33 @@ class FrontendController extends Controller
             return view('frontend.partials.form-embed', compact('form'))->render();
         }, $content);
     }
+
+    /**
+     * Track client-side analytics event for PPDB and leads.
+     */
+    public function trackEvent(Request $request)
+    {
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('ppdb_events')) {
+                $event = $request->input('event') ?? ($request->json('event') ?? 'unknown');
+                $category = $request->input('category') ?? ($request->json('category') ?? 'general');
+                $label = $request->input('label') ?? ($request->json('label') ?? '');
+                $path = $request->input('path') ?? ($request->json('path') ?? '');
+
+                \App\Models\PpdbEvent::create([
+                    'event_name' => substr((string)$event, 0, 50),
+                    'category'   => substr((string)$category, 0, 50),
+                    'label'      => substr((string)$label, 0, 255),
+                    'url'        => substr((string)$path, 0, 255),
+                    'ip_address' => $request->ip(),
+                    'user_agent' => substr((string)$request->userAgent(), 0, 255),
+                ]);
+            }
+            return response()->json(['status' => 'ok']);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error'], 200);
+        }
+    }
 }
+
 

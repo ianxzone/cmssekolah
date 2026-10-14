@@ -166,6 +166,12 @@
                     <i data-feather="inbox"></i>
                     <span>Forms</span>
                 </a>
+
+                <a href="{{ route('admin.analytics.report') }}"
+                    class="nav-item {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}" title="Laporan Analitik PPDB">
+                    <i data-feather="bar-chart-2"></i>
+                    <span>Laporan Analitik PPDB</span>
+                </a>
                 @endif
 
                 @if(auth()->user()->isEditor())

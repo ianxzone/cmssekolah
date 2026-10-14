@@ -138,3 +138,120 @@ src="https://www.facebook.com/tr?id={{ $metaPixelId }}&ev=PageView&noscript=1"
 @if(!empty($customHeadScripts))
 {!! $customHeadScripts !!}
 @endif
+
+{{-- Auto PPDB & Conversion Event Tracker (Universal for GA4, Matomo, Meta Pixel, TikTok) --}}
+<script>
+(function() {
+    function trackLeadEvent(eventName, category, label, metadata) {
+        metadata = metadata || {};
+        
+        // 1. Google Analytics 4 (GA4) & Google Ads
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, Object.assign({
+                'event_category': category,
+                'event_label': label,
+                'value': 1
+            }, metadata));
+
+            // Standard Google Ads Conversion Event
+            if (eventName === 'click_wa_ppdb' || eventName === 'click_spmb_portal') {
+                window.gtag('event', 'generate_lead', {
+                    'currency': 'IDR',
+                    'value': 1,
+                    'event_category': category,
+                    'event_label': label
+                });
+            } else if (eventName === 'download_brosur') {
+                window.gtag('event', 'file_download', {
+                    'file_name': label,
+                    'event_category': 'Brochure'
+                });
+            }
+        }
+
+        // 2. Matomo Analytics
+        if (window._paq) {
+            window._paq.push(['trackEvent', category, eventName, label]);
+        }
+
+        // 3. Meta Pixel (Facebook/Instagram Ads)
+        if (typeof window.fbq === 'function') {
+            window.fbq('trackCustom', eventName, { content_name: label, category: category });
+            if (eventName === 'click_wa_ppdb') {
+                window.fbq('track', 'Lead', { content_name: label, content_category: 'PPDB_WhatsApp' });
+                window.fbq('track', 'Contact', { content_name: label });
+            } else if (eventName === 'click_spmb_portal') {
+                window.fbq('track', 'Lead', { content_name: label, content_category: 'Portal_SPMB' });
+                window.fbq('track', 'InitiateCheckout', { content_name: label });
+            } else if (eventName === 'download_brosur') {
+                window.fbq('track', 'ViewContent', { content_name: label, content_type: 'brochure' });
+            }
+        }
+
+        // 4. TikTok Pixel
+        if (typeof window.ttq === 'object' && typeof window.ttq.track === 'function') {
+            window.ttq.track('ClickButton', { content_name: label });
+            if (eventName === 'click_wa_ppdb') {
+                window.ttq.track('Contact', { content_name: label });
+            } else if (eventName === 'click_spmb_portal') {
+                window.ttq.track('CompleteRegistration', { content_name: label });
+            } else if (eventName === 'download_brosur') {
+                window.ttq.track('Download', { content_name: label });
+            }
+        }
+
+        // 5. Internal CMS Lead Logging
+        try {
+            const trackUrl = '{{ url("/api/analytics/track-event") }}';
+            const payload = JSON.stringify({
+                event: eventName,
+                category: category,
+                label: label,
+                path: window.location.pathname + window.location.search
+            });
+            if (navigator.sendBeacon) {
+                const blob = new Blob([payload], { type: 'application/json' });
+                navigator.sendBeacon(trackUrl, blob);
+            } else {
+                fetch(trackUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: payload,
+                    keepalive: true
+                }).catch(function() {});
+            }
+        } catch (err) {}
+    }
+
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a, button');
+        if (!target) return;
+
+        const href = target.getAttribute('href') || '';
+        const text = (target.innerText || '').trim();
+
+        // A. WhatsApp PPDB / General Chat Click
+        if (href.includes('wa.me') || href.includes('whatsapp.com') || target.classList.contains('mobile-fab-whatsapp') || target.classList.contains('btn-track-ppdb-wa')) {
+            const isPpdb = href.toLowerCase().includes('ppdb') || 
+                           href.toLowerCase().includes('santri') || 
+                           href.toLowerCase().includes('daftar') || 
+                           text.toLowerCase().includes('ppdb') || 
+                           text.toLowerCase().includes('spmb') || 
+                           target.classList.contains('btn-track-ppdb-wa');
+            const eventName = isPpdb ? 'click_wa_ppdb' : 'click_whatsapp_general';
+            trackLeadEvent(eventName, 'Contact', text || 'WhatsApp Chat', { destination: href, location: window.location.pathname });
+        }
+        
+        // B. SPMB Portal Click
+        else if (href.includes('spmb') || target.classList.contains('nav-spmb') || target.classList.contains('btn-track-ppdb-spmb')) {
+            trackLeadEvent('click_spmb_portal', 'PPDB', text || 'Portal SPMB Online', { destination: href, location: window.location.pathname });
+        }
+
+        // C. Download Brosur / Dokumen PDF
+        else if (href.match(/\.pdf($|\?)/i) || text.toLowerCase().includes('brosur') || text.toLowerCase().includes('unduh')) {
+            trackLeadEvent('download_brosur', 'Brochure', text || 'Download Dokumen PPDB', { file_url: href, location: window.location.pathname });
+        }
+    }, true);
+})();
+</script>
+

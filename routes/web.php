@@ -66,6 +66,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
     // Group 1: All Authenticated Backend Users (Admin, Editor, Author, Contributor)
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/about', [DashboardController::class, 'about'])->name('admin.about');
+    Route::get('analytics/report', [DashboardController::class, 'report'])->name('admin.analytics.report');
     Route::resource('posts', AdminPostController::class)->names('admin.posts');
     Route::get('media/list', [AdminMediaController::class, 'apiList'])->name('admin.media.list');
     Route::put('media/{media}', [AdminMediaController::class, 'apiUpdate'])->name('admin.media.update');
@@ -256,6 +257,9 @@ Route::get('/captcha/refresh', function () {
     $captcha = \App\Services\CaptchaService::generateMathCaptcha();
     return response()->json(['question' => $captcha['question']]);
 })->name('captcha.refresh');
+
+// Analytics Event Tracking Endpoint
+Route::post('/api/analytics/track-event', [FrontendController::class, 'trackEvent'])->name('analytics.track');
 
 // Catch-all: Post slug first, then Page slug
 Route::get('/{slug}', [FrontendController::class, 'showSlug'])->name('posts.show');

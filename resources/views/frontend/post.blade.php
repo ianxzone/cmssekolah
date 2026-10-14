@@ -927,6 +927,52 @@
                         {!! $post->content !!}
                                         </div>
 
+                    {{-- Auto PPDB Conversion Banner --}}
+                    <div class="ppdb-article-cta" style="margin-top: 2.5rem; margin-bottom: 2rem; background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-radius: 16px; padding: 2rem; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.3); border: 2px solid #fbbf24; position: relative; overflow: hidden;">
+                        <div style="position: absolute; right: -15px; bottom: -15px; opacity: 0.08; pointer-events: none;">
+                            <i data-feather="award" style="width: 170px; height: 170px;"></i>
+                        </div>
+                        <div style="position: relative; z-index: 2;">
+                            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; color: #fbbf24; font-size: 0.78rem; font-weight: 800; padding: 4px 14px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">
+                                <i data-feather="star" style="width: 13px; height: 13px;"></i> Penerimaan Santri Baru (PPDB)
+                            </div>
+                            <h3 style="font-size: 1.35rem; font-weight: 800; color: #ffffff; margin-bottom: 8px; line-height: 1.35;">
+                                Ingin Buah Hati Anda Bertumbuh Berprestasi & Berakhlak Mulia?
+                            </h3>
+                            <p style="font-size: 0.92rem; color: #d1fae5; line-height: 1.6; margin-bottom: 1.5rem; max-width: 620px;">
+                                Bergabunglah bersama keluarga besar LPP Al Irsyad Karawang (KB-TK, SDIT, SMPIT, SMAIT). Pendaftaran santri baru kini telah dibuka dengan kuota terbatas untuk setiap jenjang.
+                            </p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                                @php
+                                    $ppdbWa = \App\Models\Setting::get('ppdb_wa_number', \App\Models\Setting::get('whatsapp_number', '6281234567890'));
+                                    $cleanWa = preg_replace('/[^0-9]/', '', (string)$ppdbWa);
+                                    if (str_starts_with($cleanWa, '0')) {
+                                        $cleanWa = '62' . substr($cleanWa, 1);
+                                    }
+                                    $ppdbLink = \App\Models\Setting::get('contact_ppdb_link', '#');
+                                @endphp
+                                <a href="https://wa.me/{{ $cleanWa }}?text={{ urlencode('Bismillah, Assalamu\'alaikum Panitia PPDB Al Irsyad, saya ingin konsultasi pendaftaran santri baru untuk artikel: ' . $post->title) }}" 
+                                   target="_blank" 
+                                   class="btn-track-ppdb-wa" 
+                                   data-source="article_cta_wa"
+                                   style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff; padding: 12px 22px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-decoration: none; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); transition: transform 0.2s;">
+                                    <i data-feather="message-circle" style="width: 18px; height: 18px;"></i>
+                                    Konsultasi WhatsApp PPDB
+                                </a>
+                                @if($ppdbLink && $ppdbLink !== '#')
+                                <a href="{{ $ppdbLink }}" 
+                                   target="_blank" 
+                                   class="btn-track-ppdb-spmb" 
+                                   data-source="article_cta_spmb"
+                                   style="display: inline-flex; align-items: center; gap: 8px; background: #fbbf24; color: #064e3b; padding: 12px 22px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: transform 0.2s;">
+                                    <i data-feather="external-link" style="width: 18px; height: 18px;"></i>
+                                    Daftar SPMB Online
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Tags --}}
                     @if($post->tags && $post->tags->count() > 0)
                         <div class="article-tags" style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
