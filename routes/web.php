@@ -250,6 +250,12 @@ Route::get('/dev/sync', function () {
     }
 });
 
+// CAPTCHA Refresh Route
+Route::get('/captcha/refresh', function () {
+    $captcha = \App\Services\CaptchaService::generateMathCaptcha();
+    return response()->json(['question' => $captcha['question']]);
+})->name('captcha.refresh');
+
 // Catch-all: Post slug first, then Page slug
 Route::get('/{slug}', [FrontendController::class, 'showSlug'])->name('posts.show');
 

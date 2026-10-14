@@ -17,6 +17,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    @if(!empty($captchaEnabled))
+        @if($captchaProvider === 'turnstile' && !empty($turnstileSiteKey))
+            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        @elseif($captchaProvider === 'recaptcha' && !empty($recaptchaSiteKey))
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        @endif
+    @endif
+    
     <style>
         body { font-family: 'Inter', sans-serif; }
         .animate-float { animation: float 6s ease-in-out infinite; }
@@ -207,6 +215,8 @@
             <!-- Modal Body (Scrollable Form) -->
             <form id="checkinForm" action="{{ route('guestbook.store') }}" method="POST" class="flex-1 overflow-y-auto p-6 space-y-4 modal-scroll">
                 @csrf
+                <input type="text" name="_hp_name" style="display:none !important; visibility:hidden !important;" tabindex="-1" autocomplete="off">
+                <input type="hidden" name="_hp_time" id="hpTimeInput" value="{{ time() }}">
                 <input type="hidden" name="signature" id="signatureInput">
 
                 <!-- Nama Lengkap -->
@@ -289,6 +299,36 @@
                     </div>
                 </div>
 
+                <!-- Security CAPTCHA Section -->
+                @if(!empty($captchaEnabled))
+                    @if($captchaProvider === 'builtin' && $mathCaptcha)
+                        <div class="p-3.5 bg-emerald-50/80 border border-emerald-200/80 rounded-2xl" id="mathCaptchaContainer">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-emerald-800 flex items-center gap-1.5 uppercase tracking-wider">
+                                    <i class="fas fa-shield-alt text-emerald-600"></i> Verifikasi Keamanan <span class="text-rose-500">*</span>
+                                </span>
+                                <div class="flex items-center gap-2">
+                                    <span id="mathQuestionText" class="px-3 py-1 bg-white border border-emerald-300 rounded-lg font-bold text-emerald-900 text-sm tracking-wider shadow-sm">
+                                        {{ $mathCaptcha['question'] }}
+                                    </span>
+                                    <button type="button" onclick="refreshCaptcha()" title="Ganti Pertanyaan" class="w-7 h-7 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-sync-alt text-xs" id="refreshCaptchaIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="number" name="captcha_answer" id="captchaAnswerInput" required placeholder="Ketik hasil perhitungan di atas" class="w-full px-3.5 py-2.5 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 font-medium">
+                        </div>
+                    @elseif($captchaProvider === 'turnstile' && !empty($turnstileSiteKey))
+                        <div class="flex justify-center my-2">
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
+                        </div>
+                    @elseif($captchaProvider === 'recaptcha' && !empty($recaptchaSiteKey))
+                        <div class="flex justify-center my-2">
+                            <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                        </div>
+                    @endif
+                @endif
+
                 <!-- Submit Button -->
                 <div class="pt-2">
                     <button type="submit" id="btnSubmitCheckin" class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/30 hover:shadow-lg transition-all flex items-center justify-center gap-2">
@@ -351,6 +391,8 @@
 
         function openCheckinModal() {
             checkinModal.classList.remove('hidden');
+            const hpEl = document.getElementById('hpTimeInput');
+            if (hpEl) hpEl.value = Math.floor(Date.now() / 1000);
             setTimeout(() => {
                 checkinModal.classList.remove('opacity-0');
                 checkinModalContent.classList.remove('scale-95');
@@ -366,6 +408,25 @@
             setTimeout(() => {
                 checkinModal.classList.add('hidden');
             }, 300);
+        }
+
+        function refreshCaptcha() {
+            const icon = document.getElementById('refreshCaptchaIcon');
+            if (icon) icon.classList.add('fa-spin');
+            fetch('{{ route("captcha.refresh") }}')
+                .then(res => res.json())
+                .then(data => {
+                    if (icon) icon.classList.remove('fa-spin');
+                    if (data.question) {
+                        const qEl = document.getElementById('mathQuestionText');
+                        if (qEl) qEl.innerText = data.question;
+                        const ansEl = document.getElementById('captchaAnswerInput');
+                        if (ansEl) { ansEl.value = ''; ansEl.focus(); }
+                    }
+                })
+                .catch(() => {
+                    if (icon) icon.classList.remove('fa-spin');
+                });
         }
 
         function clearSignature() {
@@ -470,6 +531,12 @@
                     }, 10);
                 } else {
                     alert(data.message || 'Gagal menyimpan data.');
+                    if (data.new_captcha) {
+                        const qEl = document.getElementById('mathQuestionText');
+                        if (qEl) qEl.innerText = data.new_captcha;
+                        const ansEl = document.getElementById('captchaAnswerInput');
+                        if (ansEl) { ansEl.value = ''; ansEl.focus(); }
+                    }
                 }
             })
             .catch(err => {

@@ -307,17 +307,17 @@
             }
         }
 
-        // Desktop Sidebar Collapse Logic
+        // Desktop Sidebar Collapse Logic (only for desktop screens)
         const collapseBtn = document.getElementById('sidebar-collapse-btn');
         const sidebarBrand = document.querySelector('.sidebar .brand');
 
-        // Load sidebar state from localStorage
-        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        if (window.innerWidth > 900 && localStorage.getItem('sidebar-collapsed') === 'true') {
             body.classList.add('sidebar-collapsed');
             updateCollapseIcon();
         }
 
         function toggleSidebarCollapse() {
+            if (window.innerWidth <= 900) return; // Prevent collapsing into icon strip on mobile
             body.classList.toggle('sidebar-collapsed');
             const isCollapsed = body.classList.contains('sidebar-collapsed');
             localStorage.setItem('sidebar-collapsed', isCollapsed);
@@ -325,6 +325,7 @@
         }
 
         function updateCollapseIcon() {
+            if (!collapseBtn) return;
             const isCollapsed = body.classList.contains('sidebar-collapsed');
             collapseBtn.innerHTML = isCollapsed ?
                 '<i data-feather="chevron-right"></i>' :
@@ -332,25 +333,54 @@
             feather.replace();
         }
 
-        collapseBtn.addEventListener('click', toggleSidebarCollapse);
+        if (collapseBtn) {
+            collapseBtn.addEventListener('click', toggleSidebarCollapse);
+        }
 
-        // Also allow clicking the brand icon to expand when collapsed
-        sidebarBrand.addEventListener('click', () => {
-            if (body.classList.contains('sidebar-collapsed')) {
-                toggleSidebarCollapse();
-            }
-        });
+        // Also allow clicking the brand icon to expand when collapsed on desktop
+        if (sidebarBrand) {
+            sidebarBrand.addEventListener('click', () => {
+                if (window.innerWidth > 900 && body.classList.contains('sidebar-collapsed')) {
+                    toggleSidebarCollapse();
+                }
+            });
+        }
 
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', toggleSidebar);
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleSidebar();
+            });
         }
         const topbarToggleBtn = document.getElementById('topbar-menu-toggle-btn');
         if (topbarToggleBtn) {
-            topbarToggleBtn.addEventListener('click', toggleSidebar);
+            topbarToggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleSidebar();
+            });
         }
         if (overlay) {
-            overlay.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleSidebar();
+            });
         }
+
+        // Close sidebar on mobile when nav links are tapped
+        sidebar.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Close on ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                toggleSidebar();
+            }
+        });
 
         // Auto-close Alerts after 3 seconds for Joyful UI
         document.addEventListener('DOMContentLoaded', () => {

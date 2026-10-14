@@ -17,7 +17,26 @@ class GuestBookController extends Controller
         $settings = GuestBookSetting::getSettings();
         $services = GuestBookService::active()->get();
 
-        return view('guestbook.index', compact('settings', 'services'));
+        $captchaEnabled = \App\Services\CaptchaService::isEnabledFor('guestbook');
+        $captchaProvider = \App\Services\CaptchaService::getProvider();
+        $mathCaptcha = null;
+
+        if ($captchaEnabled && $captchaProvider === 'builtin') {
+            $mathCaptcha = \App\Services\CaptchaService::generateMathCaptcha();
+        }
+
+        $turnstileSiteKey = \App\Models\Setting::get('security_turnstile_site_key', '');
+        $recaptchaSiteKey = \App\Models\Setting::get('security_recaptcha_site_key', '');
+
+        return view('guestbook.index', compact(
+            'settings',
+            'services',
+            'captchaEnabled',
+            'captchaProvider',
+            'mathCaptcha',
+            'turnstileSiteKey',
+            'recaptchaSiteKey'
+        ));
     }
 
     /**
@@ -44,8 +63,18 @@ class GuestBookController extends Controller
         $captchaResult = \App\Services\CaptchaService::verify($request->all(), 'guestbook');
         if (!$captchaResult['success']) {
             \App\Services\SecurityService::logThreat('spam_bot', 'low', "Spam bot tertangkap di Buku Tamu: " . $captchaResult['message']);
+
+            $newCaptcha = null;
+            if (\App\Services\CaptchaService::isEnabledFor('guestbook') && \App\Services\CaptchaService::getProvider() === 'builtin') {
+                $newCaptcha = \App\Services\CaptchaService::generateMathCaptcha();
+            }
+
             if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['success' => false, 'message' => $captchaResult['message']], 422);
+                return response()->json([
+                    'success' => false,
+                    'message' => $captchaResult['message'],
+                    'new_captcha' => $newCaptcha ? $newCaptcha['question'] : null,
+                ], 422);
             }
             return back()->withInput()->withErrors(['captcha' => $captchaResult['message']]);
         }
