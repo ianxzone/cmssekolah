@@ -692,6 +692,219 @@
             </div>
         </div>
 
+        <!-- ========================================================
+             SECURITY ANALYTICS & THREAT INTELLIGENCE
+             ======================================================== -->
+        <div class="sec-card" style="margin-bottom: 1.5rem;">
+            <div class="sec-card-header" style="flex-wrap: wrap; gap: 1rem;">
+                <div class="sec-card-title-group">
+                    <div class="sec-card-icon-badge emerald"><i data-feather="bar-chart-2"></i></div>
+                    <div>
+                        <h3 class="sec-card-title">Analitik Tren & Intelijen Ancaman</h3>
+                        <p class="sec-card-desc">Rekapitulasi aktivitas ancaman keamanan siber periode <strong>{{ $analytics['period_label'] }}</strong>.</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <!-- Filter Pills -->
+                    <div style="background: #f1f5f9; padding: 4px; border-radius: 10px; display: inline-flex; gap: 4px; border: 1px solid #e2e8f0;">
+                        <a href="{{ route('admin.security.index', ['tab' => 'overview', 'range' => '7d']) }}" 
+                           style="padding: 6px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; text-decoration: none; {{ $range === '7d' ? 'background: #ffffff; color: #065f46; box-shadow: 0 1px 3px rgba(0,0,0,0.1);' : 'color: #64748b;' }}">
+                           7 Hari
+                        </a>
+                        <a href="{{ route('admin.security.index', ['tab' => 'overview', 'range' => '30d']) }}" 
+                           style="padding: 6px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; text-decoration: none; {{ $range === '30d' ? 'background: #ffffff; color: #065f46; box-shadow: 0 1px 3px rgba(0,0,0,0.1);' : 'color: #64748b;' }}">
+                           30 Hari
+                        </a>
+                        <a href="{{ route('admin.security.index', ['tab' => 'overview', 'range' => 'this_month']) }}" 
+                           style="padding: 6px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; text-decoration: none; {{ $range === 'this_month' ? 'background: #ffffff; color: #065f46; box-shadow: 0 1px 3px rgba(0,0,0,0.1);' : 'color: #64748b;' }}">
+                           Bulan Ini
+                        </a>
+                        <a href="{{ route('admin.security.index', ['tab' => 'overview', 'range' => 'last_month']) }}" 
+                           style="padding: 6px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; text-decoration: none; {{ $range === 'last_month' ? 'background: #ffffff; color: #065f46; box-shadow: 0 1px 3px rgba(0,0,0,0.1);' : 'color: #64748b;' }}">
+                           Bulan Lalu
+                        </a>
+                    </div>
+
+                    <!-- Button to Executive Report -->
+                    <a href="{{ route('admin.security.report', ['type' => 'month']) }}" class="btn" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; padding: 7px 14px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
+                        <i data-feather="printer" style="width: 14px; height: 14px;"></i> Laporan Eksekutif & Cetak
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mini Analytic Highlight Strip -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Total Ancaman Ditangkal</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #b91c1c;">{{ number_format($analytics['total_threats']) }}</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Selama {{ $analytics['period_label'] }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Rata-rata Ancaman / Hari</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #0369a1;">{{ number_format($analytics['daily_average'], 1) }} <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">/ hari</span></div>
+                    <div style="font-size: 0.75rem; color: #059669; margin-top: 2px;">Tingkat mitigasi stabil</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Hari Puncak Serangan</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #d97706;">{{ $analytics['peak_day']['date'] }}</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">{{ number_format($analytics['peak_day']['count']) }} percobaan dalam 1 hari</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Tingkat Keberhasilan Blokir</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #059669;">{{ $analytics['block_rate'] }}%</div>
+                    <div style="font-size: 0.75rem; color: #059669; margin-top: 2px;">100% dicegat sebelum tembus</div>
+                </div>
+            </div>
+
+            <!-- Charts 2 Columns: Timeline & Donut Breakdown -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <!-- Timeline Chart -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                            <i data-feather="trending-up" style="width: 16px; height: 16px; color: #059669;"></i> Tren Ancaman Harian (Timeline)
+                        </h4>
+                        <span style="font-size: 0.75rem; color: #64748b;">Jumlah serangan per tanggal</span>
+                    </div>
+                    <div style="height: 260px; position: relative;">
+                        <canvas id="securityTimelineChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Donut Chart -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                            <i data-feather="pie-chart" style="width: 16px; height: 16px; color: #059669;"></i> Vektor Serangan
+                        </h4>
+                        <span style="font-size: 0.75rem; color: #64748b;">Distribusi jenis ancaman</span>
+                    </div>
+                    <div style="height: 260px; position: relative; display: flex; align-items: center; justify-content: center;">
+                        @if(empty($analytics['types']['data']) || array_sum($analytics['types']['data']) === 0)
+                            <div style="text-align: center; color: #94a3b8; font-size: 0.85rem;">
+                                <i data-feather="check-shield" style="width: 32px; height: 32px; color: #10b981; margin-bottom: 6px;"></i>
+                                <p style="margin: 0;">Tidak ada ancaman pada periode ini.</p>
+                            </div>
+                        @else
+                            <canvas id="securityTypeDonutChart"></canvas>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 Columns: Top Attacker IPs & Top Target URLs + Hourly -->
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem;">
+                <!-- Top 10 Attacker IPs -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                            <i data-feather="shield-off" style="width: 16px; height: 16px; color: #ef4444;"></i> Alamat IP Penyerang Paling Agresif
+                        </h4>
+                        <span style="font-size: 0.75rem; color: #64748b;">Top 10 Sumber</span>
+                    </div>
+                    @if($analytics['top_attackers']->isEmpty())
+                        <div style="text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.85rem;">
+                            Belum ada riwayat serangan dari alamat IP tertentu pada periode ini.
+                        </div>
+                    @else
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                                <thead>
+                                    <tr style="border-bottom: 1.5px solid #e2e8f0; color: #64748b;">
+                                        <th style="padding: 8px 6px;">Alamat IP</th>
+                                        <th style="padding: 8px 6px; text-align: right;">Serangan</th>
+                                        <th style="padding: 8px 6px;">Tipe Utama</th>
+                                        <th style="padding: 8px 6px;">Terakhir</th>
+                                        <th style="padding: 8px 6px; text-align: right;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($analytics['top_attackers'] as $att)
+                                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                                            <td style="padding: 8px 6px; font-family: monospace; font-weight: 700; color: #0f172a;">
+                                                {{ $att['ip_address'] }}
+                                            </td>
+                                            <td style="padding: 8px 6px; text-align: right; font-weight: 800; color: #b91c1c;">
+                                                {{ number_format($att['attack_count']) }}x
+                                            </td>
+                                            <td style="padding: 8px 6px; color: #475569;">
+                                                {{ $att['sample_threat'] }}
+                                            </td>
+                                            <td style="padding: 8px 6px; color: #64748b; font-size: 0.75rem;">
+                                                {{ $att['last_seen'] }}
+                                            </td>
+                                            <td style="padding: 8px 6px; text-align: right;">
+                                                @if($att['is_blacklisted'])
+                                                    <span class="badge badge-danger" style="font-size: 0.7rem; padding: 3px 8px;">Blacklist</span>
+                                                @else
+                                                    <form action="{{ route('admin.security.ip.store') }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        <input type="hidden" name="ip_address" value="{{ $att['ip_address'] }}">
+                                                        <input type="hidden" name="rule_type" value="blacklist">
+                                                        <input type="hidden" name="reason" value="Diblokir cepat dari intelijen analitik (serangan berulang)">
+                                                        <button type="submit" class="btn" style="background:#fee2e2; color:#b91c1c; padding: 3px 8px; font-size: 0.7rem; font-weight: 700; border-radius: 6px;">
+                                                            Blokir IP
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Top Target Endpoints & Hourly -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Top Target Endpoints -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                                <i data-feather="target" style="width: 16px; height: 16px; color: #f59e0b;"></i> Target URL Paling Diincar
+                            </h4>
+                            <span style="font-size: 0.75rem; color: #64748b;">Frekuensi</span>
+                        </div>
+                        @if($analytics['top_endpoints']->isEmpty())
+                            <div style="text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.85rem;">
+                                Tidak ada data URL terdeteksi.
+                            </div>
+                        @else
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                @foreach($analytics['top_endpoints'] as $ep)
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 4px;">
+                                            <span style="font-family: monospace; font-weight: 700; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 190px;" title="{{ $ep['url'] }}">
+                                                <span style="color: #059669;">{{ $ep['method'] }}</span> {{ Str::limit($ep['url'], 26) }}
+                                            </span>
+                                            <span style="font-weight: 700; color: #475569;">{{ number_format($ep['hit_count']) }} ({{ $ep['percent'] }}%)</span>
+                                        </div>
+                                        <div style="width: 100%; height: 6px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
+                                            <div style="width: {{ min(100, max(5, $ep['percent'])) }}%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Peak Attack Hours -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                                <i data-feather="clock" style="width: 16px; height: 16px; color: #3b82f6;"></i> Jam Puncak Serangan (24 Jam)
+                            </h4>
+                            <span style="font-size: 0.75rem; color: #64748b;">WIB</span>
+                        </div>
+                        <div style="height: 110px; position: relative;">
+                            <canvas id="securityHourlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 2 Columns: Checklist & Recent Threats -->
         <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <!-- Checklist Card -->
@@ -1508,4 +1721,157 @@
         if (e.target === auditM) closeAuditModal();
     }
 </script>
+
+@if($tab === 'overview')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. Daily Timeline Line/Area Chart
+        const timelineCanvas = document.getElementById('securityTimelineChart');
+        if (timelineCanvas) {
+            const ctxTimeline = timelineCanvas.getContext('2d');
+            const gradientBg = ctxTimeline.createLinearGradient(0, 0, 0, 260);
+            gradientBg.addColorStop(0, 'rgba(5, 150, 105, 0.25)');
+            gradientBg.addColorStop(1, 'rgba(5, 150, 105, 0.0)');
+
+            new Chart(ctxTimeline, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($analytics['timeline']['labels']) !!},
+                    datasets: [{
+                        label: 'Ancaman Dicegat',
+                        data: {!! json_encode($analytics['timeline']['data']) !!},
+                        borderColor: '#059669',
+                        borderWidth: 2.5,
+                        backgroundColor: gradientBg,
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#059669',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#34d399',
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' percobaan serangan ditangkal';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 }, color: '#64748b', maxTicksLimit: 12 }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { precision: 0, font: { size: 10 }, color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Threat Vector Donut Chart
+        const donutCanvas = document.getElementById('securityTypeDonutChart');
+        if (donutCanvas) {
+            const ctxDonut = donutCanvas.getContext('2d');
+            new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($analytics['types']['labels']) !!},
+                    datasets: [{
+                        data: {!! json_encode($analytics['types']['data']) !!},
+                        backgroundColor: [
+                            '#ef4444', '#f97316', '#dc2626', '#e11d48', '#eab308', '#8b5cf6', '#3b82f6', '#06b6d4'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, font: { size: 11 }, padding: 12, color: '#475569' }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const val = context.raw || 0;
+                                    const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                                    return ` ${context.label}: ${val} (${pct}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. Hourly Attack Bar Chart
+        const hourlyCanvas = document.getElementById('securityHourlyChart');
+        if (hourlyCanvas) {
+            const ctxHourly = hourlyCanvas.getContext('2d');
+            new Chart(ctxHourly, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($analytics['hourly']['labels']) !!},
+                    datasets: [{
+                        data: {!! json_encode($analytics['hourly']['data']) !!},
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            padding: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Pukul ${context.label}: ${context.raw} serangan`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 8 }, color: '#94a3b8', maxTicksLimit: 8 }
+                        },
+                        y: {
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+@endif
 @endpush

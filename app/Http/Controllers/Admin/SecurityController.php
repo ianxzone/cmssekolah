@@ -22,7 +22,12 @@ class SecurityController extends Controller
         // Common settings
         $settings = Setting::pluck('value', 'key')->toArray();
 
-        // ─── TAB 1: OVERVIEW ───
+        // ─── TAB 1: OVERVIEW & ANALYTICS ───
+        $range = $request->query('range', '30d');
+        if (!in_array($range, ['7d', '30d', 'this_month', 'last_month'])) {
+            $range = '30d';
+        }
+        $analytics = SecurityService::getAnalyticsData($range);
         $healthScore = SecurityService::calculateHealthScore();
 
         $todaySuccessfulLogins = AuditLog::where('action', 'login')
@@ -79,6 +84,8 @@ class SecurityController extends Controller
         return view('admin.security.index', compact(
             'tab',
             'settings',
+            'range',
+            'analytics',
             'healthScore',
             'todaySuccessfulLogins',
             'todayFailedLogins',
@@ -90,6 +97,25 @@ class SecurityController extends Controller
             'threatLogs',
             'ipRules'
         ));
+    }
+
+    /**
+     * Generate printable periodic security report
+     */
+    public function report(Request $request)
+    {
+        $type = $request->query('type', 'month');
+        if (!in_array($type, ['month', 'quarter', 'year'])) {
+            $type = 'month';
+        }
+
+        $year = (int)$request->query('year', date('Y'));
+        $month = (int)$request->query('month', date('n'));
+        $quarter = (int)$request->query('quarter', ceil(date('n') / 3));
+
+        $report = SecurityService::getReportData($type, $year, $month, $quarter);
+
+        return view('admin.security.report', compact('report', 'type', 'year', 'month', 'quarter'));
     }
 
     /**
@@ -142,6 +168,10 @@ class SecurityController extends Controller
     public function clearThreatLogs()
     {
         SecurityThreatLog::truncate();
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_7d');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_30d');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_this_month');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_last_month');
         SecurityService::logAudit('deleted', 'security', 'Membersihkan semua riwayat log ancaman');
 
         return redirect()->route('admin.security.index', ['tab' => 'threats'])
@@ -154,6 +184,10 @@ class SecurityController extends Controller
     public function clearAutoBan()
     {
         IpRule::where('rule_type', 'blacklist')->whereNull('created_by')->delete();
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_7d');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_30d');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_this_month');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_last_month');
         SecurityService::logAudit('deleted', 'security', 'Membersihkan semua IP yang diblokir otomatis oleh sistem');
 
         return redirect()->route('admin.security.index', ['tab' => 'threats'])

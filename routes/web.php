@@ -170,6 +170,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
 
         // Security Center & Monitoring Routes
         Route::get('security', [AdminSecurityController::class, 'index'])->name('admin.security.index');
+        Route::get('security/report', [AdminSecurityController::class, 'report'])->name('admin.security.report');
         Route::post('security/ip', [AdminSecurityController::class, 'blockIp'])->name('admin.security.ip.store');
         Route::delete('security/ip/{id}', [AdminSecurityController::class, 'unblockIp'])->name('admin.security.ip.destroy');
         Route::post('security/ip/clear-autoban', [AdminSecurityController::class, 'clearAutoBan'])->name('admin.security.ip.clearAutoBan');
