@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Fitur Lengkap & Proposal Solusi CMS Sekolah</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --primary-light: #ccfbf1;
+            --accent: #d97706;
+            --accent-light: #fef3c7;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f8fafc;
+            color: var(--slate-800);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .no-print-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #ffffff;
+            border-bottom: 1px solid var(--slate-200);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .btn-print {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-print:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .doc-container {
+            max-width: 900px;
+            margin: 24px auto;
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 48px 56px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.03);
+        }
+
+        /* Kop / Header */
+        .header-cover {
+            border-bottom: 3px double var(--slate-900);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-org h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .header-org p {
+            font-size: 12.5px;
+            color: var(--slate-600);
+            line-height: 1.4;
+        }
+
+        .badge-proposal {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            border: 1px solid #99f6e4;
+        }
+
+        .doc-title-box {
+            text-align: center;
+            margin-bottom: 36px;
+            background: linear-gradient(135deg, #f0fdfa, #f8fafc);
+            border: 1px solid #ccfbf1;
+            padding: 24px 20px;
+            border-radius: 12px;
+        }
+
+        .doc-title-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .doc-title-box p {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .doc-title-box .meta-sub {
+            font-size: 11px;
+            color: var(--slate-500);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Section Styling */
+        .section-block {
+            margin-bottom: 32px;
+        }
+
+        .section-heading {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--slate-900);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--slate-200);
+            padding-bottom: 6px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-heading span.num {
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lead-text {
+            font-size: 13.5px;
+            color: var(--slate-700);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        /* Architecture Flow Box */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .arch-card {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .arch-card h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .arch-card p {
+            font-size: 11px;
+            color: var(--slate-600);
+            line-height: 1.35;
+        }
+
+        /* Module Grid */
+        .module-card {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .module-card.accent {
+            border-left-color: var(--accent);
+        }
+
+        .module-card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-card .badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--slate-100);
+            color: var(--slate-700);
+        }
+
+        .module-card ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 6px;
+        }
+
+        .module-card li {
+            font-size: 12.5px;
+            color: var(--slate-700);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.45;
+        }
+
+        .module-card li::before {
+            content: "✔";
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Comparison Table */
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 12px;
+            margin-bottom: 20px;
+        }
+
+        .comp-table th {
+            background: var(--slate-100);
+            color: var(--slate-800);
+            font-weight: 700;
+            text-align: left;
+            padding: 10px 12px;
+            border: 1px solid var(--slate-200);
+        }
+
+        .comp-table td {
+            padding: 9px 12px;
+            border: 1px solid var(--slate-200);
+            color: var(--slate-700);
+            line-height: 1.4;
+        }
+
+        .comp-table tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        /* Stakeholder Grid */
+        .stakeholder-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .stakeholder-card {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .stakeholder-card h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stakeholder-card p {
+            font-size: 11.5px;
+            color: var(--slate-600);
+            line-height: 1.4;
+        }
+
+        /* Demo Box */
+        .demo-box {
+            background: linear-gradient(to right, #fef3c7, #fffbeb);
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+
+        .demo-box h4 {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .demo-step {
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #78350f;
+            display: flex;
+            gap: 6px;
+            line-height: 1.4;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: var(--slate-500);
+            border-top: 1px solid var(--slate-200);
+            padding-top: 18px;
+            margin-top: 36px;
+        }
+
+        /* Print Settings */
+        @page {
+            size: A4 portrait;
+            margin: 14mm 14mm 14mm 14mm;
+        }
+
+        @media print {
+            body {
+                background: #ffffff !important;
+                font-size: 10.5pt !important;
+            }
+
+            .no-print-bar {
+                display: none !important;
+            }
+
+            .doc-container {
+                max-width: 100% !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .header-cover {
+                margin-bottom: 20px !important;
+                padding-bottom: 16px !important;
+            }
+
+            .section-block {
+                margin-bottom: 20px !important;
+                page-break-inside: auto;
+            }
+
+            .module-card {
+                page-break-inside: avoid !important;
+                margin-bottom: 10px !important;
+                padding: 12px 14px !important;
+            }
+
+            .comp-table tr {
+                page-break-inside: avoid !important;
+            }
+
+            .demo-box {
+                page-break-inside: avoid !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Action Bar (Hidden when printing) -->
+    <div class="no-print-bar">
+        <div>
+            <strong style="color: var(--slate-900); font-size: 14px;">Dokumen Proposal & Katalog Fitur CMS Sekolah</strong>
+            <span style="color: var(--slate-500); font-size: 12px; margin-left: 8px;">(Siap Cetak / Save as PDF)</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-print" onclick="window.print()">
+                🖨️ Cetak / Simpan sebagai PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Document Sheet -->
+    <div class="doc-container">
+
+        <!-- Kop Lembaga -->
+        <div class="header-cover">
+            <div class="header-org">
+                <h1>CMS SEKOLAH UNGGULAN & PPDB INTELLIGENCE</h1>
+                <p>Platform Terpadu Pengelolaan Portal Informasi, Branding Lembaga, & Penjaringan Santri Baru</p>
+                <p>Arsitektur Modern Laravel 11 &bull; Standar Keamanan OWASP &bull; Closed-Loop Ad Optimization</p>
+            </div>
+            <div class="badge-proposal">
+                Dokumen Resmi Klien
+            </div>
+        </div>
+
+        <!-- Title Block -->
+        <div class="doc-title-box">
+            <h2>Katalog Fitur Lengkap & Solusi Digital Sekolah</h2>
+            <p>Dirancang Khusus untuk SDIT, SMPIT, SMAIT, Pondok Pesantren, & Madrasah Unggulan</p>
+            <div class="meta-sub">Versi Sistem: 3.2.0 &bull; Edisi PPDB 2026/2027 &bull; Siap Presentasi Pimpinan Yayasan</div>
+        </div>
+
+        <!-- Section 1: Value Proposition -->
+        <div class="section-block">
+            <div class="section-heading">
+                <span class="num">1</span> Ringkasan Eksekutif & Value Proposition
+            </div>
+            <p class="lead-text">
+                Banyak sekolah saat ini memiliki website yang hanya berfungsi sebagai <strong>arsip berita pasif</strong> yang jarang dikunjungi orang tua, serta rawan peretasan (seperti malware atau judi online karena kelemahan plugin WordPress). Sistem ini dibangun dari nol dengan misi: <strong>Menjadikan website sekolah sebagai Mesin Penjaring Santri Otomatis (School Growth Engine) yang aman, cepat, dan profesional.</strong>
+            </p>
+
+            <div class="arch-grid">
+                <div class="arch-card">
+                    <h4>1. Portal Prestisius</h4>
+                    <p>Branding keunggulan, kurikulum khas, & prestasi santri.</p>
+                </div>
+                <div class="arch-card">
+                    <h4>2. Mesin PPDB</h4>
+                    <p>Auto-banner artikel & WhatsApp lead generator.</p>
+                </div>
+                <div class="arch-card">
+                    <h4>3. Intelijen Iklan</h4>
+                    <p>Feedback real-time ke AI Meta, Google & TikTok Ads.</p>
+                </div>
+                <div class="arch-card">
+                    <h4>4. Tata Kelola Resmi</h4>
+                    <p>Laporan eksekutif ber-Kop Surat siap print PDF.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Modul Utama -->
+        <div class="section-block">
+            <div class="section-heading">
+                <span class="num">2</span> 8 Modul Unggulan Sistem
+            </div>
+
+            <!-- Modul 1 -->
+            <div class="module-card">
+                <h3>MODUL 1: Portal Publik & Branding Sekolah <span class="badge">Front-End Excellence</span></h3>
+                <ul>
+                    <li><strong>Desain Prestisius & Mobile-First:</strong> Tampilan visual elegan dengan loading super cepat (&lt; 1.5 detik), hemat kuota wali santri.</li>
+                    <li><strong>Revolution Banner Slider:</strong> Slider interaktif dengan tombol call-to-action (CTA) pendaftaran gelombang baru.</li>
+                    <li><strong>Publikasi Prestasi & Berita:</strong> Dilengkapi estimasi waktu baca, penanggalan Hijriyah & Masehi, serta moderasi komentar anti-spam.</li>
+                    <li><strong>Katalog Ekstrakurikuler & Fasilitas:</strong> Menampilkan program tahfidz, robotik, bahasa asing, dan sarana prasarana sekolah.</li>
+                    <li><strong>Direktori Pimpinan & Asatidz:</strong> Profil guru, sanad hafalan Qur'an, dan riwayat pendidikan untuk membangun kepercayaan wali murid.</li>
+                </ul>
+            </div>
+
+            <!-- Modul 2 -->
+            <div class="module-card accent">
+                <h3>MODUL 2: Mesin Penjaringan Santri (PPDB Conversion) <span class="badge" style="background:#fef3c7; color:#92400e;">Lead Capture</span></h3>
+                <ul>
+                    <li><strong>Auto PPDB Banner di Setiap Artikel:</strong> Setiap berita prestasi otomatis memiliki penutup ajakan mendaftar santri baru.</li>
+                    <li><strong>Tombol WhatsApp Otomatis Berjudul Artikel:</strong> Pesan WA calon wali murid langsung memuat judul artikel yang dibaca, sehingga panitia tahu persis minat orang tua!</li>
+                    <li><strong>Biolink Mandiri Sekolah (/links):</strong> Pengganti Linktree resmi menggunakan domain sekolah sendiri tanpa biaya langganan bulanan.</li>
+                    <li><strong>Buku Tamu Digital (/buku-tamu):</strong> Menggantikan buku tamu kertas pos satpam/resepsionis untuk mencatat kunjungan survei offline.</li>
+                    <li><strong>Pembangun Formulir Dinamis (Custom Form Builder):</strong> Formulir pendaftaran online dengan upload berkas (KK/Akta) & ekspor Excel/CSV.</li>
+                </ul>
+            </div>
+
+            <!-- Modul 3 -->
+            <div class="module-card">
+                <h3>MODUL 3: Pusat Komando & Dashboard PPDB <span class="badge">Real-Time Intelligence</span></h3>
+                <ul>
+                    <li><strong>4 Kartu Metrik Utama:</strong> Pantau Klik WhatsApp PPDB hari ini, Klik Portal SPMB, Submisi Formulir, dan Kunjungan Tamu Offline.</li>
+                    <li><strong>Live Activity Stream:</strong> Feed real-time detik-per-detik saat calon wali murid mengklik tombol pendaftaran dari berbagai halaman web.</li>
+                    <li><strong>Widget Statistik Matomo Terintegrasi:</strong> Menampilkan total kunjungan, tayangan halaman, durasi baca, dan bounce rate langsung di dashboard admin.</li>
+                </ul>
+            </div>
+
+            <!-- Modul 4 -->
+            <div class="module-card accent">
+                <h3>MODUL 4: Analitik Multi-Platform & Closed-Loop Ad Optimization <span class="badge" style="background:#fef3c7; color:#92400e;">AI Ads Feedback</span></h3>
+                <ul>
+                    <li><strong>Dual-Tracking Harmonis:</strong> Menjalankan Google Analytics 4 (GA4), Matomo Self-Hosted, dan Matomo Cloud tanpa beban ganda.</li>
+                    <li><strong>Umpan Balik AI Meta Ads (Facebook & IG):</strong> Mengirim sinyal <code>Lead</code> dan <code>Contact</code> ke Pixel saat ortu klik WA, sehingga algoritma Meta otomatis mencari orang tua berprofil serupa (Lookalike) di sekitar sekolah.</li>
+                    <li><strong>Google Ads Smart Bidding:</strong> Mengirim event <code>generate_lead</code> resmi untuk mengoptimalkan kata kunci pencarian Google.</li>
+                    <li><strong>TikTok Pixel Support:</strong> Mengirim event <code>Contact</code> agar promosi video TikTok disalurkan ke akun orang tua berdaya beli.</li>
+                    <li><strong>Mode Tanpa Cookie (GDPR):</strong> Opsi cookieless tracking agar website tidak perlu menampilkan pop-up persetujuan cookie yang mengganggu.</li>
+                </ul>
+            </div>
+
+            <!-- Modul 5 -->
+            <div class="module-card">
+                <h3>MODUL 5: Generator Tautan Kampanye Iklan (UTM & QR Code) <span class="badge">Promotion Toolkit</span></h3>
+                <ul>
+                    <li><strong>8 Template Saluran Promosi 1-Klik:</strong> Instagram Bio, Instagram Story, WA Broadcast, Meta Ads, TikTok, Brosur Cetak, Edufair, dan Alumni.</li>
+                    <li><strong>Live Barcode QR Code Siap Cetak (Download PNG):</strong> Barcode QR beresolusi tinggi yang bisa diunduh instan untuk ditempel pada desain Canva/Photoshop brosur, spanduk jalan, dan standing banner.</li>
+                    <li><strong>Pemilih Halaman Tujuan Cepat:</strong> Cukup klik untuk memilih Beranda, Form Pendaftaran, Biolink, atau Kontak WA.</li>
+                </ul>
+            </div>
+
+            <!-- Modul 6 -->
+            <div class="module-card accent">
+                <h3>MODUL 6: Sistem Pelaporan Eksekutif Resmi (Print PDF A4) <span class="badge" style="background:#fef3c7; color:#92400e;">Executive Reporting</span></h3>
+                <ul>
+                    <li><strong>Format Standar Kedinasan Ber-Kop Surat:</strong> Memuat logo sekolah resmi, nama lembaga, nomor dokumen otomatis, dan alamat lengkap.</li>
+                    <li><strong>Filter Periode Lengkap:</strong> Cetak laporan berkala Bulanan, Triwulan/Kuartal (Q1–Q4), atau Tahunan (LPJ).</li>
+                    <li><strong>Corong Konversi (Funnel) 4 Tahap:</strong> Jangkauan Web ➔ Minat Program ➔ Unduh Brosur ➔ Hot Leads Pendaftar.</li>
+                    <li><strong>Evaluasi Saluran Kampanye:</strong> Membedah media mana yang paling efektif (WhatsApp, Instagram, Ads, atau Brosur Offline).</li>
+                    <li><strong>Kolom Tanda Tangan Sah:</strong> Mengetahui Kepala Sekolah & Diterbitkan oleh Koordinator Humas/PPDB.</li>
+                </ul>
+            </div>
+
+            <!-- Modul 7 & 8 -->
+            <div class="module-card">
+                <h3>MODUL 7 & 8: Keamanan Siber OWASP & Mesin SEO Google <span class="badge">Security & SEO</span></h3>
+                <ul>
+                    <li><strong>Mini-WAF & Auto-Ban:</strong> Proteksi otomatis dari serangan injeksi SQL, XSS, probing path terlarang, dan pemblokiran IP bot peretas.</li>
+                    <li><strong>Autentikasi 2-Faktor (2FA):</strong> Pengamanan login akun pimpinan dan admin dengan Google Authenticator.</li>
+                    <li><strong>Math CAPTCHA Mandiri:</strong> Keamanan formulir tanpa ketergantungan API pihak ketiga (sangat cepat & privat).</li>
+                    <li><strong>Suite XML Sitemap Otomatis & Redirect Manager 301:</strong> Memaksimalkan peringkat sekolah di Google Search dan mencegah error 404.</li>
+                    <li><strong>Alat Migrasi 1-Klik dari WordPress & Rank Math:</strong> Pindahkan ribuan postingan dan SEO lama tanpa repot.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 3: Perbandingan -->
+        <div class="section-block">
+            <div class="section-heading">
+                <span class="num">3</span> Matriks Perbandingan: CMS Ini vs WordPress
+            </div>
+            <table class="comp-table">
+                <thead>
+                    <tr>
+                        <th style="width: 28%;">Kriteria Evaluasi</th>
+                        <th style="width: 36%;">WordPress Konvensional</th>
+                        <th style="width: 36%; background: var(--primary-light); color: var(--primary-dark);">CMS Sekolah Terintegrasi (Sistem Ini)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Keamanan Sistem</strong></td>
+                        <td>❌ Sangat rawan peretasan melalui celah plugin pihak ketiga.</td>
+                        <td>✅ <strong>Standar OWASP & Mini-WAF bawaan</strong>, aman dari injeksi dan deface judi online.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kecepatan & Performa</strong></td>
+                        <td>❌ Lambat akibat tumpukan plugin database berat.</td>
+                        <td>✅ <strong>Ultra-fast (&lt; 1.5 detik)</strong>, kode bersih Laravel tanpa bloatware.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Penjaringan PPDB</strong></td>
+                        <td>❌ Terpisah-pisah, harus beli plugin formulir berbayar.</td>
+                        <td>✅ <strong>PPDB Intelligence terintegrasi</strong>: Auto-banner artikel, WhatsApp tracker, dan form ekspor Excel.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Efektivitas Iklan Medsos</strong></td>
+                        <td>❌ Sulit sinkronisasi ke Meta Pixel, Google, & TikTok.</td>
+                        <td>✅ <strong>Closed-Loop AI Ads ready</strong>: Otomatis kirim sinyal konversi standar agar biaya iklan hemat.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pelaporan ke Pimpinan</strong></td>
+                        <td>❌ Rekap manual spreadsheet butuh waktu berhari-hari.</td>
+                        <td>✅ <strong>1-Klik Laporan Resmi A4 (PDF)</strong> ber-Kop Surat dan kolom tanda tangan.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biaya Jangka Panjang</strong></td>
+                        <td>❌ Biaya lisensi plugin tahunan terus membengkak.</td>
+                        <td>✅ <strong>Single Integrated Platform</strong>, bebas biaya lisensi plugin eksternal.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 4: Manfaat Bagi Stakeholder -->
+        <div class="section-block">
+            <div class="section-heading">
+                <span class="num">4</span> Manfaat Bagi Stakeholder Sekolah
+            </div>
+            <div class="stakeholder-grid">
+                <div class="stakeholder-card">
+                    <h4>Pimpinan & Yayasan</h4>
+                    <p>Laporan berkala siap print, transparansi data pendaftar, dan citra sekolah yang prestisius dan modern.</p>
+                </div>
+                <div class="stakeholder-card">
+                    <h4>Kepala Sekolah</h4>
+                    <p>Kurikulum unggulan dan prestasi santri terpampang profesional di hadapan masyarakat tanpa downtime.</p>
+                </div>
+                <div class="stakeholder-card">
+                    <h4>Panitia PPDB</h4>
+                    <p>Respon cepat calon ortu via WA, link kampanye 1-klik, dan QR Code siap serahkan ke percetakan spanduk.</p>
+                </div>
+                <div class="stakeholder-card">
+                    <h4>Tim IT / Admin Web</h4>
+                    <p>Bebas pusing ancaman malware atau virus plugin, sistem mudah dipelihara di cPanel standar.</p>
+                </div>
+                <div class="stakeholder-card">
+                    <h4>Desainer & Humas</h4>
+                    <p>Mudah mengunggah galeri kegiatan dan download QR Code resolusi tinggi untuk brosur cetak.</p>
+                </div>
+                <div class="stakeholder-card">
+                    <h4>Calon Orang Tua</h4>
+                    <p>Akses super cepat dari smartphone, informasi biaya jelas, dan konsultasi pendaftaran dalam satu ketukan jari.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Panduan Live Demo -->
+        <div class="demo-box">
+            <h4>💡 Skenario 3 Langkah Live Demo untuk Memikat Klien Sekolah</h4>
+            <div class="demo-step">
+                <strong>Langkah 1:</strong> Buka salah satu berita prestasi di website ➔ scroll ke bawah tunjukkan Banner Emas PPDB ➔ klik tombol WhatsApp untuk membuktikan bahwa pesan otomatis memuat judul berita tersebut!
+            </div>
+            <div class="demo-step">
+                <strong>Langkah 2:</strong> Buka menu Admin ➔ tunjukkan angka di Pusat Komando PPDB langsung bertambah dan aktivitas calon ortu muncul di Live Activity Stream secara real-time.
+            </div>
+            <div class="demo-step">
+                <strong>Langkah 3:</strong> Klik tombol <strong>"Cetak Laporan (PDF)"</strong> di panel PPDB ➔ perlihatkan dokumen resmi ber-Kop Surat yang siap ditandatangani Kepala Sekolah.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            Dokumen Resmi Presentasi & Katalog Fitur Sistem CMS Sekolah Terpadu &bull; Diterbitkan untuk Presentasi Klien & Stakeholder Pendidikan.
+        </div>
+    </div>
+
+</body>
+</html>
