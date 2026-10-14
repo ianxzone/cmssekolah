@@ -200,46 +200,148 @@
     }
 
     /* Print Styles */
-    @media print {
-        body {
-            background: #ffffff !important;
-            color: #000000 !important;
-        }
+    @page {
+        size: A4 portrait;
+        margin: 15mm 15mm 15mm 15mm;
+    }
 
+    @media print {
+        /* Hide all admin layout chrome */
+        .sidebar,
+        #sidebar,
+        .topbar,
+        .menu-toggle,
+        .collapse-toggle,
+        #menu-toggle-btn,
+        #sidebar-collapse-btn,
+        #topbar-menu-toggle-btn,
         .report-control-bar,
-        .admin-sidebar,
-        .admin-navbar,
+        .overlay,
+        #mobile-overlay,
         .btn,
         header,
         footer,
-        .sec-header {
+        .sec-header,
+        .alert {
             display: none !important;
         }
 
-        .admin-main,
-        .admin-content {
+        /* Reset main document body and wrappers */
+        html, body {
+            background: #ffffff !important;
+            color: #000000 !important;
             margin: 0 !important;
             padding: 0 !important;
+            width: 100% !important;
+            min-width: 100% !important;
+            font-size: 9.5pt !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
-        .report-sheet {
+        .admin-layout,
+        .main-content,
+        .content-area,
+        main {
+            display: block !important;
+            position: static !important;
+            margin: 0 !important;
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            background: transparent !important;
             box-shadow: none !important;
             border: none !important;
+        }
+
+        .sidebar-collapsed .main-content {
+            margin-left: 0 !important;
+        }
+
+        /* Sheet full width without card border / shadow */
+        .report-sheet {
+            display: block !important;
+            position: static !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
             padding: 0 !important;
-            max-width: 100% !important;
             margin: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            background: transparent !important;
+        }
+
+        .report-header-kop {
+            border-bottom: 2px solid #0f172a !important;
+            padding-bottom: 12px !important;
+            margin-bottom: 16px !important;
+        }
+
+        .report-doc-title {
+            margin-bottom: 1.25rem !important;
+        }
+
+        .report-doc-title h2 {
+            font-size: 1.2rem !important;
         }
 
         .report-meta-grid {
             background: #f8fafc !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            border: 1px solid #94a3b8 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            padding: 10px 14px !important;
+            margin-bottom: 18px !important;
+            gap: 0.75rem !important;
+        }
+
+        .report-meta-item .val {
+            font-size: 1.2rem !important;
+        }
+
+        .report-section {
+            margin-bottom: 18px !important;
+            page-break-inside: auto;
+        }
+
+        .report-section-title {
+            font-size: 0.95rem !important;
+            margin-bottom: 8px !important;
+            border-bottom: 1.5px solid #94a3b8 !important;
+        }
+
+        .report-table {
+            width: 100% !important;
+            page-break-inside: auto;
+        }
+
+        .report-table tr {
+            page-break-inside: avoid !important;
         }
 
         .report-table th {
             background: #f1f5f9 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            color: #0f172a !important;
+            border: 1px solid #64748b !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            font-size: 8.5pt !important;
+            padding: 6px 10px !important;
+        }
+
+        .report-table td {
+            border: 1px solid #94a3b8 !important;
+            font-size: 8.5pt !important;
+            padding: 6px 10px !important;
+            color: #0f172a !important;
+        }
+
+        .report-signatures {
+            margin-top: 30px !important;
+            page-break-inside: avoid !important;
         }
     }
 </style>
@@ -314,7 +416,7 @@
     <!-- Judul Dokumen -->
     <div class="report-doc-title">
         <h2>{{ $report['title'] }}</h2>
-        <p>{{ $report['subtitle'] }}</p>
+        <p>Periode: {{ $report['subtitle'] }}</p>
     </div>
 
     <!-- Metrik Utama -->
@@ -343,14 +445,14 @@
             <i data-feather="file-text" style="width: 18px; height: 18px; color: #059669;"></i> I. Ringkasan Eksekutif
         </div>
         <p style="font-size: 0.88rem; line-height: 1.6; color: #334155; margin-bottom: 0.75rem;">
-            Selama periode <strong>{{ $report['subtitle'] }}</strong> (total <strong>{{ $report['total_days'] }} hari</strong>), 
+            Selama periode <strong>{{ $report['subtitle'] }}</strong> (total <strong>{{ (int)$report['total_days'] }} hari</strong>), 
             sistem keamanan CMS Sekolah secara aktif memantau seluruh lalu lintas web dan berhasil menggagalkan 
             <strong>{{ number_format($report['total_threats']) }} percobaan serangan berbahaya</strong> dengan tingkat keberhasilan penangkalan sebesar 
             <strong>{{ $report['block_rate'] }}%</strong>. Rata-rata serangan bot dan peretas yang dicegat adalah <strong>{{ number_format($report['daily_average'], 1) }} serangan per hari</strong>.
         </p>
         <p style="font-size: 0.88rem; line-height: 1.6; color: #334155; margin: 0;">
             Kondisi ketahanan sistem saat ini berada pada status <strong>Terlindungi Baik (Skor {{ $report['health_score']['score'] }}/100)</strong> 
-            berdasarkan standar keamanan industri *OWASP Top 10 Web Application Security Risks*.
+            berdasarkan standar keamanan industri <em>OWASP Top 10 Web Application Security Risks</em>.
         </p>
     </div>
 

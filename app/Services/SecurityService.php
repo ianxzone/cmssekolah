@@ -446,23 +446,23 @@ class SecurityService
             $startDate = \Carbon\Carbon::create($year, $qInfo['start'], 1)->startOfDay();
             $endDate = \Carbon\Carbon::create($year, $qInfo['end'], 1)->endOfMonth()->endOfDay();
             $title = "Laporan Keamanan Siber {$qInfo['label']} {$year}";
-            $subtitle = "Periode " . $startDate->translatedFormat('d F Y') . " s/d " . $endDate->translatedFormat('d F Y');
+            $subtitle = $startDate->translatedFormat('d F Y') . " s/d " . $endDate->translatedFormat('d F Y');
         } elseif ($type === 'year') {
             $startDate = \Carbon\Carbon::create($year, 1, 1)->startOfDay();
             $endDate = \Carbon\Carbon::create($year, 12, 31)->endOfDay();
             $title = "Laporan Tahunan Keamanan Siber {$year}";
-            $subtitle = "Periode 01 Januari {$year} s/d 31 Desember {$year}";
+            $subtitle = "01 Januari {$year} s/d 31 Desember {$year}";
         } else { // default 'month'
             $type = 'month';
             $startDate = \Carbon\Carbon::create($year, $month, 1)->startOfDay();
             $endDate = $startDate->copy()->endOfMonth()->endOfDay();
             $title = "Laporan Keamanan Siber Bulanan - " . $startDate->translatedFormat('F Y');
-            $subtitle = "Periode " . $startDate->translatedFormat('01 F Y') . " s/d " . $endDate->translatedFormat('d F Y');
+            $subtitle = "01 " . $startDate->translatedFormat('F Y') . " s/d " . $endDate->translatedFormat('d F Y');
         }
 
         // Clamp endDate to now if in current period
-        $realEndDate = $endDate->isFuture() ? now() : $endDate;
-        $totalDays = max(1, $startDate->diffInDays($realEndDate) + 1);
+        $realEndDate = $endDate->isFuture() ? now()->endOfDay() : $endDate;
+        $totalDays = (int)max(1, $startDate->copy()->startOfDay()->diffInDays($realEndDate->copy()->startOfDay()) + 1);
 
         // Core Aggregations
         $totalThreats = SecurityThreatLog::whereBetween('created_at', [$startDate, $endDate])->count();
