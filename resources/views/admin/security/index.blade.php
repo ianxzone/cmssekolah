@@ -687,7 +687,8 @@
                 <div class="sec-metric-icon sky"><i data-feather="slash"></i></div>
                 <div>
                     <div class="sec-metric-val" style="color: #0369a1;">{{ $totalBlockedIps }}</div>
-                    <div class="sec-metric-lbl">Alamat IP Terblokir</div>
+                    <div class="sec-metric-lbl">Alamat IP Terblokir Aktif</div>
+                    <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">{{ $totalBlockedIps }} aktif dari {{ $countAllIps }} riwayat aturan</div>
                 </div>
             </div>
         </div>
@@ -1159,30 +1160,61 @@
                         <p class="sec-card-desc">Kelola alamat IP yang dilarang mengakses sistem atau yang selalu diizinkan.</p>
                     </div>
                 </div>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <form action="{{ route('admin.security.ip.clearAutoBan') }}" method="POST" onsubmit="return confirm('Hapus semua IP yang diblokir otomatis oleh sistem?');" style="display:inline;">
                         @csrf
-                        <button type="submit" class="btn" style="background:#fff7ed; color:#c2410c; border: 1px solid #fed7aa;">
-                            <i data-feather="refresh-cw"></i> Bersihkan Auto-Ban
+                        <button type="submit" class="btn" style="background:#fff7ed; color:#c2410c; border: 1px solid #fed7aa; padding: 7px 12px; font-size: 0.8rem;">
+                            <i data-feather="refresh-cw" style="width: 14px; height: 14px;"></i> Bersihkan Auto-Ban
                         </button>
                     </form>
-                    <button type="button" class="btn btn-primary" onclick="openIpModal()">
-                        <i data-feather="plus"></i> Tambah Aturan IP
+                    @if($countExpiredIps > 0)
+                        <form action="{{ route('admin.security.ip.clearExpired') }}" method="POST" onsubmit="return confirm('Hapus {{ $countExpiredIps }} aturan IP yang sudah kedaluwarsa?');" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn" style="background:#f1f5f9; color:#475569; border: 1px solid #cbd5e1; padding: 7px 12px; font-size: 0.8rem;">
+                                <i data-feather="trash-2" style="width: 14px; height: 14px;"></i> Hapus {{ $countExpiredIps }} IP Kedaluwarsa
+                            </button>
+                        </form>
+                    @endif
+                    <button type="button" class="btn btn-primary" onclick="openIpModal()" style="padding: 7px 14px; font-size: 0.8rem;">
+                        <i data-feather="plus" style="width: 14px; height: 14px;"></i> Tambah Aturan IP
                     </button>
                 </div>
             </div>
 
+            <!-- Filter Status Bar -->
+            <div style="display: flex; gap: 8px; margin-bottom: 1.25rem; align-items: center; justify-content: space-between; flex-wrap: wrap; background: #f8fafc; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                <div style="display: inline-flex; gap: 6px; flex-wrap: wrap;">
+                    <a href="{{ route('admin.security.index', ['tab' => 'threats', 'ip_filter' => 'all']) }}" 
+                       style="padding: 5px 12px; border-radius: 7px; font-size: 0.8rem; font-weight: 700; text-decoration: none; {{ $ipFilter === 'all' ? 'background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);' : 'color: #64748b;' }}">
+                        Semua Aturan ({{ $countAllIps }})
+                    </a>
+                    <a href="{{ route('admin.security.index', ['tab' => 'threats', 'ip_filter' => 'active']) }}" 
+                       style="padding: 5px 12px; border-radius: 7px; font-size: 0.8rem; font-weight: 700; text-decoration: none; {{ $ipFilter === 'active' ? 'background: #ffffff; color: #b91c1c; border: 1px solid #fca5a5; box-shadow: 0 1px 2px rgba(0,0,0,0.05);' : 'color: #64748b;' }}">
+                        <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#ef4444; margin-right:4px;"></span> Aktif Memblokir ({{ $countActiveIps }})
+                    </a>
+                    <a href="{{ route('admin.security.index', ['tab' => 'threats', 'ip_filter' => 'expired']) }}" 
+                       style="padding: 5px 12px; border-radius: 7px; font-size: 0.8rem; font-weight: 700; text-decoration: none; {{ $ipFilter === 'expired' ? 'background: #ffffff; color: #475569; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);' : 'color: #64748b;' }}">
+                        <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#94a3b8; margin-right:4px;"></span> Kedaluwarsa / Selesai ({{ $countExpiredIps }})
+                    </a>
+                </div>
+                <div style="font-size: 0.78rem; color: #64748b;">
+                    Menampilkan <strong>{{ $ipRules->count() }}</strong> data
+                </div>
+            </div>
+
             @if($ipRules->isEmpty())
-                <div style="text-align: center; padding: 2rem; background: #f8fafc; border-radius: 12px; color: #64748b; font-size: 0.88rem;">
-                    Belum ada aturan IP aktif di sistem.
+                <div style="text-align: center; padding: 2.5rem 1rem; background: #f8fafc; border-radius: 12px; color: #64748b; font-size: 0.88rem; margin-bottom: 2rem;">
+                    <i data-feather="check-circle" style="width: 32px; height: 32px; color: #10b981; margin-bottom: 6px;"></i>
+                    <p style="margin: 0;">Tidak ada aturan IP pada filter ini.</p>
                 </div>
             @else
                 <div style="overflow-x: auto; margin-bottom: 2rem;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
                         <thead>
-                            <tr style="border-bottom: 2px solid #e2e8f0; color: #64748b;">
+                            <tr style="border-bottom: 2px solid #e2e8f0; color: #64748b; background: #f8fafc;">
                                 <th style="padding: 10px;">Alamat IP</th>
                                 <th style="padding: 10px;">Tipe Aturan</th>
+                                <th style="padding: 10px;">Status Efektif</th>
                                 <th style="padding: 10px;">Alasan</th>
                                 <th style="padding: 10px;">Kadaluarsa</th>
                                 <th style="padding: 10px;">Dibuat Oleh</th>
@@ -1191,19 +1223,42 @@
                         </thead>
                         <tbody>
                             @foreach($ipRules as $r)
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding: 10px; font-family: monospace; font-weight: 700; color: #0f172a;">{{ $r->ip_address }}</td>
+                                @php
+                                    $isExp = $r->isExpired();
+                                @endphp
+                                <tr style="border-bottom: 1px solid #f1f5f9; {{ $isExp ? 'background: #fafafa; opacity: 0.85;' : '' }}">
+                                    <td style="padding: 10px; font-family: monospace; font-weight: 700; color: {{ $isExp ? '#64748b' : '#0f172a' }};">
+                                        {{ $r->ip_address }}
+                                    </td>
                                     <td style="padding: 10px;">
                                         @if($r->rule_type === 'blacklist')
-                                            <span class="badge badge-danger">Blacklist (Blokir)</span>
+                                            <span class="badge {{ $isExp ? '' : 'badge-danger' }}" style="{{ $isExp ? 'background:#f1f5f9; color:#64748b; border:1px solid #cbd5e1;' : '' }}">Blacklist</span>
                                         @else
-                                            <span class="badge badge-success">Whitelist (Izinkan)</span>
+                                            <span class="badge {{ $isExp ? '' : 'badge-success' }}" style="{{ $isExp ? 'background:#f1f5f9; color:#64748b; border:1px solid #cbd5e1;' : '' }}">Whitelist</span>
                                         @endif
                                     </td>
-                                    <td style="padding: 10px; color: #334155;">{{ $r->reason ?? '-' }}</td>
+                                    <td style="padding: 10px;">
+                                        @if($isExp)
+                                            <span class="badge" style="background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; font-size: 0.72rem; display: inline-flex; align-items: center; gap: 3px;">
+                                                <i data-feather="check" style="width: 11px; height: 11px;"></i> Selesai (Bebas)
+                                            </span>
+                                        @else
+                                            <span class="badge badge-danger" style="font-size: 0.72rem; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; display: inline-flex; align-items: center; gap: 4px;">
+                                                <span class="pulse-dot" style="width:6px; height:6px; background:#ef4444;"></span> Aktif Memblokir
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td style="padding: 10px; color: {{ $isExp ? '#64748b' : '#334155' }};">{{ $r->reason ?? '-' }}</td>
                                     <td style="padding: 10px;">
                                         @if($r->expires_at)
-                                            {{ $r->expires_at->format('d/m/Y H:i') }}
+                                            <span style="{{ $isExp ? 'text-decoration: line-through; color: #94a3b8;' : 'font-weight: 600;' }}">
+                                                {{ $r->expires_at->format('d/m/Y H:i') }}
+                                            </span>
+                                            @if($isExp)
+                                                <div style="font-size: 0.7rem; color: #94a3b8;">(Masa blokir habis)</div>
+                                            @else
+                                                <div style="font-size: 0.7rem; color: #059669; font-weight: 600;">({{ $r->expires_at->diffForHumans() }})</div>
+                                            @endif
                                         @else
                                             <span style="color: #065f46; font-weight: 700;">Permanen</span>
                                         @endif
@@ -1213,7 +1268,7 @@
                                         <form action="{{ route('admin.security.ip.destroy', $r->id) }}" method="POST" onsubmit="return confirm('Hapus aturan IP ini?');" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-icon btn-delete" title="Buka Blokir">
+                                            <button type="submit" class="btn-icon btn-delete" title="Hapus Aturan">
                                                 <i data-feather="trash-2" style="width: 15px; height: 15px;"></i>
                                             </button>
                                         </form>

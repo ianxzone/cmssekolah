@@ -79,7 +79,24 @@ class SecurityController extends Controller
         }
 
         $threatLogs = $threatQuery->paginate(20, ['*'], 'threat_page')->withQueryString();
-        $ipRules = IpRule::with('creator')->latest()->get();
+
+        $ipFilter = $request->query('ip_filter', 'all');
+        $countAllIps = IpRule::count();
+        $countActiveIps = IpRule::where(function ($q) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+        })->count();
+        $countExpiredIps = IpRule::whereNotNull('expires_at')->where('expires_at', '<=', now())->count();
+
+        $ipRulesQuery = IpRule::with('creator')->latest();
+        if ($ipFilter === 'active') {
+            $ipRulesQuery->where(function ($q) {
+                $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            });
+        } elseif ($ipFilter === 'expired') {
+            $ipRulesQuery->whereNotNull('expires_at')->where('expires_at', '<=', now());
+        }
+
+        $ipRules = $ipRulesQuery->get();
 
         return view('admin.security.index', compact(
             'tab',
@@ -95,7 +112,11 @@ class SecurityController extends Controller
             'recentThreats',
             'auditLogs',
             'threatLogs',
-            'ipRules'
+            'ipRules',
+            'ipFilter',
+            'countAllIps',
+            'countActiveIps',
+            'countExpiredIps'
         ));
     }
 
@@ -192,6 +213,22 @@ class SecurityController extends Controller
 
         return redirect()->route('admin.security.index', ['tab' => 'threats'])
             ->with('success', 'Seluruh aturan blokir IP otomatis (Auto-Ban) berhasil dibersihkan.');
+    }
+
+    /**
+     * Clear all expired IP rules
+     */
+    public function clearExpiredIps()
+    {
+        $deleted = IpRule::whereNotNull('expires_at')->where('expires_at', '<=', now())->delete();
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_7d');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_30d');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_this_month');
+        \Illuminate\Support\Facades\Cache::forget('security_analytics_last_month');
+        SecurityService::logAudit('deleted', 'security', "Membersihkan {$deleted} aturan IP yang sudah kedaluwarsa");
+
+        return redirect()->route('admin.security.index', ['tab' => 'threats', 'ip_filter' => 'all'])
+            ->with('success', "Berhasil membersihkan {$deleted} aturan IP yang sudah kedaluwarsa.");
     }
 
     /**

@@ -175,6 +175,7 @@ Route::prefix($adminPath)->middleware(['web', 'auth', \App\Http\Middleware\Ensur
         Route::post('security/ip', [AdminSecurityController::class, 'blockIp'])->name('admin.security.ip.store');
         Route::delete('security/ip/{id}', [AdminSecurityController::class, 'unblockIp'])->name('admin.security.ip.destroy');
         Route::post('security/ip/clear-autoban', [AdminSecurityController::class, 'clearAutoBan'])->name('admin.security.ip.clearAutoBan');
+        Route::post('security/ip/clear-expired', [AdminSecurityController::class, 'clearExpiredIps'])->name('admin.security.ip.clearExpired');
         Route::post('security/threats/clear', [AdminSecurityController::class, 'clearThreatLogs'])->name('admin.security.threats.clear');
         Route::post('security/settings', [AdminSecurityController::class, 'updateSettings'])->name('admin.security.settings.update');
     });
