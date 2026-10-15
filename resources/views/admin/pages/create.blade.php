@@ -532,6 +532,25 @@
                     const editor = editorInstance || editorEl?.editor;
                     if (!editor) return;
 
+                    const isPdf = (item.mime_type && item.mime_type.includes('pdf')) || (item.file_name && item.file_name.toLowerCase().endsWith('.pdf'));
+                    if (isPdf) {
+                        const fileUrl = item.url ? item.url : `/storage/${item.path}`;
+                        const docTitle = item.title || item.name || 'Dokumen PDF';
+                        const pdfFormat = item.pdf_format || 'reader';
+
+                        let insertCode = '';
+                        if (pdfFormat === 'button') {
+                            insertCode = `<div>[pdf-button url="${fileUrl}" title="${docTitle}"]</div><p><br></p>`;
+                        } else if (pdfFormat === 'card') {
+                            insertCode = `<div>[pdf-card url="${fileUrl}" title="${docTitle}"]</div><p><br></p>`;
+                        } else {
+                            insertCode = `<div>[pdf url="${fileUrl}" title="${docTitle}"]</div><p><br></p>`;
+                        }
+
+                        editor.insertHTML(insertCode);
+                        return;
+                    }
+
                     const imgUrl = item.url ? item.url : `/storage/${item.path}`;
                     const altAttr = item.alt_text ? escapeHtml(item.alt_text) : escapeHtml(item.title || item.name || '');
                     const titleAttr = item.title ? escapeHtml(item.title) : '';

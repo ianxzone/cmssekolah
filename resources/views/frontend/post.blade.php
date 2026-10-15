@@ -333,6 +333,43 @@
             color: var(--primary-dark);
         }
 
+        /* YouTube & Responsive Video Embeds */
+        .article-content .video-container,
+        .article-content iframe[src*="youtube.com"],
+        .article-content iframe[src*="youtu.be"] {
+            width: 100% !important;
+            aspect-ratio: 16 / 9;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            margin: 2rem 0;
+            display: block;
+        }
+        .article-content .video-container iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: 0;
+        }
+
+        /* PDF Viewer and CTA Buttons in Posts */
+        .article-content .btn-pdf,
+        .article-content .widget-button,
+        .article-content .btn-cta {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.65rem !important;
+            text-decoration: none !important;
+            font-weight: 700 !important;
+            transition: all 0.25s ease !important;
+        }
+        .article-content .btn-pdf:hover,
+        .article-content .widget-button:hover,
+        .article-content .btn-cta:hover {
+            transform: translateY(-2px);
+        }
+
         /* Share Section (Icon Only) */
         .share-section {
             margin-top: 2.5rem;

@@ -31,9 +31,9 @@
                         <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1.25rem;">atau</p>
                         <label class="wp-media-upload-btn">
                             <span>Pilih Berkas</span>
-                            <input type="file" id="wpMediaFileInput" multiple accept="image/*" style="display: none;" onchange="handleMediaFilesSelect(this.files)">
+                            <input type="file" id="wpMediaFileInput" multiple accept="image/*,application/pdf" style="display: none;" onchange="handleMediaFilesSelect(this.files)">
                         </label>
-                        <p style="color: #9ca3af; font-size: 0.75rem; margin-top: 1.5rem;">Ukuran maksimal berkas unggahan: 2 MB (JPG, PNG, GIF, WebP - Otomatis Dioptimasi).</p>
+                        <p style="color: #9ca3af; font-size: 0.75rem; margin-top: 1.5rem;">Ukuran maksimal berkas unggahan: 5 MB (JPG, PNG, GIF, WebP, PDF).</p>
                     </div>
 
                     <!-- Progress bar -->
@@ -99,6 +99,12 @@
                             <div class="wp-attachment-info">
                                 <div class="wp-attachment-thumbnail">
                                     <img id="wpSidebarThumb" src="" alt="Thumbnail">
+                                    <div id="wpSidebarPdfThumb" style="display:none; width:100%; height:120px; align-items:center; justify-content:center; flex-direction:column; background:#fef2f2; border:1px solid #fee2e2; border-radius:8px;">
+                                        <svg style="width:42px; height:42px; color:#dc2626; margin-bottom:6px;" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span style="font-size:0.75rem; font-weight:700; color:#991b1b;">DOKUMEN PDF</span>
+                                    </div>
                                 </div>
                                 <div class="wp-attachment-details">
                                     <div class="wp-file-name" id="wpSidebarFileName">-</div>
@@ -109,6 +115,36 @@
                             </div>
 
                             <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 1rem 0;">
+
+                            <!-- PDF Insertion Format Selector (Visible only when PDF is selected) -->
+                            <div class="wp-form-group" id="wpPdfOptionsBox" style="display: none; background: #ecfdf5; border: 1.5px solid #a7f3d0; padding: 12px; border-radius: 10px; margin-bottom: 1rem;">
+                                <label class="wp-form-label" style="color: #065f46; font-weight: 700; margin-bottom: 6px; font-size: 0.82rem;">
+                                    Format Tampilan Sisipkan PDF:
+                                </label>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; cursor: pointer;">
+                                        <input type="radio" name="wp_pdf_insert_format" value="reader" checked style="margin-top: 3px;">
+                                        <div>
+                                            <strong style="color: #047857;">📖 Pembaca PDF / Buku (Flipbook)</strong>
+                                            <div style="color: #4b5563; font-size: 0.72rem;">Bisa dibaca langsung seperti lembaran buku dengan toolbar lengkap & tombol unduh.</div>
+                                        </div>
+                                    </label>
+                                    <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; cursor: pointer;">
+                                        <input type="radio" name="wp_pdf_insert_format" value="button" style="margin-top: 3px;">
+                                        <div>
+                                            <strong style="color: #047857;">🔘 Tombol Unduh & Baca (Button CTA)</strong>
+                                            <div style="color: #4b5563; font-size: 0.72rem;">Tombol hijau modern dengan ikon PDF yang mengarahkan ke dokumen.</div>
+                                        </div>
+                                    </label>
+                                    <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; cursor: pointer;">
+                                        <input type="radio" name="wp_pdf_insert_format" value="card" style="margin-top: 3px;">
+                                        <div>
+                                            <strong style="color: #047857;">🗂️ Kartu Info Dokumen (Document Card)</strong>
+                                            <div style="color: #4b5563; font-size: 0.72rem;">Kotak ringkas berisi judul, status dokumen, serta tombol pratinjau & download.</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
 
                             <!-- SEO Fields Form -->
                             <div class="wp-seo-form">
@@ -122,8 +158,8 @@
                                 </div>
 
                                 <div class="wp-form-group">
-                                    <label class="wp-form-label" for="wpMetaTitle">Judul Gambar</label>
-                                    <input type="text" id="wpMetaTitle" class="wp-form-input" placeholder="Judul gambar...">
+                                    <label class="wp-form-label" for="wpMetaTitle">Judul Gambar / Dokumen</label>
+                                    <input type="text" id="wpMetaTitle" class="wp-form-input" placeholder="Judul gambar atau dokumen...">
                                 </div>
 
                                 <div class="wp-form-group">
@@ -928,13 +964,29 @@
             }
 
             const imgThumb = item.url ? item.url : `/storage/${item.path}`;
+            const isPdf = (item.mime_type && item.mime_type.includes('pdf')) || (item.file_name && item.file_name.toLowerCase().endsWith('.pdf'));
 
-            card.innerHTML = `
-                <img src="${imgThumb}" alt="${item.alt_text || item.title || item.name}" loading="lazy">
-                <div class="wp-card-check">
-                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                </div>
-            `;
+            if (isPdf) {
+                card.innerHTML = `
+                    <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#fef2f2; border:1px solid #fee2e2; padding:8px; text-align:center; box-sizing:border-box;">
+                        <svg style="width:34px; height:34px; color:#dc2626; margin-bottom:4px;" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span style="font-size:0.65rem; font-weight:700; color:#991b1b; text-transform:uppercase; word-break:break-all; line-height:1.2; max-height:2.4em; overflow:hidden;">${item.name || 'Dokumen PDF'}</span>
+                        <span style="font-size:0.58rem; color:#dc2626; font-weight:700; margin-top:3px; background:#fee2e2; padding:1px 5px; border-radius:4px;">PDF</span>
+                    </div>
+                    <div class="wp-card-check">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                `;
+            } else {
+                card.innerHTML = `
+                    <img src="${imgThumb}" alt="${item.alt_text || item.title || item.name}" loading="lazy">
+                    <div class="wp-card-check">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                `;
+            }
 
             card.addEventListener('click', () => {
                 selectMediaItem(item);
@@ -977,9 +1029,26 @@
         sidebarContent.style.display = 'block';
         btnInsert.disabled = false;
 
-        // Populate details
+        // Populate details & handle PDF vs Image thumbnail
         const imgThumb = selectedMedia.url ? selectedMedia.url : `/storage/${selectedMedia.path}`;
-        document.getElementById('wpSidebarThumb').src = imgThumb;
+        const isPdf = (selectedMedia.mime_type && selectedMedia.mime_type.includes('pdf')) || (selectedMedia.file_name && selectedMedia.file_name.toLowerCase().endsWith('.pdf'));
+        const imgEl = document.getElementById('wpSidebarThumb');
+        const pdfThumbEl = document.getElementById('wpSidebarPdfThumb');
+        const pdfOptionsBox = document.getElementById('wpPdfOptionsBox');
+
+        if (isPdf) {
+            if (imgEl) imgEl.style.display = 'none';
+            if (pdfThumbEl) pdfThumbEl.style.display = 'flex';
+            if (pdfOptionsBox) pdfOptionsBox.style.display = 'block';
+        } else {
+            if (imgEl) {
+                imgEl.style.display = 'block';
+                imgEl.src = imgThumb;
+            }
+            if (pdfThumbEl) pdfThumbEl.style.display = 'none';
+            if (pdfOptionsBox) pdfOptionsBox.style.display = 'none';
+        }
+
         document.getElementById('wpSidebarFileName').textContent = selectedMedia.file_name || selectedMedia.name;
         document.getElementById('wpSidebarFileDate').textContent = selectedMedia.created_at ? new Date(selectedMedia.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
         document.getElementById('wpSidebarFileSize').textContent = selectedMedia.human_size || (selectedMedia.size ? Math.round(selectedMedia.size / 1024) + ' KB' : '-');
@@ -1087,6 +1156,10 @@
 
         // Trigger background save
         saveCurrentMediaMetadata();
+
+        // Capture selected PDF insertion format if present
+        const pdfFormatRadio = document.querySelector('input[name="wp_pdf_insert_format"]:checked');
+        selectedMedia.pdf_format = pdfFormatRadio ? pdfFormatRadio.value : 'reader';
 
         if (typeof currentOptions.onSelect === 'function') {
             currentOptions.onSelect(selectedMedia, currentOptions.mode);

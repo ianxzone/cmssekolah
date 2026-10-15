@@ -468,13 +468,14 @@ class FrontendController extends Controller
     }
 
     /**
-     * Parse Shortcodes in content
+     * Parse Shortcodes and embeds in content (Forms, PDF/DearFlip reader & buttons, YouTube)
      */
     protected function parseShortcodes($content)
     {
         if (empty($content)) return $content;
 
-        return preg_replace_callback('/\[form:([a-zA-Z0-9-]+)\]/', function ($matches) {
+        // 1. Dynamic Forms Shortcode [form:slug]
+        $content = preg_replace_callback('/\[form:([a-zA-Z0-9-]+)\]/', function ($matches) {
             $slug = $matches[1];
             $form = \App\Models\Form::where('slug', $slug)->where('is_active', true)->first();
             
@@ -484,6 +485,68 @@ class FrontendController extends Controller
 
             return view('frontend.partials.form-embed', compact('form'))->render();
         }, $content);
+
+        // 2. PDF Button Variant [pdf-button url="..." title="..."]
+        $content = preg_replace_callback('/\[pdf-button\s+url=[\'"]([^\'"]+)[\'"](?:\s+title=[\'"]([^\'"]*)[\'"])?[^\]]*\]/i', function ($matches) {
+            $url = $matches[1];
+            $title = !empty($matches[2]) ? $matches[2] : 'Buka / Unduh Dokumen (PDF)';
+            return '
+            <div class="my-6 text-center">
+                <a href="' . e($url) . '" target="_blank" rel="noopener noreferrer" class="btn-pdf inline-flex items-center justify-center gap-2.5 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 no-underline text-base">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>' . e($title) . '</span>
+                </a>
+            </div>';
+        }, $content);
+
+        // 3. PDF Card Variant [pdf-card url="..." title="..."]
+        $content = preg_replace_callback('/\[pdf-card\s+url=[\'"]([^\'"]+)[\'"](?:\s+title=[\'"]([^\'"]*)[\'"])?[^\]]*\]/i', function ($matches) {
+            $url = $matches[1];
+            $title = !empty($matches[2]) ? $matches[2] : 'Dokumen PDF Resmi';
+            return '
+            <div class="my-6 p-4 sm:p-5 rounded-2xl border border-emerald-200 bg-emerald-50/60 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shrink-0">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-base mb-0.5">' . e($title) . '</h4>
+                        <p class="text-xs text-emerald-800 font-medium mb-0">Dokumen PDF Resmi</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="' . e($url) . '" target="_blank" rel="noopener noreferrer" class="btn-pdf inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs sm:text-sm transition no-underline shadow-sm">
+                        <span>Buka PDF</span>
+                    </a>
+                    <a href="' . e($url) . '" download class="btn-pdf inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-emerald-50 text-emerald-900 font-semibold rounded-xl text-xs sm:text-sm border border-emerald-300 transition no-underline shadow-sm">
+                        <span>Unduh</span>
+                    </a>
+                </div>
+            </div>';
+        }, $content);
+
+        // 4. Interactive PDF / Flipbook Reader: [pdf url="..." title="..."] or [dflip url="..."] or [dflip id="..."]
+        $content = preg_replace_callback('/\[(?:pdf|dflip)\s+(?:url=[\'"]([^\'"]+)[\'"]|id=[\'\"&#8220;&#8221;]?(\d+)[\'\"&#8220;&#8221;]?)(?:\s+title=[\'"]([^\'"]*)[\'"])?[^\]]*\](?:\[\/(?:pdf|dflip)\])?/i', function ($matches) {
+            $pdfUrl = !empty($matches[1]) ? $matches[1] : asset('storage/media/brosur-ppdb-2026-2027.pdf');
+            $title = !empty($matches[3]) ? $matches[3] : 'Brosur Informasi Dokumen';
+            return view('frontend.partials.pdf-embed', compact('pdfUrl', 'title'))->render();
+        }, $content);
+
+        // 5. YouTube Embed Auto-parsing for bare YouTube URLs in paragraphs:
+        // E.g. <p>https://www.youtube.com/watch?v=k5hG9sqHYBY</p> or <p>https://youtu.be/k5hG9sqHYBY</p>
+        $content = preg_replace_callback(
+            '/<p>\s*https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[^\s<]*)\s*<\/p>/i',
+            function ($matches) {
+                $videoId = $matches[1];
+                return '
+                <div class="video-container my-8 aspect-video w-full rounded-2xl overflow-hidden shadow-xl border border-gray-100 bg-black">
+                    <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>';
+            },
+            $content
+        );
+
+        return $content;
     }
 
     /**
