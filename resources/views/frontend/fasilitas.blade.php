@@ -849,6 +849,14 @@
         const phone = '{{ $phoneNum }}';
         const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
         
+        if (typeof window.fbq === 'function') {
+            window.fbq('track', 'Schedule', { content_name: 'School Tour ' + unit, content_category: 'SchoolTour' });
+            window.fbq('track', 'Lead', { content_name: 'School Tour ' + unit, content_category: 'SchoolTour' });
+        }
+        if (typeof window.ttq === 'object' && typeof window.ttq.track === 'function') {
+            window.ttq.track('SubmitForm', { content_name: 'School Tour ' + unit });
+        }
+        
         window.open(waUrl, '_blank');
         closeTourModal();
         document.getElementById('tourForm').reset();
