@@ -248,8 +248,8 @@ src="https://www.facebook.com/tr?id={{ $metaPixelId }}&ev=PageView&noscript=1"
             trackLeadEvent(eventName, 'Contact', text || 'WhatsApp Chat', { destination: href, location: window.location.pathname });
         }
         
-        // B. SPMB Portal Click
-        else if (href.includes('spmb') || target.classList.contains('nav-spmb') || target.classList.contains('btn-track-ppdb-spmb')) {
+        // B. SPMB / SMART Portal Registration Click
+        else if (href.includes('smart.alirsyad') || href.includes('/smart') || href.includes('spmb') || href.includes('#daftar') || target.classList.contains('nav-spmb') || target.classList.contains('btn-track-ppdb-spmb') || text.toLowerCase().includes('daftar sekarang') || text.toLowerCase().includes('daftar spmb')) {
             trackLeadEvent('click_spmb_portal', 'PPDB', text || 'Portal SPMB Online', { destination: href, location: window.location.pathname });
         }
 
