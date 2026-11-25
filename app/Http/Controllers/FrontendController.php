@@ -525,10 +525,35 @@ class FrontendController extends Controller
             </div>';
         }, $content);
 
-        // 4. Interactive PDF / Flipbook Reader: [pdf url="..." title="..."] or [dflip url="..."] or [dflip id="..."]
-        $content = preg_replace_callback('/\[(?:pdf|dflip)\s+(?:url=[\'"]([^\'"]+)[\'"]|id=[\'\"&#8220;&#8221;]?(\d+)[\'\"&#8220;&#8221;]?)(?:\s+title=[\'"]([^\'"]*)[\'"])?[^\]]*\](?:\[\/(?:pdf|dflip)\])?/i', function ($matches) {
-            $pdfUrl = !empty($matches[1]) ? $matches[1] : asset('storage/media/brosur-ppdb-2026-2027.pdf');
-            $title = !empty($matches[3]) ? $matches[3] : 'Brosur Informasi Dokumen';
+        // 4. Interactive PDF / 3D Flipbook Reader: [pdf url="..." title="..."] or [dflip id="..."] or [dflip source="..."]
+        $content = preg_replace_callback('/\[(?:pdf|dflip)(?:\s+[^\]]*)?\](?:\[\/(?:pdf|dflip)\])?/i', function ($matches) {
+            $tag = $matches[0];
+            $pdfUrl = null;
+            if (preg_match('/(?:url|source|src)=[\'"]([^\'"]+)[\'"]/i', $tag, $m)) {
+                $pdfUrl = $m[1];
+            }
+            $mediaId = null;
+            if (preg_match('/id=[\'\"&#8220;&#8221;]?(\d+)[\'\"&#8220;&#8221;]?/i', $tag, $m)) {
+                $mediaId = $m[1];
+            }
+            $title = null;
+            if (preg_match('/title=[\'"]([^\'"]*)[\'"]/i', $tag, $m)) {
+                $title = $m[1];
+            }
+
+            if (empty($pdfUrl) && !empty($mediaId)) {
+                $media = \App\Models\Media::find($mediaId);
+                if ($media) {
+                    $pdfUrl = $media->url;
+                    $title = $title ?: ($media->title ?: $media->name);
+                }
+            }
+
+            if (empty($pdfUrl)) {
+                $pdfUrl = asset('storage/media/brosur-ppdb-2026-2027.pdf');
+            }
+
+            $title = $title ?: 'Buku Informasi & Publikasi Resmi';
             return view('frontend.partials.pdf-embed', compact('pdfUrl', 'title'))->render();
         }, $content);
 
