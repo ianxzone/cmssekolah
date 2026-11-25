@@ -3,6 +3,9 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    # Allow up to 64MB request body for PDF/media uploads
+    LimitRequestBody 67108864
+
     RewriteEngine On
 
     # Handle Authorization Header
