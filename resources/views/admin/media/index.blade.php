@@ -627,6 +627,11 @@
                         <div class="media-card-preview">
                             @if($item->is_image)
                                 <img src="{{ $item->url }}" alt="{{ $item->alt_text ?? $item->name }}" loading="lazy">
+                            @elseif($item->is_pdf)
+                                <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fef2f2; border-bottom: 1px solid #fee2e2;">
+                                    <i class="fas fa-file-pdf" style="font-size: 3rem; color: #dc2626; margin-bottom: 6px;"></i>
+                                    <span style="font-size: 0.68rem; font-weight: 800; background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 4px;">DOKUMEN PDF</span>
+                                </div>
                             @else
                                 <div style="font-size: 2.5rem; color: #94a3b8;">
                                     <i class="fas fa-file-lines"></i>
@@ -696,6 +701,13 @@
             <div class="attachment-preview-col">
                 <div class="attachment-img-frame" id="inspectorImgFrame">
                     <img id="inspectorImg" src="" alt="Pratinjau">
+                    <div id="inspectorPdfBox" style="display: none; width: 100%; height: 260px; flex-direction: column; align-items: center; justify-content: center; background: #fef2f2; border: 1.5px solid #fee2e2; border-radius: 12px; padding: 20px; text-align: center;">
+                        <i class="fas fa-file-pdf" style="font-size: 4rem; color: #dc2626; margin-bottom: 12px;"></i>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: #991b1b; margin-bottom: 14px;">Dokumen PDF Resmi</span>
+                        <a id="inspectorPdfOpenBtn" href="#" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #dc2626; color: white; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> Buka Dokumen PDF
+                        </a>
+                    </div>
                 </div>
 
                 <div class="attachment-meta-card">
@@ -804,12 +816,25 @@
 
         // Populate Left Column
         const img = document.getElementById('inspectorImg');
+        const pdfBox = document.getElementById('inspectorPdfBox');
+        const pdfOpenBtn = document.getElementById('inspectorPdfOpenBtn');
+        const isPdf = item.is_pdf || (item.mime_type && item.mime_type.includes('pdf')) || (item.file_name && item.file_name.toLowerCase().endsWith('.pdf'));
+
         if (item.mime_type && item.mime_type.startsWith('image/')) {
             img.src = item.url;
             img.style.display = 'block';
+            if (pdfBox) pdfBox.style.display = 'none';
+        } else if (isPdf) {
+            img.src = '';
+            img.style.display = 'none';
+            if (pdfBox) {
+                pdfBox.style.display = 'flex';
+                if (pdfOpenBtn) pdfOpenBtn.href = item.url;
+            }
         } else {
             img.src = '';
             img.style.display = 'none';
+            if (pdfBox) pdfBox.style.display = 'none';
         }
 
         document.getElementById('inspectorFileName').innerText = item.file_name || item.name;

@@ -23,7 +23,7 @@ class Media extends Model
         'description',
     ];
 
-    protected $appends = ['url', 'is_image', 'human_size'];
+    protected $appends = ['url', 'is_image', 'is_pdf', 'human_size'];
 
     public function getUrlAttribute()
     {
@@ -32,7 +32,14 @@ class Media extends Model
 
     public function getIsImageAttribute()
     {
-        return str_starts_with($this->mime_type, 'image/');
+        return str_starts_with($this->mime_type ?? '', 'image/');
+    }
+
+    public function getIsPdfAttribute()
+    {
+        $mime = $this->mime_type ?? '';
+        $fileName = strtolower($this->file_name ?? $this->name ?? '');
+        return $mime === 'application/pdf' || str_ends_with($fileName, '.pdf');
     }
 
     public function getHumanSizeAttribute()
