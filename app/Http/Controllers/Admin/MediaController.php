@@ -20,7 +20,7 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:jpeg,png,jpg,webp,gif,pdf|max:5120', // Safe MIME types, max 5MB
+            'file' => 'required|file|mimes:jpeg,png,jpg,webp,gif,pdf|max:25600', // Safe MIME types, max 25MB
             'alt_text' => 'nullable|string|max:255',
             'title' => 'nullable|string|max:255',
             'caption' => 'nullable|string',
