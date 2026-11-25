@@ -1233,22 +1233,36 @@
 
                 xhr.onload = () => {
                     if (xhr.status >= 200 && xhr.status < 300) {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.media) {
-                            lastUploadedItem = response.media;
-                        } else {
-                            lastUploadedItem = response;
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            lastUploadedItem = response.media || response;
+                            resolve(response);
+                        } catch (e) {
+                            reject(new Error('Format respon server tidak valid'));
                         }
-                        resolve(response);
                     } else {
-                        reject(new Error('Upload failed'));
+                        let errMsg = `Gagal mengunggah ${file.name} (HTTP ${xhr.status})`;
+                        try {
+                            const errData = JSON.parse(xhr.responseText);
+                            if (errData.message) {
+                                errMsg = errData.message;
+                            } else if (errData.errors) {
+                                errMsg = Object.values(errData.errors).flat().join(', ');
+                            }
+                        } catch (e) {
+                            if (xhr.status === 413) {
+                                errMsg = `Berkas terlalu besar (${file.name}). Server menolak payload (HTTP 413).`;
+                            }
+                        }
+                        reject(new Error(errMsg));
                     }
                 };
 
-                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.onerror = () => reject(new Error('Koneksi jaringan terputus saat mengunggah.'));
                 xhr.send(formData);
             }).catch(err => {
                 console.error('File upload error:', err);
+                alert(err.message || 'Gagal mengunggah berkas.');
             });
         }
 
@@ -1258,12 +1272,12 @@
             progressBar.style.width = '0%';
             progressPercent.textContent = '0%';
 
-            switchMediaTab('library');
-            fetchMediaLibrary(1, true).then(() => {
-                if (lastUploadedItem) {
+            if (lastUploadedItem) {
+                switchMediaTab('library');
+                fetchMediaLibrary(1, true).then(() => {
                     selectMediaItem(lastUploadedItem);
-                }
-            });
+                });
+            }
         }, 500);
     }
 })();
