@@ -33,7 +33,7 @@
                             <span>Pilih Berkas</span>
                             <input type="file" id="wpMediaFileInput" multiple accept="image/*,application/pdf" style="display: none;" onchange="handleMediaFilesSelect(this.files)">
                         </label>
-                        <p style="color: #9ca3af; font-size: 0.75rem; margin-top: 1.5rem;">Ukuran maksimal berkas unggahan: 5 MB (JPG, PNG, GIF, WebP, PDF).</p>
+                        <p style="color: #9ca3af; font-size: 0.75rem; margin-top: 1.5rem;">Ukuran maksimal berkas unggahan: 25 MB (JPG, PNG, GIF, WebP, PDF).</p>
                     </div>
 
                     <!-- Progress bar -->

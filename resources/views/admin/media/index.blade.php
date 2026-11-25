@@ -571,6 +571,21 @@
     </div>
 
     <div class="panel-body">
+        @if(session('error') || $errors->any())
+            <div style="background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; padding: 12px 18px; border-radius: 12px; margin-bottom: 1.5rem; font-size: 0.875rem; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-circle-exclamation" style="font-size: 1.1rem;"></i>
+                <div>
+                    <strong>Gagal mengunggah:</strong> {{ session('error') ?? $errors->first() }}
+                </div>
+            </div>
+        @endif
+        @if(session('success'))
+            <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; color: #065f46; padding: 12px 18px; border-radius: 12px; margin-bottom: 1.5rem; font-size: 0.875rem; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-circle-check" style="font-size: 1.1rem;"></i>
+                <div>{{ session('success') }}</div>
+            </div>
+        @endif
+
         <!-- Direct Upload Zone -->
         <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data" id="upload-form">
             @csrf
@@ -582,9 +597,9 @@
                     Tarik berkas ke sini atau klik untuk mengunggah
                 </h3>
                 <p style="color: #64748b; font-size: 0.825rem; margin: 0;">
-                    Mendukung JPG, PNG, GIF, WebP, PDF hingga 2MB (Otomatis Dioptimasi)
+                    Mendukung JPG, PNG, GIF, WebP, PDF hingga 25MB (Otomatis Dioptimasi)
                 </p>
-                <input type="file" id="file-input" name="file" style="display: none;" onchange="this.form.submit()">
+                <input type="file" id="file-input" name="file" accept="image/*,application/pdf" style="display: none;" onchange="this.form.submit()">
             </div>
         </form>
 
